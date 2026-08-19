@@ -35,7 +35,7 @@ def get_org_id():
 def get_channels(services=None):
     org_id = get_org_id()
     query = (
-        "query GetChannels($orgId: ID!) { "
+        "query GetChannels($orgId: OrganizationId!) { "
         "channels(input: { organizationId: $orgId }) { id name service } }"
     )
     resp = requests.post(

@@ -62,23 +62,36 @@ def process_source(src, cfg):
         )
         if not clips:
             print(f"No clips generated for {src['url']}")
-            return
+            return False
         channels = get_channels(cfg["buffer"].get("services") or None)
         title = src.get("title") or raw.stem
         max_posts = cfg["buffer"].get("max_posts_per_channel", 8)
         clips = clips[:max_posts]
+        posted = 0
         for i, clip in enumerate(clips, 1):
             url = upload_video(clip, folder="clips")
             caption = build_caption(cfg, title, i, len(clips))
             for channel in channels:
                 try:
                     post_id = create_post(channel["id"], caption, url)
+                    posted += 1
                     print(
                         f"Posted {clip.name} -> {channel['service']} "
                         f"({channel['name']}) id={post_id}"
                     )
                 except Exception as exc:
+                    msg = str(exc)
+                    if "limit reached" in msg.lower() or "Scheduled posts" in msg:
+                        print(
+                            f"Queue full for {channel['service']} "
+                            f"({channel['name']}), skipping remaining posts"
+                        )
+                        return False
                     print(f"Post failed {clip.name} -> {channel['service']}: {exc}")
+        if posted == 0:
+            print(f"No posts created for {src['url']}")
+            return False
+        return True
 
 
 def main():
@@ -90,10 +103,13 @@ def main():
         return
     for src in pending:
         print(f"Processing: {src['url']}")
-        process_source(src, cfg)
-        src["status"] = "processed"
-        save_json(ROOT / "sources.json", sources)
-        print(f"Marked processed: {src['url']}")
+        success = process_source(src, cfg)
+        if success:
+            src["status"] = "processed"
+            save_json(ROOT / "sources.json", sources)
+            print(f"Marked processed: {src['url']}")
+        else:
+            print(f"Kept pending (will retry next run): {src['url']}")
 
 
 if __name__ == "__main__":
