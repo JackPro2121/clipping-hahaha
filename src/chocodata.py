@@ -15,14 +15,20 @@ def _get(path, params):
             timeout=60,
         )
 
-    resp = call()
-    if resp.status_code == 429:
-        retry = float(resp.headers.get("Retry-After", 1))
-        print(f"Chocodata rate limited, waiting {retry}s")
-        time.sleep(retry)
+    for attempt in range(3):
         resp = call()
-    resp.raise_for_status()
-    return resp.json()
+        if resp.status_code == 429:
+            retry = float(resp.headers.get("Retry-After", 1))
+            print(f"Chocodata rate limited, waiting {retry}s")
+            time.sleep(retry)
+            continue
+        if resp.status_code >= 500:
+            print(f"Chocodata server error {resp.status_code}, retrying ({attempt + 1}/3)")
+            time.sleep(2 * (attempt + 1))
+            continue
+        resp.raise_for_status()
+        return resp.json()
+    raise RuntimeError(f"Chocodata request failed after retries: {path}")
 
 
 def parse_views(text):
