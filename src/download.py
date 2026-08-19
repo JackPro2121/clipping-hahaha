@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def _download(cmd, out_dir):
-    subprocess.run(cmd, check=True, capture_output=True, timeout=900)
+    subprocess.run(cmd, check=True, capture_output=True, timeout=1800)
 
 
 def download_video(url, out_dir, max_duration_s=None):
@@ -16,7 +16,7 @@ def download_video(url, out_dir, max_duration_s=None):
     client = "web_embedded" if cookies_b64 else "android"
     base_cmd = [
         "yt-dlp",
-        "-f", "bv*+ba/b",
+        "-f", "bv*[height<=1080]+ba/b[height<=1080]",
         "--merge-output-format", "mp4",
         "--no-playlist",
         "--no-progress",
@@ -34,7 +34,6 @@ def download_video(url, out_dir, max_duration_s=None):
     if max_duration_s:
         base_cmd += [
             "--download-sections", f"*0-{max_duration_s}",
-            "--force-keyframes-at-cuts",
         ]
 
     attempts = []
