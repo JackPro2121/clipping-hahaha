@@ -25,7 +25,10 @@ jobs:
       - name: Install ffmpeg
         run: |
           if ! command -v ffmpeg >/dev/null; then
-            curl -sL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o /tmp/ff.tar.xz
+            sudo apt-get install -y ffmpeg || true
+          fi
+          if ! command -v ffmpeg >/dev/null; then
+            curl -sL --max-time 60 https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o /tmp/ff.tar.xz
             tar -xJf /tmp/ff.tar.xz -C /tmp
             sudo mv /tmp/ffmpeg-*/ffmpeg /usr/local/bin/
             sudo mv /tmp/ffmpeg-*/ffprobe /usr/local/bin/
