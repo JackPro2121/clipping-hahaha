@@ -17,6 +17,7 @@ def download_video(url, out_dir, max_duration_s=None):
         "--merge-output-format", "mp4",
         "--no-playlist",
         "--no-progress",
+        "--socket-timeout", "15",
         "--extractor-args", "youtube:player_client=android",
         "-o", str(out_dir / "%(id)s.%(ext)s"),
     ]
