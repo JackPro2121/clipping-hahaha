@@ -13,7 +13,7 @@ def download_video(url, out_dir, max_duration_s=None):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     cookies_b64 = os.environ.get("YT_COOKIES")
-    client = "web_embedded" if cookies_b64 else "android"
+    client = "web_embedded,web,mweb" if cookies_b64 else "android"
     base_cmd = [
         "yt-dlp",
         "-f", "bv*[height<=1080]+ba/b[height<=1080]",
@@ -44,7 +44,7 @@ def download_video(url, out_dir, max_duration_s=None):
     attempts.append(("direct", base_cmd + [url]))
 
     last_err = None
-    for round_no in range(3):
+    for round_no in range(5):
         for name, cmd in attempts:
             try:
                 _download(cmd, out_dir)
@@ -58,7 +58,8 @@ def download_video(url, out_dir, max_duration_s=None):
                     stderr = stderr.decode("utf-8", "replace")
                 last_err = f"{name}: {stderr or exc}"
                 print(f"Download via {name} failed: {str(exc)[:200]}")
-        if round_no < 2:
-            print(f"Retrying download in 30s (round {round_no + 2}/3)...")
-            time.sleep(30)
+        if round_no < 4:
+            wait = 60 * (round_no + 1)
+            print(f"Retrying download in {wait}s (round {round_no + 2}/5)...")
+            time.sleep(wait)
     raise RuntimeError(f"yt-dlp failed for {url}: {last_err}")
