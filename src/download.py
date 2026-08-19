@@ -1,6 +1,7 @@
 import base64
 import os
 import subprocess
+import time
 from pathlib import Path
 
 
@@ -20,6 +21,9 @@ def download_video(url, out_dir, max_duration_s=None):
         "--no-playlist",
         "--no-progress",
         "--socket-timeout", "15",
+        "--retries", "5",
+        "--retry-sleep", "5,10",
+        "--sleep-requests", "1.0",
         "--extractor-args", f"youtube:player_client={client}",
         "-o", str(out_dir / "%(id)s.%(ext)s"),
     ]
@@ -41,17 +45,21 @@ def download_video(url, out_dir, max_duration_s=None):
     attempts.append(("direct", base_cmd + [url]))
 
     last_err = None
-    for name, cmd in attempts:
-        try:
-            _download(cmd, out_dir)
-            candidates = [p for p in out_dir.iterdir() if p.is_file() and p.suffix != ".txt"]
-            if not candidates:
-                raise RuntimeError(f"Download produced no files for {url}")
-            return max(candidates, key=lambda p: p.stat().st_size)
-        except (subprocess.CalledProcessError, RuntimeError) as exc:
-            stderr = getattr(exc, "stderr", None)
-            if stderr:
-                stderr = stderr.decode("utf-8", "replace")
-            last_err = f"{name}: {stderr or exc}"
-            print(f"Download via {name} failed: {str(exc)[:200]}")
+    for round_no in range(3):
+        for name, cmd in attempts:
+            try:
+                _download(cmd, out_dir)
+                candidates = [p for p in out_dir.iterdir() if p.is_file() and p.suffix != ".txt"]
+                if not candidates:
+                    raise RuntimeError(f"Download produced no files for {url}")
+                return max(candidates, key=lambda p: p.stat().st_size)
+            except (subprocess.CalledProcessError, RuntimeError) as exc:
+                stderr = getattr(exc, "stderr", None)
+                if stderr:
+                    stderr = stderr.decode("utf-8", "replace")
+                last_err = f"{name}: {stderr or exc}"
+                print(f"Download via {name} failed: {str(exc)[:200]}")
+        if round_no < 2:
+            print(f"Retrying download in 30s (round {round_no + 2}/3)...")
+            time.sleep(30)
     raise RuntimeError(f"yt-dlp failed for {url}: {last_err}")
