@@ -24,8 +24,11 @@ jobs:
 
       - name: Install ffmpeg
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          curl -sL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o /tmp/ff.tar.xz
+          tar -xJf /tmp/ff.tar.xz -C /tmp
+          sudo mv /tmp/ffmpeg-*/ffmpeg /usr/local/bin/
+          sudo mv /tmp/ffmpeg-*/ffprobe /usr/local/bin/
+          ffmpeg -version | head -n 1
 
       - name: Install dependencies
         run: pip install -r requirements.txt
