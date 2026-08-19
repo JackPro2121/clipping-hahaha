@@ -22,7 +22,7 @@ def download_video(url, out_dir, max_duration_s=None):
         "--no-progress",
         "--socket-timeout", "15",
         "--retries", "5",
-        "--retry-sleep", "5-10",
+        "--retry-sleep", "5",
         "--sleep-requests", "1.0",
         "--extractor-args", f"youtube:player_client={client}",
         "-o", str(out_dir / "%(id)s.%(ext)s"),
