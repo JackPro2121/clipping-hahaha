@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from buffer_api import create_post, get_channels  # noqa: E402
+from chocodata import extract_video_id, fetch_transcript  # noqa: E402
 from clip import build_clips  # noqa: E402
 from download import download_video  # noqa: E402
 from media import upload_video  # noqa: E402
@@ -30,10 +31,35 @@ def build_caption(cfg, title, index, total):
 
 
 def process_source(src, cfg):
+    captions_cfg = cfg.get("captions", {})
+    transcript = None
+    if captions_cfg.get("enabled"):
+        try:
+            transcript = fetch_transcript(
+                extract_video_id(src["url"]), captions_cfg.get("lang", "en")
+            )
+            if transcript:
+                print(f"Fetched {len(transcript)} transcript segments")
+            else:
+                print("No transcript available, skipping captions")
+        except Exception as exc:
+            print(f"Transcript fetch failed: {exc}")
+
     with tempfile.TemporaryDirectory() as td:
         work = Path(td)
-        raw = download_video(src["url"], work)
-        clips = build_clips(raw, work / "clips", cfg["clipper"])
+        raw = download_video(
+            src["url"],
+            work,
+            max_duration_s=cfg["clipper"].get("max_source_duration_s"),
+        )
+        clipper_cfg = {**cfg["clipper"], "motion": cfg.get("motion", {})}
+        clips = build_clips(
+            raw,
+            work / "clips",
+            clipper_cfg,
+            transcript=transcript,
+            captions_enabled=captions_cfg.get("burn_in", True),
+        )
         if not clips:
             print(f"No clips generated for {src['url']}")
             return

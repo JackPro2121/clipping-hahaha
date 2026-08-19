@@ -6,7 +6,27 @@
     "scene_threshold": 0.3,
     "aspect": "vertical",
     "width": 1080,
-    "height": 1920
+    "height": 1920,
+    "max_source_duration_s": 900
+  },
+  "motion": {
+    "enabled": false,
+    "zoom_factor": 1.1
+  },
+  "captions": {
+    "enabled": true,
+    "burn_in": true,
+    "lang": "en"
+  },
+  "discovery": {
+    "enabled": false,
+    "strategy": "channel",
+    "targets": [],
+    "search_terms": [],
+    "country": "US",
+    "min_views": 100000,
+    "max_duration_s": 600,
+    "max_new_sources": 5
   },
   "buffer": {
     "caption_template": "{title} - clip {index}/{total} {hashtags}",

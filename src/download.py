@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 
 
-def download_video(url, out_dir):
+def download_video(url, out_dir, max_duration_s=None):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     cmd = [
@@ -12,9 +12,14 @@ def download_video(url, out_dir):
         "--no-playlist",
         "--no-progress",
         "-o", str(out_dir / "%(id)s.%(ext)s"),
-        url,
     ]
-    subprocess.run(cmd, check=True, capture_output=True, timeout=600)
+    if max_duration_s:
+        cmd += [
+            "--download-sections", f"*0-{max_duration_s}",
+            "--force-keyframes-at-cuts",
+        ]
+    cmd.append(url)
+    subprocess.run(cmd, check=True, capture_output=True, timeout=900)
     candidates = [p for p in out_dir.iterdir() if p.is_file()]
     if not candidates:
         raise RuntimeError(f"Download produced no files for {url}")

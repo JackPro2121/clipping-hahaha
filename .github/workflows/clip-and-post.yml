@@ -25,12 +25,18 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Discover sources
+        env:
+          CHOCODATA_API_KEY: ${{ secrets.CHOCODATA_API_KEY }}
+        run: python src/find_sources.py
+
       - name: Run pipeline
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          CHOCODATA_API_KEY: ${{ secrets.CHOCODATA_API_KEY }}
         run: python src/main.py
 
       - name: Commit state
