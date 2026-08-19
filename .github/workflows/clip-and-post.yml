@@ -22,6 +22,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
@@ -38,7 +43,6 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           CHOCODATA_API_KEY: ${{ secrets.CHOCODATA_API_KEY }}
           YT_COOKIES: ${{ secrets.YT_COOKIES }}
-          WEBSHARE_PROXIES: ${{ secrets.WEBSHARE_PROXIES }}
         run: python src/main.py
 
       - name: Commit state
