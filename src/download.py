@@ -1,3 +1,5 @@
+import base64
+import os
 import subprocess
 from pathlib import Path
 
@@ -14,6 +16,11 @@ def download_video(url, out_dir, max_duration_s=None):
         "--extractor-args", "youtube:player_client=android",
         "-o", str(out_dir / "%(id)s.%(ext)s"),
     ]
+    cookies_b64 = os.environ.get("YT_COOKIES")
+    if cookies_b64:
+        cookies_file = out_dir / "cookies.txt"
+        cookies_file.write_bytes(base64.b64decode(cookies_b64))
+        cmd += ["--cookies", str(cookies_file)]
     if max_duration_s:
         cmd += [
             "--download-sections", f"*0-{max_duration_s}",
