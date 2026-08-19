@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Cookies Exporter",
+  "version": "1.0",
+  "description": "Export YouTube login cookies as cookies.txt for yt-dlp (GitHub Actions pipeline)",
+  "permissions": ["cookies", "downloads"],
+  "host_permissions": ["https://*.youtube.com/*", "https://*.google.com/*"],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
