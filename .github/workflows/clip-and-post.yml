@@ -38,7 +38,7 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           CHOCODATA_API_KEY: ${{ secrets.CHOCODATA_API_KEY }}
           YT_COOKIES: ${{ secrets.YT_COOKIES }}
-          WEBSHARE_PROXY: ${{ secrets.WEBSHARE_PROXY }}
+          WEBSHARE_PROXIES: ${{ secrets.WEBSHARE_PROXIES }}
         run: python src/main.py
 
       - name: Commit state

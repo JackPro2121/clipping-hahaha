@@ -32,9 +32,10 @@ def download_video(url, out_dir, max_duration_s=None):
         ]
 
     attempts = []
-    proxy = os.environ.get("WEBSHARE_PROXY")
-    if proxy:
-        attempts.append(("proxy", base_cmd + ["--proxy", proxy] + [url]))
+    proxy_list = os.environ.get("WEBSHARE_PROXIES") or os.environ.get("WEBSHARE_PROXY")
+    if proxy_list:
+        for proxy in proxy_list.split(","):
+            attempts.append(("proxy", base_cmd + ["--proxy", proxy] + [url]))
     attempts.append(("direct", base_cmd + [url]))
 
     last_err = None
