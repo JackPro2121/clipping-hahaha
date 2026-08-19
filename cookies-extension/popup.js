@@ -2,7 +2,7 @@ const EXPORT_FILENAME = "youtube_cookies.txt";
 
 function cookieLine(c) {
   const domain = c.domain;
-  const includeSubdomains = "TRUE";
+  const includeSubdomains = domain.startsWith(".") ? "TRUE" : "FALSE";
   const path = c.path || "/";
   const secure = c.secure ? "TRUE" : "FALSE";
   const expiry = c.expirationDate ? Math.floor(c.expirationDate) : 0;

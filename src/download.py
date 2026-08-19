@@ -11,6 +11,8 @@ def _download(cmd, out_dir):
 def download_video(url, out_dir, max_duration_s=None):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    cookies_b64 = os.environ.get("YT_COOKIES")
+    client = "web_embedded" if cookies_b64 else "android"
     base_cmd = [
         "yt-dlp",
         "-f", "bv*+ba/b",
@@ -18,14 +20,13 @@ def download_video(url, out_dir, max_duration_s=None):
         "--no-playlist",
         "--no-progress",
         "--socket-timeout", "15",
-        "--extractor-args", "youtube:player_client=android",
+        "--extractor-args", f"youtube:player_client={client}",
         "-o", str(out_dir / "%(id)s.%(ext)s"),
     ]
-    cookies_b64 = os.environ.get("YT_COOKIES")
     if cookies_b64:
         cookies_file = out_dir / "cookies.txt"
         cookies_file.write_bytes(base64.b64decode(cookies_b64))
-        base_cmd += ["--cookies", str(cookies_file)]
+        base_cmd += ["--cookies", str(cookies_file), "--js-runtime", "node", "--remote-components", "ejs:github"]
     if max_duration_s:
         base_cmd += [
             "--download-sections", f"*0-{max_duration_s}",
