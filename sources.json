@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "url": "https://www.youtube.com/watch?v=VIDEO_ID",
+      "title": "Example source",
+      "status": "pending"
+    }
+  ]
+}

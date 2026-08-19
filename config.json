@@ -1,0 +1,18 @@
+{
+  "clipper": {
+    "max_clips_per_video": 4,
+    "min_segment_s": 15,
+    "max_segment_s": 90,
+    "scene_threshold": 0.3,
+    "aspect": "vertical",
+    "width": 1080,
+    "height": 1920
+  },
+  "buffer": {
+    "caption_template": "{title} - clip {index}/{total} {hashtags}",
+    "hashtags": "#shorts",
+    "schedule_mode": "addToQueue",
+    "max_posts_per_channel": 8,
+    "services": []
+  }
+}
