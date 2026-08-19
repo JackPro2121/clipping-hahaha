@@ -179,6 +179,15 @@ def build_clips(path, out_dir, cfg, transcript=None, captions_enabled=False):
             "-movflags", "+faststart",
             "-y", str(out),
         ]
-        subprocess.run(cmd, check=True, capture_output=True, cwd=out_dir)
+        try:
+            subprocess.run(cmd, check=True, capture_output=True, cwd=out_dir)
+        except subprocess.CalledProcessError:
+            if sub_name:
+                print(f"Subtitle burn failed for {out.name}, retrying without captions")
+                vf = _build_filter(cfg, src_w, src_h, seg_dur, None)
+                cmd[cmd.index("-vf") + 1] = vf
+                subprocess.run(cmd, check=True, capture_output=True, cwd=out_dir)
+            else:
+                raise
         clips.append(out)
     return clips
