@@ -11,6 +11,7 @@ def download_video(url, out_dir, max_duration_s=None):
         "--merge-output-format", "mp4",
         "--no-playlist",
         "--no-progress",
+        "--extractor-args", "youtube:player_client=android",
         "-o", str(out_dir / "%(id)s.%(ext)s"),
     ]
     if max_duration_s:
@@ -19,7 +20,11 @@ def download_video(url, out_dir, max_duration_s=None):
             "--force-keyframes-at-cuts",
         ]
     cmd.append(url)
-    subprocess.run(cmd, check=True, capture_output=True, timeout=900)
+    try:
+        subprocess.run(cmd, check=True, capture_output=True, timeout=900)
+    except subprocess.CalledProcessError as exc:
+        err = exc.stderr.decode("utf-8", "replace")[-2000:]
+        raise RuntimeError(f"yt-dlp failed for {url}: {err}") from exc
     candidates = [p for p in out_dir.iterdir() if p.is_file()]
     if not candidates:
         raise RuntimeError(f"Download produced no files for {url}")
