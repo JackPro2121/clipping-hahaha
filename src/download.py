@@ -30,7 +30,7 @@ def _video_id(url):
     return m.group(1)
 
 
-def _bili_cookies_file(out_dir):
+def _bili_headers(out_dir):
     import uuid
 
     ua = (
@@ -52,6 +52,18 @@ def _bili_cookies_file(out_dir):
         b3 = str(uuid.uuid4()).upper()
     if not b4:
         b4 = str(uuid.uuid4()).upper() + str(uuid.uuid4()).upper()
+    cookie = "buvid3=%s; buvid4=%s; b_nut=%d; _uuid=%s" % (
+        b3,
+        b4,
+        int(time.time()),
+        uuid.uuid4(),
+    )
+    headers = {
+        "User-Agent": ua,
+        "Referer": "https://www.bilibili.com/",
+        "Cookie": cookie,
+        "Origin": "https://www.bilibili.com",
+    }
     lines = [
         "# Netscape HTTP Cookie File",
         f"#HttpOnly_.bilibili.com\tTRUE\t/\tTRUE\t0\tbuvid3\t{b3}",
@@ -61,36 +73,104 @@ def _bili_cookies_file(out_dir):
     ]
     dest = out_dir / "bili_cookies.txt"
     dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return dest
+    return headers, dest
+
+
+def _bili_api_get(url, headers, retries=3):
+    last = None
+    for attempt in range(retries):
+        try:
+            resp = requests.get(url, headers=headers, timeout=30)
+            if resp.status_code == 200:
+                return resp.json()
+            last = f"HTTP {resp.status_code}"
+        except requests.RequestException as exc:
+            last = str(exc)[:120]
+        time.sleep(2 * (attempt + 1))
+    raise RuntimeError(f"bilibili API failed: {last}")
+
+
+def _bili_stream_download(url, dest, headers, retries=3):
+    for attempt in range(retries):
+        try:
+            with requests.get(url, headers=headers, stream=True, timeout=60) as resp:
+                resp.raise_for_status()
+                with open(dest, "wb") as fh:
+                    for chunk in resp.iter_content(1024 * 1024):
+                        fh.write(chunk)
+            if dest.stat().st_size > 10_000:
+                return
+            raise RuntimeError("stream too small")
+        except (requests.RequestException, RuntimeError) as exc:
+            last = str(exc)[:160]
+            if attempt == retries - 1:
+                raise RuntimeError(f"stream download failed: {last}")
+            time.sleep(3 * (attempt + 1))
 
 
 def _bili_download(url, out_dir, max_duration_s):
-    cookies_file = _bili_cookies_file(out_dir)
-    cmd = [
-        "yt-dlp",
-        "-f", "bv*[height<=720]+ba/b[height<=720]/b",
-        "--merge-output-format", "mp4",
-        "--no-playlist",
-        "--no-progress",
-        "--socket-timeout", "15",
-        "--retries", "3",
-        "--retry-sleep", "5",
-        "--sleep-requests", "1.0",
-        "--cookies", str(cookies_file),
-        "--impersonate", "chrome",
-        "--add-header", "Referer:https://www.bilibili.com/",
-        "-o", str(out_dir / "%(id)s.%(ext)s"),
-    ]
-    if max_duration_s:
-        cmd += ["--download-sections", f"*0-{max_duration_s}"]
-    cmd.append(url)
-    proc = subprocess.run(
-        cmd, check=False, capture_output=True, text=True, timeout=1800
+    m = _BILI_RE.search(url)
+    bvid = m.group(1)
+    headers, cookies_file = _bili_headers(out_dir)
+
+    pagelist = _bili_api_get(
+        f"https://api.bilibili.com/x/player/pagelist?bvid={bvid}", headers
     )
-    if proc.returncode != 0:
-        detail = (proc.stderr or "").strip().splitlines()
-        tail = "\n".join(detail[-12:]) if detail else "no stderr"
-        raise RuntimeError(f"yt-dlp exited {proc.returncode}: {tail}")
+    pages = pagelist.get("data") or []
+    if not pages:
+        raise RuntimeError(f"no pages for {bvid}: {pagelist.get('message')}")
+    cid = pages[0]["cid"]
+    print(f"bilibili {bvid}: cid={cid}")
+
+    dash = None
+    for qn in (80, 64, 48, 32):
+        playurl = _bili_api_get(
+            f"https://api.bilibili.com/x/player/playurl"
+            f"?bvid={bvid}&cid={cid}&qn={qn}&fnval=16&fourk=1",
+            headers,
+        )
+        if playurl.get("code") == 0:
+            data = playurl.get("data") or {}
+            if data.get("dash"):
+                dash = data["dash"]
+                break
+    if not dash:
+        raise RuntimeError(
+            f"no playable dash for {bvid}: {playurl.get('message')}"
+        )
+
+    vids = dash["video"]
+    auds = dash["audio"]
+    vid = max(vids, key=lambda x: (x.get("width") or 0) * (x.get("height") or 0))
+    aud = max(auds, key=lambda x: x.get("bandwidth") or 0)
+    v_url = vid.get("baseUrl") or vid.get("backupUrl", [""])[0]
+    a_url = aud.get("baseUrl") or aud.get("backupUrl", [""])[0]
+    print(
+        f"bilibili {bvid}: picking video {vid.get('width')}x{vid.get('height')} "
+        f"+ audio {aud.get('bandwidth') // 1000}kbps"
+    )
+
+    v_path = out_dir / f"{bvid}_video.m4s"
+    a_path = out_dir / f"{bvid}_audio.m4s"
+    _bili_stream_download(v_url, v_path, headers)
+    _bili_stream_download(a_url, a_path, headers)
+
+    out = out_dir / f"{bvid}.mp4"
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-i", str(v_path),
+        "-i", str(a_path),
+        "-c", "copy",
+        "-movflags", "+faststart",
+        str(out),
+    ]
+    proc = subprocess.run(cmd, check=True, capture_output=True, text=True, timeout=600)
+    if out.stat().st_size < 100_000:
+        raise RuntimeError(f"merged file too small ({out.stat().st_size}B)")
+    v_path.unlink(missing_ok=True)
+    a_path.unlink(missing_ok=True)
+    return out
 
 
 def _ytdlp(url, out_dir, client, cookies_file, max_duration_s):
