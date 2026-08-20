@@ -71,14 +71,38 @@
       "clips_count": 2,
       "next_retry_after": null,
       "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1AeMF68EBg",
+      "title": "我用旧报纸做了个门帘怎么样兄弟们",
+      "status": "pending",
+      "score": 75,
+      "category": "木工",
+      "discovered_at": "2026-08-20T17:27:20.747379+00:00",
+      "retry_count": 1,
+      "last_error": "Download failed: bilibili download failed: stream download failed: ('Connection broken: IncompleteRead(17534460 bytes read, 3042758 more expected)', IncompleteRead(17534460 bytes read, 3042758 more ex",
+      "next_retry_after": "2026-08-20T19:30:10.030766+00:00"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1s3411J7Aj",
+      "title": "【omozoc原创】来给牛奶盒做个架子吧",
+      "status": "processed",
+      "score": 75,
+      "category": "木工",
+      "discovered_at": "2026-08-20T17:27:20.747379+00:00",
+      "retry_count": 0,
+      "processed_at": "2026-08-20T17:33:55.254103+00:00",
+      "clips_count": 4,
+      "next_retry_after": null,
+      "last_error": null
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-20T15:02:14.296778+00:00",
-    "total_processed": 8,
-    "total_clips_posted": 7,
+    "last_run": "2026-08-20T17:27:21.155726+00:00",
+    "total_processed": 9,
+    "total_clips_posted": 11,
     "last_category": "food",
-    "last_keyword": "修复"
+    "last_keyword": "木工"
   }
 }
