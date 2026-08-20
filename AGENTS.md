@@ -10,12 +10,13 @@ known issues, and operating procedures.
 
 Fully-automated, **$0-budget** pipeline that runs on **GitHub Actions**:
 
-1. Discovers the latest / most popular videos from **Chinese apps (bilibili)** — currently the active source.
-2. Downloads the raw video (via bilibili's public API, no login, no yt-dlp).
-3. Clips it into **30–90s vertical TikTok-style videos** with **a transition every 4 seconds**, styled
-   burned-in captions, motion variation, and a synthesized background music track.
-4. Uploads clips to **Cloudinary**.
-5. Queues them to **Buffer**, which schedules them for the **TikTok** channel.
+1. Discovers the latest / most popular videos from **Chinese apps (bilibili)** matching the **Active Profile** (e.g. V1: Woodworking, Restoration, Machine Art).
+2. Auto-translates Chinese titles and subtitle segments into fluent English via $0 translation engine.
+3. Downloads the raw video (via bilibili's public API, no login, no yt-dlp).
+4. Clips it into **30–90s vertical TikTok-style videos** with **a transition every 4 seconds**, styled
+   burned-in English captions, brand watermark (@ZenCut), motion variation, and synthesized ambient music.
+5. Uploads clips to **Cloudinary**.
+6. Queues tailored posts to **Buffer** for both **TikTok** and **Instagram** channels.
 
 - Repo: `https://github.com/JackPro2121/clipping-hahaha` (public, branch `main`)
 - Owner: JackPro2121
