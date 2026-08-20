@@ -13,7 +13,7 @@ def download_video(url, out_dir, max_duration_s=None):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     cookies_b64 = os.environ.get("YT_COOKIES")
-    client = "web_embedded,web,mweb" if cookies_b64 else "android"
+    client = "web_embedded,web,mweb,web_safari" if cookies_b64 else "android"
     base_cmd = [
         "yt-dlp",
         "-f", "bv*[height<=1080]+ba/b[height<=1080]",
