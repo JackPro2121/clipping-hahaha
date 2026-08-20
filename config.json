@@ -28,7 +28,7 @@
     "lang": "en"
   },
   "discovery": {
-    "enabled": true,
+    "enabled": false,
     "strategy": "bilibili",
     "targets": [],
     "search_terms": [],
