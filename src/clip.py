@@ -201,7 +201,7 @@ def _make_bgm(path, duration):
         "-f", "lavfi", "-i", "sine=frequency=196.00:sample_rate=44100",
         "-filter_complex",
         "[0:a][1:a][2:a]amix=inputs=3:normalize=0,volume=0.35,"
-        f"tremolo=f=0.08:d=0.35,lowpass=f=950,"
+        f"tremolo=f=0.5:d=0.35,lowpass=f=950,"
         f"aformat=channel_layouts=stereo,"
         f"afade=t=in:d=2.0,afade=t=out:st={dur - 1.0:.2f}:d=1.5",
         "-t", f"{duration:.3f}",
