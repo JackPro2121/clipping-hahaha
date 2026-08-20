@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from utils.errors import ClipError  # noqa: E402
-from pipeline.brand import get_brand_filter  # noqa: E402
+from pipeline.brand import get_brand_filter, get_logo_path, get_logo_overlay  # noqa: E402
 
 MOTIONS = ["pan_rl", "pan_lr", "zoom_in", "slow_zoom"]
 
@@ -246,17 +246,21 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         build_subtitles(shifted, 0.0, duration, sub_path, timeline=timeline)
         sub_name = sub_path.name
 
+    logo_path = get_logo_path(cfg)
+    scale_out = "[vscaled]" if logo_path else "[vout]"
+
     scale_eff = f"settb=AVTB,setpts=PTS-STARTPTS,"
     scale_eff += f"scale={cfg['width']}:{cfg['height']},setsar=1"
     effects = cfg.get("effects", {})
     if effects.get("enabled") and effects.get("subtle_filter"):
         scale_eff += "," + effects["subtle_filter"]
-    brand_vf = get_brand_filter(cfg)
-    if brand_vf:
-        scale_eff += "," + brand_vf
+    if not logo_path:
+        brand_vf = get_brand_filter(cfg)
+        if brand_vf:
+            scale_eff += "," + brand_vf
     if sub_name:
         scale_eff += f",subtitles=filename='{_filter_path(out_dir / sub_name)}'"
-    parts.append(f"[vcat]{scale_eff}[vout]")
+    parts.append(f"[vcat]{scale_eff}{scale_out}")
 
     use_bgm = effects.get("bgm", True)
     bgm_path = None
@@ -264,31 +268,46 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         bgm_path = out_dir / f"clip_{idx:02d}_bgm.wav"
         _make_bgm(bgm_path, duration)
 
+    inputs = ["-i", str(path)]
+    current_input_idx = 1
+
+    if bgm_path is not None:
+        inputs += ["-i", str(bgm_path)]
+        bgm_input_idx = current_input_idx
+        current_input_idx += 1
+    else:
+        bgm_input_idx = None
+
+    if logo_path is not None:
+        inputs += ["-i", str(logo_path)]
+        logo_input_idx = current_input_idx
+        current_input_idx += 1
+        logo_parts, _ = get_logo_overlay(
+            cfg, logo_input_idx, base_stream="vscaled", out_stream="vout"
+        )
+        parts.extend(logo_parts)
+
     afmt = "aformat=sample_rates=44100:channel_layouts=stereo"
     if has_audio:
         aacc = "[acat]"
-        if bgm_path is not None:
+        if bgm_input_idx is not None:
             bgm_vol = effects.get("bgm_volume", 0.35)
             parts.append(
                 f"{aacc}{afmt},volume=1.0[orig];"
-                f"[1:a]{afmt},volume={bgm_vol}[bg];"
+                f"[{bgm_input_idx}:a]{afmt},volume={bgm_vol}[bg];"
                 f"[orig][bg]amix=inputs=2:duration=first:normalize=0[aout]"
             )
         else:
             parts.append(f"{aacc}{afmt}[aout]")
     else:
-        if bgm_path is not None:
-            parts.append(f"[1:a]{afmt},volume=1.0[aout]")
+        if bgm_input_idx is not None:
+            parts.append(f"[{bgm_input_idx}:a]{afmt},volume=1.0[aout]")
         else:
             parts.append(f"anullsrc=channel_layout=stereo[aout]")
 
     cmd = [
         "ffmpeg", "-y",
-        "-i", str(path),
-    ]
-    if bgm_path is not None:
-        cmd += ["-i", str(bgm_path)]
-    cmd += [
+        *inputs,
         "-filter_complex", ";".join(parts),
         "-map", "[vout]",
         "-map", "[aout]",
