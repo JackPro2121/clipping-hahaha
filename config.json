@@ -32,28 +32,29 @@
   "captions": {
     "enabled": true,
     "burn_in": true,
-    "lang": "zh",
+    "lang": "en",
+    "translate_to_english": true,
     "fallback_mode": "title"
   },
   "discovery": {
     "enabled": true,
     "strategy": "bilibili",
-    "categories": ["popular", "food", "tech", "music", "games"],
+    "categories": ["food", "tech", "travel", "knowledge", "music"],
     "min_quality_score": 20,
-    "min_views": 10000,
+    "min_views": 50000,
     "max_duration_s": 900,
     "min_source_duration_s": 40,
     "max_new_sources": 3
   },
   "buffer": {
-    "caption_template": "{title} - clip {index}/{total} {hashtags}",
-    "hashtags": "#zencut #shorts #viral #tiktok",
-    "max_posts_per_channel": 8,
+    "caption_template": "{title} {hashtags}",
+    "hashtags": "#zencut #viral #fyp #satisfying #trending #reels",
+    "max_posts_per_channel": 3,
     "max_queue_depth": 10,
-    "services": [],
+    "services": ["tiktok"],
     "per_platform_captions": {
-      "tiktok": "{title} - Part {index}/{total} #zencut {hashtags}",
-      "instagram": "{title} 🎬 Follow @zencut for daily satisfying clips! {hashtags}"
+      "tiktok": "{title} \ud83c\udfac {hashtags}",
+      "instagram": "{title} \ud83c\udfac Follow @zencut for daily satisfying clips! {hashtags}"
     }
   },
   "storage": {

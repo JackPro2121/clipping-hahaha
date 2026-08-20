@@ -17,6 +17,7 @@ from captions.bilibili_subtitles import (  # noqa: E402
     fetch_bilibili_subtitles,
     make_title_captions,
 )
+from captions.translator import translate_to_english, translate_segments  # noqa: E402
 from chocodata import extract_video_id, fetch_transcript  # noqa: E402
 from clip import build_clips  # noqa: E402
 from download import download_video  # noqa: E402
@@ -75,57 +76,64 @@ def build_caption(cfg, title, index, total, service=None):
     template = (
         templates.get(service)
         if service and service in templates
-        else buffer_cfg.get("caption_template", "{title} - clip {index}/{total} {hashtags}")
+        else buffer_cfg.get("caption_template", "{title} {hashtags}")
     )
     hashtags = buffer_cfg.get("hashtags", "")
-    return template.format(title=title, index=index, total=total, hashtags=hashtags)
+    return template.format(title=title, index=index, total=total, hashtags=hashtags).strip()
 
 
 def _fetch_captions(src, captions_cfg):
-    """Fetch caption segments for a source URL with 2-tier fallback."""
+    """Fetch caption segments for a source URL with 2-tier fallback.
+
+    All segments are auto-translated to English for Tier-1 audiences.
+    """
     if not captions_cfg.get("enabled"):
         return None
 
     url = src["url"]
+    segments = None
 
     # ── bilibili ──────────────────────────────────────────────
     bvid = bvid_from_url(url)
     if bvid:
         try:
-            transcript = fetch_bilibili_subtitles(bvid)
+            segments = fetch_bilibili_subtitles(bvid)
         except Exception as exc:
             print(f"bilibili subtitle API error: {exc}")
-            transcript = None
+            segments = None
 
-        if transcript:
-            return transcript
-
-        # Fallback: title-based captions
-        print("No bilibili subtitle track — using title-based caption fallback")
-        fallback = make_title_captions(
-            src.get("title", ""),
-            total_duration=900.0,
-        )
-        if fallback:
-            print(f"Title fallback: {len(fallback)} caption segments generated")
-        return fallback
+        if not segments:
+            # Fallback: title-based captions (translate title first)
+            print("No bilibili subtitle track — using title-based caption fallback")
+            raw_title = src.get("title", "")
+            eng_title = translate_to_english(raw_title)
+            print(f"Title translated: '{raw_title[:40]}' → '{eng_title[:60]}'")
+            fallback = make_title_captions(eng_title, total_duration=900.0)
+            if fallback:
+                print(f"Title fallback: {len(fallback)} caption segments generated")
+            return fallback
 
     # ── YouTube ───────────────────────────────────────────────
-    if _YOUTUBE_RE.search(url):
+    elif _YOUTUBE_RE.search(url):
         try:
-            transcript = fetch_transcript(
+            segments = fetch_transcript(
                 extract_video_id(url), captions_cfg.get("lang", "en")
             )
-            if transcript:
-                print(f"Fetched {len(transcript)} ChocoData transcript segments")
+            if segments:
+                print(f"Fetched {len(segments)} ChocoData transcript segments")
             else:
                 print("No transcript available from ChocoData")
-            return transcript
         except Exception as exc:
             print(f"ChocoData transcript fetch failed: {exc}")
             return None
 
-    return None
+    # ── Translate all caption segments to English ─────────────
+    if segments:
+        print(f"Translating {len(segments)} caption segments to English...")
+        segments = translate_segments(segments)
+        print("Caption translation complete")
+
+    return segments
 
 
 def process_source(src, cfg):
@@ -185,7 +193,11 @@ def process_source(src, cfg):
             print(err)
             return False, 0, err
 
-        title = src.get("title") or raw.stem
+        # Translate title to English for Buffer captions
+        raw_title = src.get("title") or raw.stem
+        title = translate_to_english(raw_title)
+        if title != raw_title:
+            print(f"Title translated for captions: '{raw_title[:40]}' → '{title[:60]}'")
         max_posts = cfg["buffer"].get("max_posts_per_channel", 8)
         clips = clips[:max_posts]
         posted = 0
