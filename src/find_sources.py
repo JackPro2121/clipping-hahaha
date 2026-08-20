@@ -20,6 +20,9 @@ from utils.state import (  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 
 def _get_next_category(cfg, state):
     """Determine the next Bilibili category to scrape in round-robin fashion."""

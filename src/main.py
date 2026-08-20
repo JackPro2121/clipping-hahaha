@@ -35,6 +35,9 @@ from utils.state import (  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 _YOUTUBE_RE = re.compile(r"(?:youtube\.com|youtu\.be)")
 _BILI_RE = re.compile(r"bilibili\.com/video/(BV[\w]+)", re.IGNORECASE)
 

@@ -19,6 +19,26 @@
       "url": "https://www.bilibili.com/video/BV18UgK6cEX8",
       "title": "好专业的煎饼果子来一套",
       "status": "processed"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1vF8n6ZEUz",
+      "title": "知道为啥这乐队没主唱了吧",
+      "status": "processed",
+      "score": 75,
+      "category": "popular",
+      "discovered_at": "2026-08-20T12:16:59.201840+00:00",
+      "retry_count": 0,
+      "processed_at": "2026-08-20T12:19:02.367665+00:00",
+      "clips_count": 2,
+      "next_retry_after": null,
+      "last_error": null
     }
-  ]
+  ],
+  "archived_urls": [],
+  "_meta": {
+    "last_run": "2026-08-20T12:17:13.966472+00:00",
+    "total_processed": 5,
+    "total_clips_posted": 2,
+    "last_category": "popular"
+  }
 }

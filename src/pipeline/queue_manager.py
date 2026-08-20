@@ -14,12 +14,12 @@ def get_channel_queue_depth(channel_id):
     """
     org_id = get_org_id()
     query = """
-    query GetPendingPosts($orgId: OrganizationId!, $channelId: String!) {
+    query GetPendingPosts($orgId: OrganizationId!, $channelId: ChannelId!) {
       posts(input: {
         organizationId: $orgId,
         filter: {
           channelIds: [$channelId],
-          status: SCHEDULED
+          status: scheduled
         }
       }) {
         totalCount
