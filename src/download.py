@@ -46,7 +46,13 @@ def _bili_download(url, out_dir, max_duration_s):
     if max_duration_s:
         cmd += ["--download-sections", f"*0-{max_duration_s}"]
     cmd.append(url)
-    subprocess.run(cmd, check=True, capture_output=True, timeout=1800)
+    proc = subprocess.run(
+        cmd, check=False, capture_output=True, text=True, timeout=1800
+    )
+    if proc.returncode != 0:
+        detail = (proc.stderr or "").strip().splitlines()
+        tail = "\n".join(detail[-12:]) if detail else "no stderr"
+        raise RuntimeError(f"yt-dlp exited {proc.returncode}: {tail}")
 
 
 def _ytdlp(url, out_dir, client, cookies_file, max_duration_s):
