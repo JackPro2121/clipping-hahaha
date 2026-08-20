@@ -24,10 +24,10 @@
     "enabled": true,
     "name": "ZenCut",
     "handle": "@ZenCut",
-    "logo_path": "zencut-logo.png",
+    "logo_path": "zencut-icon-transparent.png",
     "position": "top_left",
-    "logo_width": 130,
-    "opacity": 0.85
+    "logo_width": 85,
+    "opacity": 0.9
   },
   "captions": {
     "enabled": true,
@@ -49,7 +49,7 @@
     "caption_template": "{title} - clip {index}/{total} {hashtags}",
     "hashtags": "#zencut #shorts #viral #tiktok",
     "max_posts_per_channel": 8,
-    "max_queue_depth": 20,
+    "max_queue_depth": 10,
     "services": [],
     "per_platform_captions": {
       "tiktok": "{title} - Part {index}/{total} #zencut {hashtags}",

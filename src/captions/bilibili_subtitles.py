@@ -159,7 +159,7 @@ def make_title_captions(title, total_duration=900.0):
     t = 0.0
     alternating = True  # True = title, False = tagline
     while t < total_duration - 1.0:
-        text = title_clean if alternating else "Follow for more \U0001f525"
+        text = title_clean if alternating else "Follow @ZenCut"
         seg_dur = min(4.0, total_duration - t - 0.1)
         if seg_dur < 0.5:
             break
