@@ -15,15 +15,38 @@ STRATEGIES = [
 ]
 
 _VIDEO_ID_RE = re.compile(r"(?:v=|youtu\.be/|shorts/|embed/)([\w-]{11})")
+_BILI_RE = re.compile(r"bilibili\.com/video/(BV[\w]+)", re.IGNORECASE)
 _VIDEO_EXTS = (".mp4", ".webm", ".mkv")
 _APIFY_API = "https://api.apify.com/v2"
 
 
 def _video_id(url):
+    m = _BILI_RE.search(url)
+    if m:
+        return m.group(1)
     m = _VIDEO_ID_RE.search(url)
     if not m:
         raise ValueError(f"Cannot extract video id from {url}")
     return m.group(1)
+
+
+def _bili_download(url, out_dir, max_duration_s):
+    cmd = [
+        "yt-dlp",
+        "-f", "bv*[height<=720]+ba/b[height<=720]/b",
+        "--merge-output-format", "mp4",
+        "--no-playlist",
+        "--no-progress",
+        "--socket-timeout", "15",
+        "--retries", "3",
+        "--retry-sleep", "5",
+        "--sleep-requests", "1.0",
+        "-o", str(out_dir / "%(id)s.%(ext)s"),
+    ]
+    if max_duration_s:
+        cmd += ["--download-sections", f"*0-{max_duration_s}"]
+    cmd.append(url)
+    subprocess.run(cmd, check=True, capture_output=True, timeout=1800)
 
 
 def _ytdlp(url, out_dir, client, cookies_file, max_duration_s):
@@ -143,6 +166,24 @@ def download_video(url, out_dir, max_duration_s=None):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_id = _video_id(url)
+
+    if _BILI_RE.search(url):
+        attempt_dir = out_dir / "attempt-0-bilibili"
+        attempt_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            _bili_download(url, attempt_dir, max_duration_s)
+            result = _locate_output(attempt_dir, video_id)
+            if result.stat().st_size < 100_000:
+                raise RuntimeError(
+                    f"suspiciously small file ({result.stat().st_size}B)"
+                )
+            print(
+                f"Download OK via 'bilibili' -> "
+                f"{result.name} ({result.stat().st_size // 1024 // 1024}MB)"
+            )
+            return result
+        except (subprocess.CalledProcessError, RuntimeError, TimeoutError) as exc:
+            raise RuntimeError(f"bilibili download failed: {str(exc)[:200]}") from exc
 
     cookies_b64 = os.environ.get("YT_COOKIES")
     cookies_file = None

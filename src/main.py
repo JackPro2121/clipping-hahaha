@@ -1,4 +1,5 @@
 import json
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -12,6 +13,8 @@ from download import download_video  # noqa: E402
 from media import upload_video  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
+
+_YOUTUBE_RE = re.compile(r"(?:youtube\.com|youtu\.be)")
 
 
 def load_json(path):
@@ -33,7 +36,7 @@ def build_caption(cfg, title, index, total):
 def process_source(src, cfg):
     captions_cfg = cfg.get("captions", {})
     transcript = None
-    if captions_cfg.get("enabled"):
+    if captions_cfg.get("enabled") and _YOUTUBE_RE.search(src["url"]):
         try:
             transcript = fetch_transcript(
                 extract_video_id(src["url"]), captions_cfg.get("lang", "en")

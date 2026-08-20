@@ -5,7 +5,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from chocodata import discover  # noqa: E402
+from chocodata import discover as discover_youtube  # noqa: E402
+from bilibili import discover as discover_bilibili  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -26,16 +27,20 @@ def main():
     if not discovery or not discovery.get("enabled"):
         print("Discovery disabled in config")
         return
-    if "CHOCODATA_API_KEY" not in os.environ:
-        print("CHOCODATA_API_KEY not set, skipping discovery")
-        return
-    sources = load_sources()
-    existing = {s["url"] for s in sources["sources"]}
+    strategy = discovery.get("strategy", "search")
     try:
-        found = discover(cfg)
+        if strategy == "bilibili":
+            found = discover_bilibili(cfg)
+        else:
+            if "CHOCODATA_API_KEY" not in os.environ:
+                print("CHOCODATA_API_KEY not set, skipping discovery")
+                return
+            found = discover_youtube(cfg)
     except Exception as exc:
         print(f"Discovery failed: {exc}")
         return
+    sources = load_sources()
+    existing = {s["url"] for s in sources["sources"]}
     found.sort(key=lambda s: s.get("views", 0), reverse=True)
     max_new = discovery.get("max_new_sources", 5)
     added = 0

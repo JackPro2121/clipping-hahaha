@@ -28,14 +28,15 @@
     "lang": "en"
   },
   "discovery": {
-    "enabled": false,
-    "strategy": "search",
+    "enabled": true,
+    "strategy": "bilibili",
     "targets": [],
     "search_terms": [],
     "upload_date": "week",
     "country": "US",
     "min_views": 10000,
-    "max_duration_s": 600,
+    "max_duration_s": 900,
+    "min_source_duration_s": 40,
     "max_new_sources": 5
   },
   "buffer": {
