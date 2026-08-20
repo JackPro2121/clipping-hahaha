@@ -13,11 +13,15 @@ CATEGORY_RIDS = {
     "food": 76,
     "tech": 188,
     "travel": 223,
-    "music": 3,
-    "games": 4,
     "knowledge": 36,
     "auto": 223,
 }
+
+# Negative keywords to strictly reject music, songs, dances, anime, and games
+NEGATIVE_KEYWORDS = [
+    "歌", "音乐", "MV", "演唱", "歌曲", "单曲", "舞蹈", "跳舞", 
+    "游戏", "实况", "动漫", "二次元", "Rick", "music", "song", "dance"
+]
 
 
 def _fetch_popular(max_count=40):
@@ -176,6 +180,9 @@ def discover(cfg, category="popular", keyword=None):
 
     found = []
     for src in raw_items:
+        title = src.get("title", "")
+        if any(neg.lower() in title.lower() for neg in NEGATIVE_KEYWORDS):
+            continue
         length = src.get("length") or 0
         if length < min_duration_s:
             continue

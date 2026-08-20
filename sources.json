@@ -71,28 +71,6 @@
       "clips_count": 2,
       "next_retry_after": null,
       "last_error": null
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1uT4y1P7CX",
-      "title": "【4K60帧】经典老歌：瑞克·埃斯利《Never Gonna Give You Up》1987 AI修复补帧版",
-      "status": "pending",
-      "score": 65,
-      "category": "修复",
-      "discovered_at": "2026-08-20T15:02:13.893594+00:00",
-      "retry_count": 0,
-      "last_error": null,
-      "next_retry_after": null
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1cz4JzkEzH",
-      "title": "为了修复这几个大字，我竟然动用了一颗在轨卫星",
-      "status": "pending",
-      "score": 65,
-      "category": "修复",
-      "discovered_at": "2026-08-20T15:02:13.893594+00:00",
-      "retry_count": 0,
-      "last_error": null,
-      "next_retry_after": null
     }
   ],
   "archived_urls": [],

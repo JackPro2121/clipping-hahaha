@@ -6,7 +6,7 @@
       "description": "V1 Pipeline: Woodworking, restoration, satisfying crafting, and precision manufacturing",
       "discovery": {
         "strategy": "bilibili",
-        "keywords": ["木工", "修复", "解压", "手工", "机械制造"],
+        "keywords": ["木工", "木工雕刻", "老物件修复", "手工制作", "解压手工", "传统手艺", "机械制造", "刀剑锻造"],
         "order": "click",
         "min_views": 50000,
         "min_source_duration_s": 35,
