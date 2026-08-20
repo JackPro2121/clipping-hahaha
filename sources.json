@@ -75,13 +75,15 @@
     {
       "url": "https://www.bilibili.com/video/BV1AeMF68EBg",
       "title": "我用旧报纸做了个门帘怎么样兄弟们",
-      "status": "pending",
+      "status": "processed",
       "score": 75,
       "category": "木工",
       "discovered_at": "2026-08-20T17:27:20.747379+00:00",
       "retry_count": 1,
-      "last_error": "Download failed: bilibili download failed: stream download failed: ('Connection broken: IncompleteRead(17534460 bytes read, 3042758 more expected)', IncompleteRead(17534460 bytes read, 3042758 more ex",
-      "next_retry_after": "2026-08-20T19:30:10.030766+00:00"
+      "last_error": null,
+      "next_retry_after": null,
+      "processed_at": "2026-08-20T23:34:12.699448+00:00",
+      "clips_count": 4
     },
     {
       "url": "https://www.bilibili.com/video/BV1s3411J7Aj",
@@ -95,14 +97,40 @@
       "clips_count": 4,
       "next_retry_after": null,
       "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1oz4y1h7pz",
+      "title": "从古自今、大梁都是一栋房子的骨干构建，大梁中的雕刻越是精细便越能说明主人家的财力雄厚#手艺人",
+      "status": "processed",
+      "score": 75,
+      "category": "木工雕刻",
+      "discovered_at": "2026-08-20T23:30:20.476598+00:00",
+      "retry_count": 0,
+      "processed_at": "2026-08-20T23:35:23.959734+00:00",
+      "clips_count": 2,
+      "next_retry_after": null,
+      "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1dY4y1E7vn",
+      "title": "Kevin的木头【木雕一只屑狐狸】",
+      "status": "processed",
+      "score": 75,
+      "category": "木工雕刻",
+      "discovered_at": "2026-08-20T23:30:20.476598+00:00",
+      "retry_count": 0,
+      "processed_at": "2026-08-20T23:36:23.634003+00:00",
+      "clips_count": 2,
+      "next_retry_after": null,
+      "last_error": null
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-20T17:27:21.155726+00:00",
-    "total_processed": 9,
-    "total_clips_posted": 11,
+    "last_run": "2026-08-20T23:30:20.914347+00:00",
+    "total_processed": 12,
+    "total_clips_posted": 19,
     "last_category": "food",
-    "last_keyword": "木工"
+    "last_keyword": "木工雕刻"
   }
 }
