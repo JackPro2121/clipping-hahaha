@@ -71,14 +71,36 @@
       "clips_count": 2,
       "next_retry_after": null,
       "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1uT4y1P7CX",
+      "title": "【4K60帧】经典老歌：瑞克·埃斯利《Never Gonna Give You Up》1987 AI修复补帧版",
+      "status": "pending",
+      "score": 65,
+      "category": "修复",
+      "discovered_at": "2026-08-20T15:02:13.893594+00:00",
+      "retry_count": 1,
+      "last_error": "Clipping failed: Command '['ffmpeg', '-y', '-f', 'lavfi', '-i', 'sine=frequency=130.81:sample_rate=44100', '-f', 'lavfi', '-i', 'sine=frequency=164.81:sample_rate=44100', '-f', 'lavfi', '-i', 'sine=fr",
+      "next_retry_after": "2026-08-20T17:13:29.683711+00:00"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1cz4JzkEzH",
+      "title": "为了修复这几个大字，我竟然动用了一颗在轨卫星",
+      "status": "pending",
+      "score": 65,
+      "category": "修复",
+      "discovered_at": "2026-08-20T15:02:13.893594+00:00",
+      "retry_count": 1,
+      "last_error": "Clipping failed: Command '['ffmpeg', '-y', '-f', 'lavfi', '-i', 'sine=frequency=130.81:sample_rate=44100', '-f', 'lavfi', '-i', 'sine=frequency=164.81:sample_rate=44100', '-f', 'lavfi', '-i', 'sine=fr",
+      "next_retry_after": "2026-08-20T17:18:33.976812+00:00"
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-20T13:28:13.451063+00:00",
+    "last_run": "2026-08-20T15:02:14.296778+00:00",
     "total_processed": 8,
     "total_clips_posted": 7,
     "last_category": "food",
-    "last_keyword": "木工"
+    "last_keyword": "修复"
   }
 }
