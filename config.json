@@ -1,10 +1,10 @@
 {
   "clipper": {
-    "max_clips_per_video": 4,
-    "min_segment_s": 15,
-    "max_segment_s": 90,
-    "min_clip_s": 2.5,
-    "cut_interval_s": 4,
+    "max_clips_per_video": 3,
+    "clip_length_s": 45,
+    "transition_every_s": 4,
+    "transition_duration_s": 0.15,
+    "min_clip_s": 30,
     "scene_threshold": 0.3,
     "aspect": "vertical",
     "width": 1080,
