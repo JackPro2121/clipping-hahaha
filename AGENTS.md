@@ -366,5 +366,8 @@ python src/main.py
 - [ ] Optional: restore per-source captions for non-Chinese content (bilibili has no transcript API here)
 - [ ] Optional: explore a Chinese text-to-caption path or a fixed local source list
 
-Docs: `docs/PIPELINE.md`, `docs/ARCHITECTURE.md`, `docs/OPERATIONS.md`.
-Legacy problem statement: `PROBLEM.md`.
+Docs:
+- `docs/REQUIREMENTS.md` — **the user's spec**: what he actually wants, the instructions he gave, and
+  the captions-focused vision. Read this before any product decision.
+- `docs/PIPELINE.md`, `docs/ARCHITECTURE.md`, `docs/OPERATIONS.md`.
+- Legacy problem statement: `PROBLEM.md`.
