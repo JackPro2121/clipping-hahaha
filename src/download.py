@@ -30,7 +30,42 @@ def _video_id(url):
     return m.group(1)
 
 
+def _bili_cookies_file(out_dir):
+    import uuid
+
+    ua = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+    )
+    b3 = b4 = None
+    try:
+        resp = requests.get(
+            "https://api.bilibili.com/x/frontend/finger/spi",
+            headers={"User-Agent": ua, "Referer": "https://www.bilibili.com/"},
+            timeout=30,
+        )
+        data = (resp.json() or {}).get("data") or {}
+        b3, b4 = data.get("b_3"), data.get("b_4")
+    except Exception as exc:
+        print(f"bilibili finger API failed, using synthetic cookies: {exc}")
+    if not b3:
+        b3 = str(uuid.uuid4()).upper()
+    if not b4:
+        b4 = str(uuid.uuid4()).upper() + str(uuid.uuid4()).upper()
+    lines = [
+        "# Netscape HTTP Cookie File",
+        f"#HttpOnly_.bilibili.com\tTRUE\t/\tTRUE\t0\tbuvid3\t{b3}",
+        f"#HttpOnly_.bilibili.com\tTRUE\t/\tTRUE\t0\tbuvid4\t{b4}",
+        f".bilibili.com\tTRUE\t/\tTRUE\t0\tb_nut\t{int(time.time())}",
+        f".bilibili.com\tTRUE\t/\tTRUE\t0\t_uuid\t{uuid.uuid4()}",
+    ]
+    dest = out_dir / "bili_cookies.txt"
+    dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return dest
+
+
 def _bili_download(url, out_dir, max_duration_s):
+    cookies_file = _bili_cookies_file(out_dir)
     cmd = [
         "yt-dlp",
         "-f", "bv*[height<=720]+ba/b[height<=720]/b",
@@ -41,6 +76,9 @@ def _bili_download(url, out_dir, max_duration_s):
         "--retries", "3",
         "--retry-sleep", "5",
         "--sleep-requests", "1.0",
+        "--cookies", str(cookies_file),
+        "--impersonate", "chrome",
+        "--add-header", "Referer:https://www.bilibili.com/",
         "-o", str(out_dir / "%(id)s.%(ext)s"),
     ]
     if max_duration_s:
