@@ -53,6 +53,7 @@ yt-dlp
 requests
 cloudinary
 curl_cffi>=0.10,<0.16        # yt-dlp requires 0.5.10 or 0.10–0.15.x; 0.16 is REJECTED by yt-dlp
+pytest
 ```
 
 Workflow ffmpeg install: `apt-get install ffmpeg`, falling back to the johnvansickle static build.
@@ -65,22 +66,36 @@ Runner has ffmpeg 6.1.1 (Ubuntu). **Local dev uses ffmpeg 8.1.2 gyan.dev** — s
 
 ```
 .github/workflows/clip-and-post.yml
-   │  1) checkout, python, ffmpeg, pip install
-   │  2) python src/find_sources.py      → discovery (writes sources.json)
-   │  3) python src/main.py              → download → clip → upload → Buffer queue
-   │  4) git commit sources.json (mark processed) + push
+   │  1) checkout, python, ffmpeg, pip install (with pip cache)
+   │  2) pytest tests/ -v                → automated test suite validation
+   │  3) python src/find_sources.py      → category discovery + quality scoring (writes sources.json)
+   │  4) python src/main.py              → download → clip → upload → Buffer queue → Slack summary
+   │  5) git commit sources.json (mark processed) + push
    │
 config.json  ──────────────► read by find_sources.py and main.py
-sources.json  ◄──────────── state: every URL + status (pending / processed)
+sources.json  ◄──────────── state: active sources, archived_urls, retry backoff, _meta metrics
 src/
-  find_sources.py   discovery entrypoint
-  bilibili.py       bilibili popular-video discovery (no key)
-  chocodata.py      ChocoData wrapper (YouTube discovery + transcripts)
-  main.py           pipeline orchestrator
-  download.py       video download (bilibili API path + YouTube yt-dlp strategies)
-  clip.py           the clipping engine (transitions, motion, captions, bgm)
-  media.py          Cloudinary upload
-  buffer_api.py     Buffer GraphQL client
+  find_sources.py       discovery entrypoint (quality scoring + category rotation)
+  main.py               pipeline orchestrator (retry intelligence + cleanup + Slack summary)
+  health_check.py       daily health check & queue monitoring
+  bilibili.py           bilibili multi-category discovery (popular, food, tech, music, etc.)
+  chocodata.py          ChocoData wrapper (YouTube discovery + transcripts)
+  download.py           video download (bilibili API path + YouTube yt-dlp strategies)
+  clip.py               clipping engine (transitions, motion, captions, brand watermark, bgm)
+  media.py              Cloudinary upload
+  buffer_api.py         Buffer GraphQL client (_request helper + QueueFullError)
+  captions/
+    bilibili_subtitles.py   Bilibili subtitle API & title fallback caption builder
+  pipeline/
+    quality.py          source video quality scorer (0-100 pts)
+    cleanup.py          Cloudinary storage GC (14-day auto-purge)
+    queue_manager.py    Buffer queue depth limiter
+    brand.py            channel watermark & branding filter generator
+  notifications/
+    slack.py            Slack incoming webhook summaries and alerts
+  utils/
+    errors.py           custom exception hierarchy (QueueFullError, DownloadError, etc.)
+    state.py            state management, auto-archiving (>30d), and exponential backoff
 ```
 
 Flow for one source:

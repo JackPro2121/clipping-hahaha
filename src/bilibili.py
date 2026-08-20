@@ -1,16 +1,33 @@
+"""bilibili.py — Bilibili discovery with multi-category rotation and ranking support."""
+
 import requests
 
 BASE = "https://api.bilibili.com/x/web-interface"
+_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+)
+
+# Public Bilibili category IDs (rid) that do not require WBI signing or login
+CATEGORY_RIDS = {
+    "food": 76,
+    "tech": 188,
+    "travel": 223,
+    "music": 3,
+    "games": 4,
+    "knowledge": 36,
+    "auto": 223,
+}
 
 
-def _popular(max_count=40):
+def _fetch_popular(max_count=40):
     out = []
     pn = 1
     while len(out) < max_count:
         resp = requests.get(
             f"{BASE}/popular",
             params={"ps": 30, "pn": pn},
-            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+            headers={"User-Agent": _UA},
             timeout=60,
         )
         resp.raise_for_status()
@@ -31,19 +48,64 @@ def _popular(max_count=40):
                     "title": item.get("title") or bvid,
                     "views": int(stat.get("view") or 0),
                     "length": int(item.get("duration") or 0),
+                    "category": "popular",
                 }
             )
         pn += 1
     return out
 
 
-def discover(cfg):
+def _fetch_ranking(category="ranking", max_count=40):
+    rid = CATEGORY_RIDS.get(category, 0)
+    params = {"rid": rid, "type": "all"} if rid else {"rid": 0, "type": "all"}
+    try:
+        resp = requests.get(
+            f"{BASE}/ranking/v2",
+            params=params,
+            headers={"User-Agent": _UA},
+            timeout=60,
+        )
+        resp.raise_for_status()
+        data = (resp.json() or {}).get("data") or {}
+        items = data.get("list") or []
+    except Exception:
+        # Fallback to popular if ranking endpoint is unavailable
+        return _fetch_popular(max_count)
+
+    out = []
+    for item in items:
+        if len(out) >= max_count:
+            break
+        bvid = item.get("bvid")
+        if not bvid:
+            continue
+        stat = item.get("stat") or {}
+        out.append(
+            {
+                "url": f"https://www.bilibili.com/video/{bvid}",
+                "title": item.get("title") or bvid,
+                "views": int(stat.get("view") or 0),
+                "length": int(item.get("duration") or 0),
+                "category": category,
+            }
+        )
+    return out or _fetch_popular(max_count)
+
+
+def discover(cfg, category="popular"):
+    """Discover candidate videos from Bilibili based on category selection."""
     discovery = cfg["discovery"]
     max_duration_s = discovery.get("max_duration_s")
     min_duration_s = discovery.get("min_source_duration_s", 40)
     max_count = discovery.get("max_new_sources", 5) * 4
+
+    if category == "popular" or not category:
+        raw_items = _fetch_popular(max_count)
+    else:
+        raw_items = _fetch_ranking(category, max_count)
+
     found = []
-    for src in _popular(max_count):
+    for src in raw_items:
         length = src.get("length") or 0
         if length < min_duration_s:
             continue

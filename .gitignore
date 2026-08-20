@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 youtube_cookies*.txt
+.pytest_cache/

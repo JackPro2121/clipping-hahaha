@@ -2,10 +2,14 @@ import base64
 import os
 import re
 import subprocess
+import sys
 import time
 from pathlib import Path
 
 import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from utils.errors import DownloadError  # noqa: E402
 
 STRATEGIES = [
     {"name": "embedded", "client": "web_embedded", "cookies": False},
@@ -123,6 +127,7 @@ def _bili_download(url, out_dir, max_duration_s):
     print(f"bilibili {bvid}: cid={cid}")
 
     dash = None
+    playurl = {}  # initialize so it's always defined if the loop body never assigns it
     for qn in (80, 64, 48, 32):
         playurl = _bili_api_get(
             f"https://api.bilibili.com/x/player/playurl"
@@ -136,7 +141,7 @@ def _bili_download(url, out_dir, max_duration_s):
                 break
     if not dash:
         raise RuntimeError(
-            f"no playable dash for {bvid}: {playurl.get('message')}"
+            f"no playable dash for {bvid}: {playurl.get('message', 'unknown error')}"
         )
 
     vids = dash["video"]
@@ -354,4 +359,4 @@ def download_video(url, out_dir, max_duration_s=None):
                     pass
         time.sleep(5)
 
-    raise RuntimeError(f"All download strategies failed for {video_id}: {last_err}")
+    raise DownloadError(f"All download strategies failed for {video_id}: {last_err}")

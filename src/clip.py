@@ -1,9 +1,14 @@
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 
-MOTIONS = ["pan_rl", "pan_lr", "zoom_in"]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from utils.errors import ClipError  # noqa: E402
+from pipeline.brand import get_brand_filter  # noqa: E402
+
+MOTIONS = ["pan_rl", "pan_lr", "zoom_in", "slow_zoom"]
 
 
 def probe(path):
@@ -13,27 +18,18 @@ def probe(path):
         "-of", "json",
         str(path),
     ]
-    out = json.loads(subprocess.run(cmd, capture_output=True, text=True).stdout)
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0 or not result.stdout.strip():
+        raise ClipError(
+            f"ffprobe failed on {path}:\n{result.stderr[:400]}"
+        )
+    out = json.loads(result.stdout)
+    if not out.get("streams"):
+        raise ClipError(f"ffprobe returned no streams for {path}")
     stream = out["streams"][0]
     has_audio = any(s.get("codec_type") == "audio" for s in out["streams"])
     return stream["width"], stream["height"], float(out["format"]["duration"]), has_audio
 
-
-def detect_scenes(path, threshold):
-    cmd = [
-        "ffmpeg", "-i", str(path),
-        "-vf", f"select='gt(scene,{threshold})',showinfo",
-        "-f", "null", "-",
-    ]
-    res = subprocess.run(cmd, capture_output=True, text=True)
-    pts = []
-    for line in res.stderr.splitlines():
-        if "showinfo" not in line or "pts_time:" not in line:
-            continue
-        m = re.search(r"pts_time:([\d.]+)", line)
-        if m:
-            pts.append(float(m.group(1)))
-    return sorted(set(pts))
 
 
 def _center_crop(cfg, src_w, src_h):
@@ -68,9 +64,10 @@ def _chunk_vf(cfg, src_w, src_h, dur, motion):
         vf = f"crop={w}:{h}:x='trunc((iw-{w})*t/{dur:.3f})*2':y={y}"
     else:
         vf = f"crop={w}:{h}:{x}:{y}"
-        if motion == "zoom_in":
-            zw = round(w / cfg["motion"].get("zoom_factor", 1.15) / 2) * 2
-            zh = round(h / cfg["motion"].get("zoom_factor", 1.15) / 2) * 2
+        if motion in ("zoom_in", "slow_zoom"):
+            factor = cfg["motion"].get("zoom_factor", 1.15) if motion == "zoom_in" else 1.08
+            zw = round(w / factor / 2) * 2
+            zh = round(h / factor / 2) * 2
             zw = min(zw, w)
             zh = min(zh, h)
             vf += (
@@ -254,6 +251,9 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
     effects = cfg.get("effects", {})
     if effects.get("enabled") and effects.get("subtle_filter"):
         scale_eff += "," + effects["subtle_filter"]
+    brand_vf = get_brand_filter(cfg)
+    if brand_vf:
+        scale_eff += "," + brand_vf
     if sub_name:
         scale_eff += f",subtitles=filename='{_filter_path(out_dir / sub_name)}'"
     parts.append(f"[vcat]{scale_eff}[vout]")

@@ -15,12 +15,15 @@ concurrency:
 jobs:
   clip-and-post:
     runs-on: ubuntu-latest
+    timeout-minutes: 90   # prevent stalled downloads blocking the concurrency group
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"   # cache pip downloads — saves ~20-30s per run
 
       - name: Install ffmpeg
         run: |
@@ -38,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
+
       - name: Discover sources
         env:
           CHOCODATA_API_KEY: ${{ secrets.CHOCODATA_API_KEY }}
@@ -52,6 +58,7 @@ jobs:
           CHOCODATA_API_KEY: ${{ secrets.CHOCODATA_API_KEY }}
           YT_COOKIES: ${{ secrets.YT_COOKIES }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python src/main.py
 
       - name: Commit state
@@ -59,5 +66,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add sources.json
-          git commit -m "Update source state" || echo "no changes"
+          git commit -m "chore: update source state [skip ci]" || echo "no changes"
           git push

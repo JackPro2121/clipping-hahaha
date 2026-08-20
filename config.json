@@ -5,7 +5,6 @@
     "transition_every_s": 4,
     "transition_duration_s": 0.15,
     "min_clip_s": 30,
-    "scene_threshold": 0.3,
     "aspect": "vertical",
     "width": 1080,
     "height": 1920,
@@ -13,8 +12,7 @@
   },
   "motion": {
     "enabled": true,
-    "type": "pan_rl",
-    "zoom_factor": 1.1
+    "zoom_factor": 1.12
   },
   "effects": {
     "enabled": true,
@@ -22,18 +20,24 @@
     "bgm_volume": 0.35,
     "subtle_filter": "eq=contrast=1.05:saturation=1.12:brightness=0.015,vignette=angle=PI/7"
   },
+  "brand": {
+    "enabled": false,
+    "handle": "@JackOscar",
+    "position": "bottom_right",
+    "opacity": 0.6,
+    "font_size": 28
+  },
   "captions": {
     "enabled": true,
     "burn_in": true,
-    "lang": "en"
+    "lang": "zh",
+    "fallback_mode": "title"
   },
   "discovery": {
     "enabled": true,
     "strategy": "bilibili",
-    "targets": [],
-    "search_terms": [],
-    "upload_date": "week",
-    "country": "US",
+    "categories": ["popular", "food", "tech", "music", "games"],
+    "min_quality_score": 20,
     "min_views": 10000,
     "max_duration_s": 900,
     "min_source_duration_s": 40,
@@ -41,9 +45,17 @@
   },
   "buffer": {
     "caption_template": "{title} - clip {index}/{total} {hashtags}",
-    "hashtags": "#shorts",
-    "schedule_mode": "addToQueue",
+    "hashtags": "#shorts #viral #tiktok",
     "max_posts_per_channel": 8,
-    "services": []
+    "max_queue_depth": 20,
+    "services": [],
+    "per_platform_captions": {
+      "tiktok": "{title} - Part {index}/{total} {hashtags}",
+      "instagram": "{title} 🎬 Follow for daily clips! {hashtags}"
+    }
+  },
+  "storage": {
+    "auto_cleanup": true,
+    "retention_days": 14
   }
 }
