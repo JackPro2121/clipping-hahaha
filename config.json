@@ -14,11 +14,11 @@
         "max_new_sources": 2
       },
       "buffer": {
-        "caption_template": "{title} \ud83d\udd28\u2728 Wait for the end result! {hashtags}",
+        "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
         "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
         "per_platform_captions": {
-          "tiktok": "{title} \ud83d\udd28\u2728 Wait for the end result! {hashtags}",
-          "instagram": "Satisfying {title} \ud83d\udd28 Follow @ZenCut for daily satisfying craft videos! {hashtags}"
+          "tiktok": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
+          "instagram": "Satisfying {title} ✨ Follow @zencutofficials for daily satisfying craft videos! {hashtags}"
         }
       }
     },
@@ -89,7 +89,7 @@
   "brand": {
     "enabled": true,
     "name": "ZenCut",
-    "handle": "@ZenCut",
+    "handle": "@zencutofficials",
     "logo_path": "zencut-icon-transparent.png",
     "position": "top_left",
     "logo_width": 135,
@@ -112,15 +112,15 @@
     "max_new_sources": 2
   },
   "buffer": {
-    "caption_template": "{title} {hashtags}",
+    "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
     "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
     "max_posts_per_channel": 2,
     "max_queue_depth": 10,
     "mode": "shareNow",
     "services": ["tiktok", "instagram"],
     "per_platform_captions": {
-      "tiktok": "{title} \ud83d\udd28\u2728 Wait for the end result! {hashtags}",
-      "instagram": "Satisfying {title} \ud83d\udd28 Follow @ZenCut for daily satisfying craft videos! {hashtags}"
+      "tiktok": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
+      "instagram": "Satisfying {title} ✨ Follow @zencutofficials for daily satisfying craft videos! {hashtags}"
     }
   },
   "storage": {
