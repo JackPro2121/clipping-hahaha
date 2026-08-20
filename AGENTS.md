@@ -42,11 +42,13 @@ Fully-automated, **$0-budget** pipeline that runs on **GitHub Actions**:
 | Media engine | `ffmpeg` / `ffprobe` (installed in workflow) |
 | YouTube downloader | `yt-dlp` (+ `curl_cffi` for impersonation) |
 | bilibili downloader | Pure `requests` against bilibili's public JSON APIs |
-| Image/audio synthesis | `ffmpeg` lavfi filters (sine tones → bgm) |
+| douyin downloader | Direct `requests` resolving aweme_id & clean `play` CDN URLs |
+| Image/audio synthesis | `ffmpeg` lavfi filters (sine tones → chill ambient bgm) |
+| Translation engine | Autonomous $0 Google web translation (Chinese → English) |
 | Subtitle burn-in | `ffmpeg` `subtitles` filter with generated ASS files |
 | Video hosting | `cloudinary` (official Python SDK) |
-| Posting queue | Buffer GraphQL API (`api.buffer.com`) |
-| Transcripts | ChocoData API (YouTube only) |
+| Posting queue | Buffer GraphQL API (`api.buffer.com`) for TikTok & Instagram |
+| Transcripts | ChocoData API (YouTube only) / Bilibili player subtitle API |
 
 `requirements.txt`:
 ```
