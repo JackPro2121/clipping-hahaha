@@ -57,7 +57,10 @@ def _apify_download(url, out_dir, video_id):
     run_resp = requests.post(
         f"{_APIFY_API}/acts/{actor_path}/runs",
         params={"token": token},
-        json={"video_urls": [url], "desired_resolution": "720p"},
+        json={
+            "video_urls": [{"url": url}],
+            "desired_resolution": "720p",
+        },
         timeout=60,
     )
     run_resp.raise_for_status()
