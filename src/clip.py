@@ -95,7 +95,7 @@ def _ass_ts(seconds):
     return f"{h}:{m:02d}:{s:05.2f}"
 
 
-def _wrap(text, width=20):
+def _wrap(text, width=18):
     words = text.split()
     lines = []
     cur = ""
@@ -123,8 +123,8 @@ def build_subtitles(segments, start, duration, out_path, timeline=None):
         "OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, "
         "ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, "
         "Alignment, MarginL, MarginR, MarginV, Encoding\n"
-        "Style: Default, Arial, 72, &H00FFFFFF, &H000000FF, &H00121212, "
-        "&H80000000, -1, 0, 0, 0, 100, 100, 0, 0, 1, 4, 0, 2, 70, 70, 240, 1\n"
+        "Style: Default, Arial Black, 76, &H0000FFFF, &H00FFFFFF, &H00000000, "
+        "&H80000000, -1, 0, 0, 0, 100, 100, 0, 0, 1, 5, 2, 2, 70, 70, 260, 1\n"
         "\n"
         "[Events]\n"
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, "
