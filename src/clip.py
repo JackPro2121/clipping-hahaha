@@ -34,18 +34,29 @@ def probe(path):
 
 def _center_crop(cfg, src_w, src_h):
     if cfg["aspect"] == "vertical":
-        w = round(src_h * 9 / 16)
-        if w % 2:
-            w -= 1
-        if w > src_w:
-            w = src_w
+        target_w = round(src_h * 9 / 16)
+        if target_w % 2:
+            target_w -= 1
+        if target_w > src_w:
+            # Source is portrait/vertical -> apply 6% overscan margin to eliminate corner logos/UIDs
+            w = round(src_w * 0.94)
+            if w % 2:
+                w -= 1
             h = round(w * 16 / 9)
             if h % 2:
                 h -= 1
-            x, y = 0, (src_h - h) // 2
+            x = (src_w - w) // 2
+            y = (src_h - h) // 2
         else:
-            h = src_h
-            x, y = (src_w - w) // 2, 0
+            # Source is landscape/horizontal -> center 9:16 crop + subtle top/bottom safe margin
+            h = round(src_h * 0.97)
+            if h % 2:
+                h -= 1
+            w = round(h * 9 / 16)
+            if w % 2:
+                w -= 1
+            x = (src_w - w) // 2
+            y = (src_h - h) // 2
     else:
         w, h = src_w, src_h
         x, y = 0, 0
