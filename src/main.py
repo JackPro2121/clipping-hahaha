@@ -206,7 +206,16 @@ def process_source(src, cfg):
         # Check queue capacity before flooding
         max_queue = cfg.get("buffer", {}).get("max_queue_depth", 20)
 
+        post_mode = cfg.get("buffer", {}).get("mode", "shareNow")
+
         for i, clip in enumerate(clips, 1):
+            # If not the first clip, apply natural random spacing (1 to 2.5 minutes, strictly under 5m)
+            if i > 1:
+                import random
+                delay_s = random.randint(60, 150)
+                print(f"\nApplying {delay_s}s natural spacing before publishing next clip ({i}/{len(clips)})...")
+                time.sleep(delay_s)
+
             try:
                 url = upload_video(clip, folder="clips")
             except Exception as exc:
@@ -225,10 +234,12 @@ def process_source(src, cfg):
                 caption = build_caption(cfg, title, i, len(clips), service=service)
 
                 try:
-                    post_id = create_post(channel["id"], caption, url, service=service)
+                    post_id = create_post(
+                        channel["id"], caption, url, service=service, mode=post_mode
+                    )
                     posted += 1
                     print(
-                        f"Posted {clip.name} -> {service} "
+                        f"Published {clip.name} ({post_mode}) -> {service} "
                         f"({channel['name']}) id={post_id}"
                     )
                 except QueueFullError as exc:

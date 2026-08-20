@@ -87,8 +87,16 @@ def get_channels(services=None):
     return channels
 
 
-def create_post(channel_id, text, video_url, thumbnail_offset=2000, service=None):
-    """Queue a video post to a Buffer channel.
+def create_post(channel_id, text, video_url, thumbnail_offset=2000, service=None, mode="shareNow"):
+    """Queue or immediately publish a video post to a Buffer channel.
+
+    Args:
+        channel_id: Buffer Channel ID.
+        text: Post caption.
+        video_url: Cloudinary hosted MP4 URL.
+        thumbnail_offset: Milliseconds offset for video thumbnail.
+        service: Platform name ('tiktok' or 'instagram').
+        mode: Buffer share mode ('shareNow' for instant publish, 'addToQueue' for scheduling).
 
     Raises:
         QueueFullError: When Buffer's scheduled-post limit is reached.
@@ -106,7 +114,7 @@ def create_post(channel_id, text, video_url, thumbnail_offset=2000, service=None
         "text": text,
         "channelId": channel_id,
         "schedulingType": "automatic",
-        "mode": "addToQueue",
+        "mode": mode or "shareNow",
         "assets": [
             {
                 "video": {

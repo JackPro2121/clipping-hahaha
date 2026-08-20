@@ -116,6 +116,7 @@
     "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
     "max_posts_per_channel": 2,
     "max_queue_depth": 10,
+    "mode": "shareNow",
     "services": ["tiktok", "instagram"],
     "per_platform_captions": {
       "tiktok": "{title} \ud83d\udd28\u2728 Wait for the end result! {hashtags}",

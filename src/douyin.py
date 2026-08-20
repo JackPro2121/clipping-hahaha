@@ -150,3 +150,35 @@ def download_douyin_video(url, out_dir):
 
     print(f"Download OK via 'douyin' -> {out_path.name} ({out_path.stat().st_size // 1024 // 1024}MB)")
     return out_path
+
+
+# Curated Douyin satisfying craft keywords and high-performing video topics
+DOUYIN_CRAFT_TOPICS = [
+    {"keyword": "木工手艺", "title": "Traditional Chinese Woodworking Mastery", "category": "woodworking"},
+    {"keyword": "沉浸式修复", "title": "Immersive Antique Restoration ASMR", "category": "restoration"},
+    {"keyword": "解压手工", "title": "Oddly Satisfying Precision Craft", "category": "crafts"},
+    {"keyword": "机械制造", "title": "Satisfying Precision Machine Factory", "category": "machining"},
+]
+
+
+def discover(cfg, keyword=None):
+    """Discover candidate Douyin videos matching active craft profile."""
+    discovery = cfg.get("discovery", {})
+    max_new = discovery.get("max_new_sources", 2)
+
+    found = []
+    # If custom douyin URLs provided in config
+    custom_urls = discovery.get("douyin_urls", [])
+    for url in custom_urls[:max_new]:
+        aweme_id = extract_douyin_video_id(url)
+        if aweme_id:
+            info = fetch_douyin_video_info(aweme_id)
+            if info:
+                found.append({
+                    "url": f"https://www.douyin.com/video/{aweme_id}",
+                    "title": info.get("title") or "Satisfying Douyin Craft",
+                    "views": 100000,
+                    "length": int(info.get("duration", 45)),
+                    "category": "douyin_craft",
+                })
+    return found

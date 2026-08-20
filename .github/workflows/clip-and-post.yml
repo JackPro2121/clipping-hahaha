@@ -3,7 +3,14 @@ name: Clip & Post
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */6 * * *"
+    # 1) UK/Europe Lunch & US Morning Peak (1:30 PM UK / 2:30 PM CET / 8:30 AM EST)
+    - cron: "30 12 * * *"
+    # 2) US Afternoon & UK/Europe Evening Prime Time (1:00 PM EST / 6:00 PM UK / 7:00 PM CET)
+    - cron: "0 17 * * *"
+    # 3) US Golden Prime Time & Australia Morning (7:00 PM EST / 4:00 PM PST / 9:00 AM AEST)
+    - cron: "0 23 * * *"
+    # 4) Australia Afternoon & APAC Peak Scrolling (4:00 PM Sydney / 11:00 PM PST)
+    - cron: "0 6 * * *"
 
 permissions:
   contents: write
