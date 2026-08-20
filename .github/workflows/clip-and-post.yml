@@ -51,6 +51,7 @@ jobs:
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
           CHOCODATA_API_KEY: ${{ secrets.CHOCODATA_API_KEY }}
           YT_COOKIES: ${{ secrets.YT_COOKIES }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
         run: python src/main.py
 
       - name: Commit state

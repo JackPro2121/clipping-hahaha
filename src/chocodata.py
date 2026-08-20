@@ -120,8 +120,20 @@ def discover_channel(channel, max_duration_s=None, tab="videos"):
     ]
 
 
-def discover_search(term, max_duration_s=None):
-    data = _get("/search", {"search_query": term})
+SP_FILTERS = {
+    "hour": "CAISBAgEEAE",
+    "today": "CAISBAgEEAI",
+    "week": "EgIIAg",
+    "month": "EgIIAw",
+    "year": "EgIIBA",
+}
+
+
+def discover_search(term, max_duration_s=None, upload_date=None):
+    params = {"search_query": term}
+    if upload_date in SP_FILTERS:
+        params["sp"] = SP_FILTERS[upload_date]
+    data = _get("/search", params)
     return [
         src
         for item in data.get("organic_results") or []
@@ -149,7 +161,11 @@ def discover(cfg):
     elif strategy == "search":
         found = []
         for term in discovery.get("search_terms", []):
-            found.extend(discover_search(term, max_duration_s))
+            found.extend(
+                discover_search(
+                    term, max_duration_s, discovery.get("upload_date")
+                )
+            )
     else:
         return []
     return found

@@ -3,6 +3,8 @@
     "max_clips_per_video": 4,
     "min_segment_s": 15,
     "max_segment_s": 90,
+    "min_clip_s": 2.5,
+    "cut_interval_s": 4,
     "scene_threshold": 0.3,
     "aspect": "vertical",
     "width": 1080,
@@ -10,8 +12,15 @@
     "max_source_duration_s": 900
   },
   "motion": {
-    "enabled": false,
+    "enabled": true,
+    "type": "pan_rl",
     "zoom_factor": 1.1
+  },
+  "effects": {
+    "enabled": true,
+    "bgm": true,
+    "bgm_volume": 0.35,
+    "subtle_filter": "eq=contrast=1.05:saturation=1.12:brightness=0.015,vignette=angle=PI/7"
   },
   "captions": {
     "enabled": true,
@@ -20,11 +29,12 @@
   },
   "discovery": {
     "enabled": false,
-    "strategy": "channel",
+    "strategy": "search",
     "targets": [],
     "search_terms": [],
+    "upload_date": "week",
     "country": "US",
-    "min_views": 100000,
+    "min_views": 10000,
     "max_duration_s": 600,
     "max_new_sources": 5
   },
