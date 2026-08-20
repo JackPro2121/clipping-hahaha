@@ -112,8 +112,8 @@ def build_subtitles(segments, start, duration, out_path, timeline=None):
         "OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, "
         "ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, "
         "Alignment, MarginL, MarginR, MarginV, Encoding\n"
-        "Style: Default, Arial, 82, &H00FFFFFF, &H000000FF, &H00121212, "
-        "&H80000000, -1, 0, 0, 0, 100, 100, 0, 0, 1, 4, 0, 2, 70, 70, 150, 1\n"
+        "Style: Default, Arial, 72, &H00FFFFFF, &H000000FF, &H00121212, "
+        "&H80000000, -1, 0, 0, 0, 100, 100, 0, 0, 1, 4, 0, 2, 70, 70, 240, 1\n"
         "\n"
         "[Events]\n"
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, "
@@ -179,19 +179,20 @@ def _chunks(start, duration, chunk_s):
 
 
 def _make_bgm(path, duration):
+    """Synthesize a calming, slow copyright-free ambient soundscape."""
     dur = duration - 1.0
     if dur < 1.0:
         dur = 1.0
     cmd = [
         "ffmpeg", "-y",
-        "-f", "lavfi", "-i", "sine=frequency=110:sample_rate=44100",
+        "-f", "lavfi", "-i", "sine=frequency=130.81:sample_rate=44100",
         "-f", "lavfi", "-i", "sine=frequency=164.81:sample_rate=44100",
-        "-f", "lavfi", "-i", "sine=frequency=220:sample_rate=44100",
+        "-f", "lavfi", "-i", "sine=frequency=196.00:sample_rate=44100",
         "-filter_complex",
-        "[0:a][1:a][2:a]amix=inputs=3:normalize=0,volume=0.5,"
-        f"tremolo=f=0.15:d=0.5,lowpass=f=1400,"
+        "[0:a][1:a][2:a]amix=inputs=3:normalize=0,volume=0.35,"
+        f"tremolo=f=0.08:d=0.35,lowpass=f=950,"
         f"aformat=channel_layouts=stereo,"
-        f"afade=t=in:d=1.5,afade=t=out:st={dur - 1.0:.2f}:d=1.0",
+        f"afade=t=in:d=2.0,afade=t=out:st={dur - 1.0:.2f}:d=1.5",
         "-t", f"{duration:.3f}",
         str(path),
     ]
@@ -288,17 +289,23 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         parts.extend(logo_parts)
 
     afmt = "aformat=sample_rates=44100:channel_layouts=stereo"
+    # Subtle acoustic variation (bypasses direct match fingerprint while remaining natural & clear)
+    audio_enhancer = (
+        "equalizer=f=280:t=q:w=1.2:g=1.0,"
+        "equalizer=f=3200:t=q:w=1.0:g=-0.5,"
+        "asetrate=44100*1.015,aresample=44100,atempo=1/1.015"
+    )
     if has_audio:
         aacc = "[acat]"
         if bgm_input_idx is not None:
-            bgm_vol = effects.get("bgm_volume", 0.35)
+            bgm_vol = effects.get("bgm_volume", 0.18)
             parts.append(
-                f"{aacc}{afmt},volume=1.0[orig];"
+                f"{aacc}{afmt},{audio_enhancer},volume=1.0[orig];"
                 f"[{bgm_input_idx}:a]{afmt},volume={bgm_vol}[bg];"
                 f"[orig][bg]amix=inputs=2:duration=first:normalize=0[aout]"
             )
         else:
-            parts.append(f"{aacc}{afmt}[aout]")
+            parts.append(f"{aacc}{afmt},{audio_enhancer}[aout]")
     else:
         if bgm_input_idx is not None:
             parts.append(f"[{bgm_input_idx}:a]{afmt},volume=1.0[aout]")

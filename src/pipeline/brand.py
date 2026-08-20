@@ -27,7 +27,7 @@ def get_logo_path(cfg):
 
 
 def get_logo_overlay(cfg, logo_input_idx, base_stream="vcat", out_stream="vout"):
-    """Build ffmpeg filter_complex parts for image logo watermark overlay.
+    """Build ffmpeg filter_complex parts for image logo + text watermark overlay.
 
     Args:
         cfg: Config dictionary.
@@ -39,25 +39,30 @@ def get_logo_overlay(cfg, logo_input_idx, base_stream="vcat", out_stream="vout")
         tuple[list[str], str]: (filter_parts_list, final_stream_name)
     """
     brand = cfg.get("brand") or {}
-    logo_w = brand.get("logo_width", 130)
-    opacity = brand.get("opacity", 0.85)
+    logo_w = brand.get("logo_width", 135)
+    opacity = brand.get("opacity", 0.92)
     position = brand.get("position", "top_left")
+    handle = brand.get("handle") or "@ZenCut"
+    alpha_hex = f"{int(opacity * 255):02X}"
 
     # Safe zone coordinates for 1080x1920 canvas (clears TikTok/Reels UI)
     if position == "top_left":
-        pos_expr = "50:140"
+        logo_pos = "50:130"
+        text_pos = f"x=50:y=130+{int(logo_w * 0.95)}:fontsize=32"
     elif position == "top_right":
-        pos_expr = f"W-w-50:140"
+        logo_pos = "W-w-50:130"
+        text_pos = f"x=w-tw-50:y=130+{int(logo_w * 0.95)}:fontsize=32"
     elif position == "bottom_right":
-        pos_expr = f"W-w-50:H-h-200"
-    elif position == "bottom_left":
-        pos_expr = f"50:H-h-200"
+        logo_pos = "W-w-50:H-h-220"
+        text_pos = "x=w-tw-50:y=h-th-200:fontsize=28"
     else:
-        pos_expr = "50:140"
+        logo_pos = "50:130"
+        text_pos = f"x=50:y=130+{int(logo_w * 0.95)}:fontsize=32"
 
     parts = [
         f"[{logo_input_idx}:v]scale={logo_w}:-1,format=rgba,colorchannelmixer=aa={opacity}[logo_scaled]",
-        f"[{base_stream}][logo_scaled]overlay={pos_expr}[{out_stream}]",
+        f"[{base_stream}][logo_scaled]overlay={logo_pos}[v_with_logo]",
+        f"[v_with_logo]drawtext=text='{handle}':{text_pos}:fontcolor=0xFFFFFF{alpha_hex}:shadowcolor=0x000000{alpha_hex}:shadowx=2:shadowy=2[{out_stream}]",
     ]
     return parts, out_stream
 

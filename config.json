@@ -83,7 +83,7 @@
   "effects": {
     "enabled": true,
     "bgm": true,
-    "bgm_volume": 0.35,
+    "bgm_volume": 0.18,
     "subtle_filter": "eq=contrast=1.05:saturation=1.12:brightness=0.015,vignette=angle=PI/7"
   },
   "brand": {
@@ -92,8 +92,8 @@
     "handle": "@ZenCut",
     "logo_path": "zencut-icon-transparent.png",
     "position": "top_left",
-    "logo_width": 85,
-    "opacity": 0.9
+    "logo_width": 135,
+    "opacity": 0.92
   },
   "captions": {
     "enabled": true,

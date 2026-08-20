@@ -53,13 +53,15 @@ def test_get_logo_overlay():
     cfg = {
         "brand": {
             "enabled": True,
-            "logo_width": 130,
-            "opacity": 0.8,
+            "handle": "@ZenCut",
+            "logo_width": 135,
+            "opacity": 0.9,
             "position": "top_left",
         }
     }
     parts, out_name = get_logo_overlay(cfg, logo_input_idx=2, base_stream="vscaled", out_stream="vout")
     assert out_name == "vout"
-    assert len(parts) == 2
-    assert "[2:v]scale=130:-1" in parts[0]
-    assert "[vscaled][logo_scaled]overlay=50:140[vout]" in parts[1]
+    assert len(parts) == 3
+    assert "[2:v]scale=135:-1" in parts[0]
+    assert "[vscaled][logo_scaled]overlay=50:130[v_with_logo]" in parts[1]
+    assert "drawtext=text='@ZenCut'" in parts[2]

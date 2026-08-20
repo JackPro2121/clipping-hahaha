@@ -137,35 +137,41 @@ def make_title_captions(title, total_duration=900.0):
     """
     Fallback caption generator when no subtitle track is available.
 
-    Shows the video title at the start of each 10-second interval,
-    so every clip window gets at least one caption line. Also appends
-    a branded tagline ("Follow for more 🔥") between title appearances.
+    Cycles through the clean translated title and engaging craft hooks
+    (e.g., 'Satisfying Craftsmanship ✨', 'Wait for the final result 🔨', 'Follow @ZenCut').
 
     Args:
-        title: Source video title string (Chinese or otherwise).
-        total_duration: Total video duration in seconds (generous default = 900s).
+        title: Source video title string (translated English).
+        total_duration: Total video duration in seconds.
 
     Returns:
         List of {"start", "duration", "text"} dicts, or None if title is empty.
     """
     title_clean = (title or "").strip()
-    # Truncate long titles — ASS wraps at 20 chars per line × 3 lines = 60 chars max.
-    if len(title_clean) > 50:
-        title_clean = title_clean[:47] + "..."
+    if len(title_clean) > 48:
+        title_clean = title_clean[:45] + "..."
     if not title_clean:
         return None
 
+    # Engaging rotation hooks
+    hooks = [
+        title_clean,
+        "Satisfying Craftsmanship ✨",
+        "Wait for the final result 🔨",
+        "Follow @ZenCut for daily craft 🔥",
+    ]
+
     segments = []
     t = 0.0
-    alternating = True  # True = title, False = tagline
+    hook_idx = 0
     while t < total_duration - 1.0:
-        text = title_clean if alternating else "Follow @ZenCut"
-        seg_dur = min(4.0, total_duration - t - 0.1)
+        text = hooks[hook_idx % len(hooks)]
+        seg_dur = min(3.8, total_duration - t - 0.1)
         if seg_dur < 0.5:
             break
         segments.append({"start": t, "duration": seg_dur, "text": text})
-        t += 10.0  # gap of 6 seconds between each caption burst
-        alternating = not alternating
+        t += 9.5  # New caption every ~9.5 seconds
+        hook_idx += 1
 
     return segments or None
 
