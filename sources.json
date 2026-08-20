@@ -32,6 +32,33 @@
       "clips_count": 2,
       "next_retry_after": null,
       "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV152421Z7kY",
+      "title": "修罗魔剑做出来了，不知道会不会有人支持手艺人",
+      "status": "pending",
+      "score": 75,
+      "category": "木工",
+      "discovered_at": "2026-08-20T13:23:15.587939+00:00",
+      "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1im411Q7Xq",
+      "title": "为什么要在高空伐木？会发生意外吗？ #高空伐木 #解压 #科普",
+      "status": "pending",
+      "score": 75,
+      "category": "木工",
+      "discovered_at": "2026-08-20T13:23:15.587939+00:00",
+      "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1ox4y187cN",
+      "title": "血的教训:角磨机装木工锯片",
+      "status": "pending",
+      "score": 75,
+      "category": "木工",
+      "discovered_at": "2026-08-20T13:23:15.587939+00:00",
+      "retry_count": 0
     }
   ],
   "archived_urls": [],
@@ -39,6 +66,7 @@
     "last_run": "2026-08-20T12:17:13.966472+00:00",
     "total_processed": 5,
     "total_clips_posted": 2,
-    "last_category": "food"
+    "last_category": "food",
+    "last_keyword": "木工"
   }
 }

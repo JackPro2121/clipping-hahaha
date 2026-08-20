@@ -1,4 +1,70 @@
 {
+  "active_profile": "satisfying_crafts",
+  "profiles": {
+    "satisfying_crafts": {
+      "name": "Satisfying Crafts & Restoration",
+      "description": "V1 Pipeline: Woodworking, restoration, satisfying crafting, and precision manufacturing",
+      "discovery": {
+        "strategy": "bilibili",
+        "keywords": ["木工", "修复", "解压", "手工", "机械制造"],
+        "order": "click",
+        "min_views": 50000,
+        "min_source_duration_s": 35,
+        "max_duration_s": 600,
+        "max_new_sources": 3
+      },
+      "buffer": {
+        "caption_template": "{title} \ud83d\udd28\u2728 Wait for the end result! {hashtags}",
+        "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
+        "per_platform_captions": {
+          "tiktok": "{title} \ud83d\udd28\u2728 Wait for the end result! {hashtags}",
+          "instagram": "Satisfying {title} \ud83d\udd28 Follow @ZenCut for daily satisfying craft videos! {hashtags}"
+        }
+      }
+    },
+    "future_tech_gadgets": {
+      "name": "Futuristic Tech & Smart Inventions",
+      "description": "V2 Pipeline: Novel electronics, smart home gadgets, and futuristic tools",
+      "discovery": {
+        "strategy": "bilibili",
+        "keywords": ["黑科技", "科技数码", "智能家居", "创意发明"],
+        "order": "click",
+        "min_views": 50000,
+        "min_source_duration_s": 35,
+        "max_duration_s": 600,
+        "max_new_sources": 3
+      },
+      "buffer": {
+        "caption_template": "Is this the future? \ud83e\udd16 {title} {hashtags}",
+        "hashtags": "#tech #gadgets #futuretech #innovation #smartgadgets #technology #fyp",
+        "per_platform_captions": {
+          "tiktok": "Is this the future? \ud83e\udd16 {title} {hashtags}",
+          "instagram": "Futuristic Tech: {title} \ud83d\udca1 Follow @ZenCut for daily tech innovations! {hashtags}"
+        }
+      }
+    },
+    "street_food_asmr": {
+      "name": "Street Food & ASMR Cooking",
+      "description": "V3 Pipeline: High-speed street cooking, satisfying food preparation",
+      "discovery": {
+        "strategy": "bilibili",
+        "keywords": ["街头美食", "路边摊", "解压做饭", "特色小吃"],
+        "order": "click",
+        "min_views": 50000,
+        "min_source_duration_s": 35,
+        "max_duration_s": 600,
+        "max_new_sources": 3
+      },
+      "buffer": {
+        "caption_template": "Satisfying Street Food Mastery \ud83c\udf73 {title} {hashtags}",
+        "hashtags": "#streetfood #asmrcooking #foodie #satisfyingfood #delicious #fyp",
+        "per_platform_captions": {
+          "tiktok": "Satisfying Street Food Mastery \ud83c\udf73 {title} {hashtags}",
+          "instagram": "Street Food: {title} \ud83c\udf5c Follow @ZenCut for more delicious clips! {hashtags}"
+        }
+      }
+    }
+  },
   "clipper": {
     "max_clips_per_video": 3,
     "clip_length_s": 45,
@@ -39,22 +105,21 @@
   "discovery": {
     "enabled": true,
     "strategy": "bilibili",
-    "categories": ["food", "tech", "travel", "knowledge", "music"],
     "min_quality_score": 20,
     "min_views": 50000,
-    "max_duration_s": 900,
-    "min_source_duration_s": 40,
+    "max_duration_s": 600,
+    "min_source_duration_s": 35,
     "max_new_sources": 3
   },
   "buffer": {
     "caption_template": "{title} {hashtags}",
-    "hashtags": "#zencut #viral #fyp #satisfying #trending #reels",
-    "max_posts_per_channel": 3,
+    "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
+    "max_posts_per_channel": 2,
     "max_queue_depth": 10,
-    "services": ["tiktok"],
+    "services": ["tiktok", "instagram"],
     "per_platform_captions": {
-      "tiktok": "{title} \ud83c\udfac {hashtags}",
-      "instagram": "{title} \ud83c\udfac Follow @zencut for daily satisfying clips! {hashtags}"
+      "tiktok": "{title} \ud83d\udd28\u2728 Wait for the end result! {hashtags}",
+      "instagram": "Satisfying {title} \ud83d\udd28 Follow @ZenCut for daily satisfying craft videos! {hashtags}"
     }
   },
   "storage": {

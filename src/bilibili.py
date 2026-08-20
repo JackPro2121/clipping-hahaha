@@ -92,14 +92,84 @@ def _fetch_ranking(category="ranking", max_count=40):
     return out or _fetch_popular(max_count)
 
 
-def discover(cfg, category="popular"):
-    """Discover candidate videos from Bilibili based on category selection."""
-    discovery = cfg["discovery"]
+def _parse_duration(duration_str):
+    """Parse duration like '0:52', '2:48', '1:02:15' or integer seconds."""
+    if isinstance(duration_str, (int, float)):
+        return int(duration_str)
+    if not duration_str or not isinstance(duration_str, str):
+        return 0
+    parts = duration_str.strip().split(":")
+    try:
+        if len(parts) == 2:
+            return int(parts[0]) * 60 + int(parts[1])
+        if len(parts) == 3:
+            return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+        return int(parts[0])
+    except (ValueError, IndexError):
+        return 0
+
+
+def _fetch_search(keyword, max_count=30, order="click"):
+    """Search Bilibili for high-performing videos matching a keyword."""
+    import urllib.parse
+    import tempfile
+    from pathlib import Path
+    from download import _bili_headers
+
+    out = []
+    try:
+        with tempfile.TemporaryDirectory() as td:
+            headers, _ = _bili_headers(Path(td))
+            kw_encoded = urllib.parse.quote(str(keyword))
+            url = (
+                f"{BASE}/search/type"
+                f"?search_type=video&keyword={kw_encoded}&order={order}&page=1"
+            )
+            resp = requests.get(url, headers=headers, timeout=20)
+            if resp.status_code != 200:
+                return out
+            data = resp.json().get("data", {}) or {}
+            items = data.get("result", []) or []
+            for item in items:
+                if len(out) >= max_count:
+                    break
+                bvid = item.get("bvid")
+                if not bvid:
+                    continue
+                # Clean html tags from title (Bilibili search highlights keywords with <em class="keyword">)
+                raw_title = item.get("title") or bvid
+                clean_title = (
+                    raw_title.replace('<em class="keyword">', "")
+                    .replace("</em>", "")
+                    .strip()
+                )
+                views = int(item.get("play") or 0)
+                length = _parse_duration(item.get("duration"))
+                out.append(
+                    {
+                        "url": f"https://www.bilibili.com/video/{bvid}",
+                        "title": clean_title,
+                        "views": views,
+                        "length": length,
+                        "category": keyword,
+                    }
+                )
+    except Exception as exc:
+        print(f"Bilibili search for '{keyword}' error: {exc}")
+    return out
+
+
+def discover(cfg, category="popular", keyword=None):
+    """Discover candidate videos from Bilibili based on keyword or category selection."""
+    discovery = cfg.get("discovery", {})
     max_duration_s = discovery.get("max_duration_s")
-    min_duration_s = discovery.get("min_source_duration_s", 40)
+    min_duration_s = discovery.get("min_source_duration_s", 35)
     max_count = discovery.get("max_new_sources", 5) * 4
 
-    if category == "popular" or not category:
+    if keyword:
+        order = discovery.get("order", "click")
+        raw_items = _fetch_search(keyword, max_count=max_count, order=order)
+    elif category == "popular" or not category:
         raw_items = _fetch_popular(max_count)
     else:
         raw_items = _fetch_ranking(category, max_count)

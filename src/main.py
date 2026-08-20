@@ -25,6 +25,7 @@ from media import upload_video  # noqa: E402
 from notifications.slack import send_slack_summary, send_slack_alert  # noqa: E402
 from pipeline.cleanup import cleanup_cloudinary_clips  # noqa: E402
 from pipeline.queue_manager import can_queue_posts  # noqa: E402
+from utils.config import load_config  # noqa: E402
 from utils.errors import DownloadError, QueueFullError  # noqa: E402
 from utils.state import (  # noqa: E402
     load_state,
@@ -246,7 +247,9 @@ def main():
     validate_env()
 
     start_time = time.time()
-    cfg = load_json(ROOT / "config.json")
+    cfg = load_config()
+    prof_name = cfg.get("_active_profile_name", "Default")
+    print(f"Running pipeline for Active Profile: [{prof_name}]")
     state = load_state()
 
     pending = [s for s in state["sources"] if should_retry(s)]

@@ -22,6 +22,14 @@ def _has_chinese(text):
     return bool(re.search(r"[\u4e00-\u9fff]", text or ""))
 
 
+def _strip_chinese_hashtags(text):
+    """Remove trailing or embedded Chinese hashtags like #高空伐木 #解压."""
+    # Remove hashtags with Chinese characters
+    cleaned = re.sub(r"#[^\s#]*[\u4e00-\u9fff][^\s#]*", "", text or "")
+    # Collapse multiple spaces
+    return re.sub(r"\s+", " ", cleaned).strip()
+
+
 def translate_to_english(text, from_lang="auto"):
     """Translate text to English using free Google Translate web API.
 
@@ -35,7 +43,10 @@ def translate_to_english(text, from_lang="auto"):
     if not text or not str(text).strip():
         return ""
 
-    clean_text = str(text).strip()
+    clean_text = _strip_chinese_hashtags(str(text))
+    if not clean_text:
+        clean_text = str(text).strip()
+
     if not _has_chinese(clean_text) and from_lang == "auto":
         return clean_text
 
@@ -50,7 +61,9 @@ def translate_to_english(text, from_lang="auto"):
             # Google Translate returns list of [[translated_segment, original_segment], ...]
             translated_segments = [seg[0] for seg in data[0] if seg and seg[0]]
             translated_text = "".join(translated_segments)
-            return html.unescape(translated_text).strip()
+            res = html.unescape(translated_text).strip()
+            # Final sweep to clean any remaining Chinese characters
+            return _strip_chinese_hashtags(res)
     except Exception as exc:
         print(f"Translation failed for '{clean_text[:30]}...': {exc}")
 
