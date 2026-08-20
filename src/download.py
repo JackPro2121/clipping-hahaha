@@ -60,6 +60,7 @@ def _apify_download(url, out_dir, video_id):
         json={
             "video_urls": [{"url": url}],
             "desired_resolution": "720p",
+            "upload_video_to_apify": True,
         },
         timeout=60,
     )
@@ -69,7 +70,7 @@ def _apify_download(url, out_dir, video_id):
         raise RuntimeError(f"Apify actor did not start: {run_resp.text[:200]}")
 
     status = "RUNNING"
-    for _ in range(40):
+    for _ in range(60):
         time.sleep(4)
         try:
             st = requests.get(
@@ -94,15 +95,22 @@ def _apify_download(url, out_dir, video_id):
     for item in items:
         if not isinstance(item, dict):
             continue
-        direct = (
-            (item.get("prog_downloadable_link") or {}).get("url")
-            or (item.get("downloadable_video_link") or {}).get("mp4")
-            or item.get("direct_url")
-        )
-        if direct:
+        if item.get("apify_storage_url"):
+            direct = item["apify_storage_url"]
             break
     if not direct:
-        raise RuntimeError("Apify returned no direct download URL")
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            direct = (
+                (item.get("prog_downloadable_link") or {}).get("url")
+                or (item.get("downloadable_video_link") or {}).get("mp4")
+                or item.get("direct_url")
+            )
+            if direct:
+                break
+    if not direct:
+        raise RuntimeError("Apify returned no downloadable URL")
 
     dest = out_dir / f"{video_id}.mp4"
     with requests.get(direct, stream=True, timeout=900) as resp:
