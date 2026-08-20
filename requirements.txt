@@ -2,4 +2,5 @@ yt-dlp
 requests
 cloudinary
 curl_cffi>=0.10,<0.16
+faster-whisper
 pytest

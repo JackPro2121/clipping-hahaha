@@ -161,6 +161,17 @@ def process_source(src, cfg):
             print(err)
             return False, 0, err
 
+        # 1b. Smart AI Speech-to-Text via Faster-Whisper
+        # If no official subtitle track, check audio for spoken Chinese
+        if captions_cfg.get("enabled", True):
+            from captions.whisper_transcriber import transcribe_and_translate
+            try:
+                whisper_segments = transcribe_and_translate(raw)
+                if whisper_segments:
+                    transcript = whisper_segments
+            except Exception as exc:
+                print(f"Whisper AI check skipped: {exc}")
+
         # 2. Clip
         clipper_cfg = {
             **cfg["clipper"],

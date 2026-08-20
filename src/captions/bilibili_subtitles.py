@@ -135,10 +135,11 @@ def fetch_bilibili_subtitles(bvid, headers=None):
 
 def make_title_captions(title, total_duration=900.0):
     """
-    Fallback caption generator when no subtitle track is available.
+    Clean intro caption generator for ASMR and craftsmanship videos.
 
-    Cycles through the clean translated title and engaging craft hooks
-    (e.g., 'Satisfying Craftsmanship ✨', 'Wait for the final result 🔨', 'Follow @ZenCut').
+    Displays the clean translated English title during the first 3.5 seconds
+    to establish context, then leaves the rest of the video 100% clean and
+    immersion-focused for pure visual/acoustic ASMR.
 
     Args:
         title: Source video title string (translated English).
@@ -148,32 +149,17 @@ def make_title_captions(title, total_duration=900.0):
         List of {"start", "duration", "text"} dicts, or None if title is empty.
     """
     title_clean = (title or "").strip()
-    if len(title_clean) > 48:
-        title_clean = title_clean[:45] + "..."
+    if len(title_clean) > 52:
+        title_clean = title_clean[:48] + "..."
     if not title_clean:
         return None
 
-    # Engaging rotation hooks
-    hooks = [
-        title_clean,
-        "Satisfying Craftsmanship ✨",
-        "Wait for the final result 🔨",
-        "Follow @ZenCut for daily craft 🔥",
-    ]
+    # Only show clean intro hook for first 3.5 seconds
+    intro_dur = min(3.5, total_duration - 0.1)
+    if intro_dur < 0.5:
+        return None
 
-    segments = []
-    t = 0.0
-    hook_idx = 0
-    while t < total_duration - 1.0:
-        text = hooks[hook_idx % len(hooks)]
-        seg_dur = min(3.8, total_duration - t - 0.1)
-        if seg_dur < 0.5:
-            break
-        segments.append({"start": t, "duration": seg_dur, "text": text})
-        t += 9.5  # New caption every ~9.5 seconds
-        hook_idx += 1
-
-    return segments or None
+    return [{"start": 0.0, "duration": intro_dur, "text": title_clean}]
 
 
 def bvid_from_url(url):
