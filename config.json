@@ -28,7 +28,7 @@
     "lang": "en"
   },
   "discovery": {
-    "enabled": false,
+    "enabled": true,
     "strategy": "bilibili",
     "targets": [],
     "search_terms": [],
@@ -37,7 +37,7 @@
     "min_views": 10000,
     "max_duration_s": 900,
     "min_source_duration_s": 40,
-    "max_new_sources": 5
+    "max_new_sources": 3
   },
   "buffer": {
     "caption_template": "{title} - clip {index}/{total} {hashtags}",
