@@ -146,7 +146,7 @@ def download_video(url, out_dir, max_duration_s=None):
     for idx, strat in enumerate(STRATEGIES):
         if strat.get("apify") and not os.environ.get("APIFY_TOKEN"):
             continue
-        if strat["cookies"] and cookies_file is None:
+        if strat.get("cookies") and cookies_file is None:
             continue
         attempt_dir = out_dir / f"attempt-{idx}-{strat['name']}"
         attempt_dir.mkdir(parents=True, exist_ok=True)
