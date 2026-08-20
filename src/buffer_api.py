@@ -87,7 +87,7 @@ def get_channels(services=None):
     return channels
 
 
-def create_post(channel_id, text, video_url, thumbnail_offset=2000):
+def create_post(channel_id, text, video_url, thumbnail_offset=2000, service=None):
     """Queue a video post to a Buffer channel.
 
     Raises:
@@ -102,22 +102,31 @@ def create_post(channel_id, text, video_url, thumbnail_offset=2000):
       }
     }
     """
-    variables = {
-        "input": {
-            "text": text,
-            "channelId": channel_id,
-            "schedulingType": "automatic",
-            "mode": "addToQueue",
-            "assets": [
-                {
-                    "video": {
-                        "url": video_url,
-                        "metadata": {"thumbnailOffset": thumbnail_offset},
-                    }
+    post_input = {
+        "text": text,
+        "channelId": channel_id,
+        "schedulingType": "automatic",
+        "mode": "addToQueue",
+        "assets": [
+            {
+                "video": {
+                    "url": video_url,
+                    "metadata": {"thumbnailOffset": thumbnail_offset},
                 }
-            ],
-        }
+            }
+        ],
     }
+
+    # Instagram requires post type (reel) and shouldShareToFeed flag
+    if service == "instagram":
+        post_input["metadata"] = {
+            "instagram": {
+                "type": "reel",
+                "shouldShareToFeed": True,
+            }
+        }
+
+    variables = {"input": post_input}
     data = _request(query, variables=variables)
     result = data["createPost"]
 

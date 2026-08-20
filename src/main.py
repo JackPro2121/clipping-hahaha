@@ -225,7 +225,7 @@ def process_source(src, cfg):
                 caption = build_caption(cfg, title, i, len(clips), service=service)
 
                 try:
-                    post_id = create_post(channel["id"], caption, url)
+                    post_id = create_post(channel["id"], caption, url, service=service)
                     posted += 1
                     print(
                         f"Posted {clip.name} -> {service} "
