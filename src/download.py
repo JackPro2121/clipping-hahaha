@@ -20,6 +20,7 @@ STRATEGIES = [
 
 _VIDEO_ID_RE = re.compile(r"(?:v=|youtu\.be/|shorts/|embed/)([\w-]{11})")
 _BILI_RE = re.compile(r"bilibili\.com/video/(BV[\w]+)", re.IGNORECASE)
+_DOUYIN_RE = re.compile(r"(?:douyin\.com|v\.douyin\.com)", re.IGNORECASE)
 _VIDEO_EXTS = (".mp4", ".webm", ".mkv")
 _APIFY_API = "https://api.apify.com/v2"
 
@@ -28,6 +29,12 @@ def _video_id(url):
     m = _BILI_RE.search(url)
     if m:
         return m.group(1)
+    m_dy = _DOUYIN_RE.search(url)
+    if m_dy:
+        from douyin import extract_douyin_video_id
+        dy_id = extract_douyin_video_id(url)
+        if dy_id:
+            return f"douyin_{dy_id}"
     m = _VIDEO_ID_RE.search(url)
     if not m:
         raise ValueError(f"Cannot extract video id from {url}")
@@ -313,6 +320,16 @@ def download_video(url, out_dir, max_duration_s=None):
             return result
         except (subprocess.CalledProcessError, RuntimeError, TimeoutError) as exc:
             raise RuntimeError(f"bilibili download failed: {str(exc)[:200]}") from exc
+
+    if _DOUYIN_RE.search(url):
+        from douyin import download_douyin_video
+        attempt_dir = out_dir / "attempt-0-douyin"
+        attempt_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            result = download_douyin_video(url, attempt_dir)
+            return result
+        except Exception as exc:
+            raise RuntimeError(f"douyin download failed: {str(exc)[:200]}") from exc
 
     cookies_b64 = os.environ.get("YT_COOKIES")
     cookies_file = None
