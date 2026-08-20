@@ -60,6 +60,9 @@ def transcribe_and_translate(video_path, max_duration_s=120):
         list[dict]: List of segments [{"start": 0.5, "duration": 2.3, "text": "English text"}]
                     or empty list [] if no speech is present (pure ASMR).
     """
+    if not video_path:
+        return []
+
     model = get_whisper_model()
     if model is None:
         return []
