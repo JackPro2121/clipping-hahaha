@@ -232,8 +232,10 @@ def process_source(src, cfg):
                         f"({channel['name']}) id={post_id}"
                     )
                 except QueueFullError as exc:
-                    print(f"Queue limit reached for {service}: {exc}")
-                    return False, posted, str(exc)
+                    print(f"Queue limit (10 posts) reached for {service}: {exc}")
+                    if posted > 0:
+                        return True, posted, f"Queue filled to limit ({posted} clips queued)"
+                    return False, 0, str(exc)
                 except Exception as exc:
                     print(f"Post failed {clip.name} -> {service}: {exc}")
 

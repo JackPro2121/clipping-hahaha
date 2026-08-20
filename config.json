@@ -11,7 +11,7 @@
         "min_views": 50000,
         "min_source_duration_s": 35,
         "max_duration_s": 600,
-        "max_new_sources": 3
+        "max_new_sources": 2
       },
       "buffer": {
         "caption_template": "{title} \ud83d\udd28\u2728 Wait for the end result! {hashtags}",
@@ -32,7 +32,7 @@
         "min_views": 50000,
         "min_source_duration_s": 35,
         "max_duration_s": 600,
-        "max_new_sources": 3
+        "max_new_sources": 2
       },
       "buffer": {
         "caption_template": "Is this the future? \ud83e\udd16 {title} {hashtags}",
@@ -53,7 +53,7 @@
         "min_views": 50000,
         "min_source_duration_s": 35,
         "max_duration_s": 600,
-        "max_new_sources": 3
+        "max_new_sources": 2
       },
       "buffer": {
         "caption_template": "Satisfying Street Food Mastery \ud83c\udf73 {title} {hashtags}",
@@ -109,7 +109,7 @@
     "min_views": 50000,
     "max_duration_s": 600,
     "min_source_duration_s": 35,
-    "max_new_sources": 3
+    "max_new_sources": 2
   },
   "buffer": {
     "caption_template": "{title} {hashtags}",
