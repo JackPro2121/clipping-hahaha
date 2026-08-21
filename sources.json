@@ -171,14 +171,40 @@
       "retry_count": 1,
       "last_error": "Clipping failed: _chunks() got an unexpected keyword argument 'variable_pacing'",
       "next_retry_after": "2026-08-21T09:37:32.611533+00:00"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1TW3E6fEcV",
+      "title": "“师傅你走了之后他们都欺负我”",
+      "status": "processed",
+      "score": 67,
+      "category": "creator_王小师傅1",
+      "discovered_at": "2026-08-21T08:34:30.019841+00:00",
+      "retry_count": 0,
+      "processed_at": "2026-08-21T08:40:56.152852+00:00",
+      "clips_count": 4,
+      "next_retry_after": null,
+      "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV18GMr6REjo",
+      "title": "快一点就没事？拒绝侥幸伸手，别拿生命赌瞬间！",
+      "status": "processed",
+      "score": 51,
+      "category": "creator_蜻蜓动漫CG",
+      "discovered_at": "2026-08-21T08:34:30.019841+00:00",
+      "retry_count": 0,
+      "processed_at": "2026-08-21T08:44:21.971410+00:00",
+      "clips_count": 4,
+      "next_retry_after": null,
+      "last_error": null
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-21T07:36:51.011763+00:00",
-    "total_processed": 14,
-    "total_clips_posted": 27,
+    "last_run": "2026-08-21T08:34:30.580031+00:00",
+    "total_processed": 16,
+    "total_clips_posted": 35,
     "last_category": "food",
-    "last_keyword": "手工制作"
+    "last_keyword": "解压手工"
   }
 }
