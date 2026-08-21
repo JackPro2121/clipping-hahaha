@@ -172,7 +172,7 @@
     "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
     "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
     "max_posts_per_channel": 2,
-    "max_queue_depth": 10,
+    "max_queue_depth": 8,
     "mode": "addToQueue",
     "services": ["tiktok"],
     "per_platform_captions": {
