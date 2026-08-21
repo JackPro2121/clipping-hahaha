@@ -149,14 +149,36 @@
       "clips_count": 4,
       "next_retry_after": null,
       "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1FL4y1e7Bk",
+      "title": "儿童玩具之用彩虹糖给小宝宝洗澡",
+      "status": "pending",
+      "score": 75,
+      "category": "手工制作",
+      "discovered_at": "2026-08-21T07:36:50.584144+00:00",
+      "retry_count": 1,
+      "last_error": "Clipping failed: _chunks() got an unexpected keyword argument 'variable_pacing'",
+      "next_retry_after": "2026-08-21T09:36:58.247958+00:00"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1F4411P7uX",
+      "title": "自制倒立洗头机",
+      "status": "pending",
+      "score": 75,
+      "category": "手工制作",
+      "discovered_at": "2026-08-21T07:36:50.584144+00:00",
+      "retry_count": 1,
+      "last_error": "Clipping failed: _chunks() got an unexpected keyword argument 'variable_pacing'",
+      "next_retry_after": "2026-08-21T09:37:32.611533+00:00"
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-21T06:52:50.554031+00:00",
+    "last_run": "2026-08-21T07:36:51.011763+00:00",
     "total_processed": 14,
     "total_clips_posted": 27,
     "last_category": "food",
-    "last_keyword": "老物件修复"
+    "last_keyword": "手工制作"
   }
 }
