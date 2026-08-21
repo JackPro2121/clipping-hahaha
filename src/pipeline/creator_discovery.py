@@ -75,100 +75,96 @@ def _apify_run_and_wait(actor_slug, run_input, timeout_polls=90, poll_interval=5
 # Bilibili creator discovery
 # ---------------------------------------------------------------------------
 
-def _fetch_bilibili_creator_videos(mid, max_count=5, min_duration_s=35, max_duration_s=600):
-    """Fetch latest videos from a Bilibili creator via public space API (no auth)."""
+def _parse_len(raw_len):
+    if isinstance(raw_len, (int, float)):
+        return int(raw_len)
+    if not raw_len or not isinstance(raw_len, str):
+        return 0
+    parts = raw_len.strip().split(":")
+    try:
+        if len(parts) == 2:
+            return int(parts[0]) * 60 + int(parts[1])
+        if len(parts) == 3:
+            return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+        return int(parts[0])
+    except (ValueError, IndexError):
+        return 0
+
+
+def _fetch_bilibili_creator_videos(creator_target, max_count=3, min_duration_s=35, max_duration_s=600):
+    """Fetch latest videos from a Bilibili creator name or UID via public search API."""
+    import tempfile
+    import urllib.parse
+    from pathlib import Path
+    from download import _bili_headers
+
     sources = []
     try:
-        resp = requests.get(
-            _BILIBILI_SPACE_API,
-            params={"mid": mid, "ps": 30, "pn": 1, "order": "pubdate"},
-            headers={"User-Agent": _UA, "Referer": "https://www.bilibili.com/"},
-            timeout=20,
-        )
-        if resp.status_code != 200:
-            return sources
-        data = resp.json().get("data", {}) or {}
-        vlist = data.get("list", {}).get("vlist") or []
-        for v in vlist:
-            if len(sources) >= max_count:
-                break
-            bvid = v.get("bvid")
-            if not bvid:
-                continue
+        with tempfile.TemporaryDirectory() as td:
+            headers, _ = _bili_headers(Path(td))
+            kw_enc = urllib.parse.quote(str(creator_target))
+            url = (
+                f"https://api.bilibili.com/x/web-interface/search/type"
+                f"?search_type=video&keyword={kw_enc}&order=click&page=1"
+            )
+            resp = requests.get(url, headers=headers, timeout=20)
+            if resp.status_code != 200:
+                return sources
+            data = resp.json().get("data", {}) or {}
+            items = data.get("result", []) or []
+            for item in items:
+                if len(sources) >= max_count:
+                    break
+                bvid = item.get("bvid")
+                if not bvid:
+                    continue
 
-            raw_len = v.get("length", "")
-            if isinstance(raw_len, str) and ":" in raw_len:
-                parts = raw_len.split(":")
-                try:
-                    if len(parts) == 2:
-                        length = int(parts[0]) * 60 + int(parts[1])
-                    elif len(parts) == 3:
-                        length = int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
-                    else:
-                        length = 0
-                except ValueError:
-                    length = 0
-            else:
-                length = int(raw_len) if str(raw_len).isdigit() else 0
+                raw_title = item.get("title", "").replace('<em class="keyword">', "").replace("</em>", "").strip()
+                length = _parse_len(item.get("duration"))
+                views = int(item.get("play") or 0)
 
-            if length < min_duration_s or (max_duration_s and length > max_duration_s):
-                continue
-            sources.append({
-                "url": f"https://www.bilibili.com/video/{bvid}",
-                "title": v.get("title") or bvid,
-                "views": int(v.get("play") or 0),
-                "length": length,
-                "category": f"bilibili_creator_{mid}",
-            })
+                if length < min_duration_s or (max_duration_s and length > max_duration_s):
+                    continue
+
+                sources.append({
+                    "url": f"https://www.bilibili.com/video/{bvid}",
+                    "title": raw_title or bvid,
+                    "views": views,
+                    "length": length,
+                    "category": f"creator_{creator_target}",
+                })
     except Exception as exc:
-        print(f"  Bilibili space API error for mid={mid}: {exc}")
+        print(f"  Bilibili creator video fetch error for '{creator_target}': {exc}")
     return sources
 
 
-def discover_bilibili_creators(cfg, max_creators=5, max_videos_per_creator=2):
-    """Use Apify or configured UIDs to find top craft creators and their latest videos."""
+def discover_bilibili_creators(cfg, max_creators=6, max_videos_per_creator=2):
+    """Discover candidate videos from curated craft creators."""
     discovery = cfg.get("discovery", {})
-    configured_mids = discovery.get("bilibili_creator_uids", [])
+    configured_creators = (
+        discovery.get("bilibili_creators")
+        or discovery.get("bilibili_creator_uids")
+        or [
+            "才疏学浅的才浅",
+            "手工耿",
+            "阿木爷爷",
+            "王小师傅1",
+            "苏清吾",
+            "玉师傅手工匠人",
+            "我的修复师",
+            "听雨剑阁",
+            "机械造型",
+        ]
+    )
     min_duration_s = discovery.get("min_source_duration_s", 35)
     max_duration_s = discovery.get("max_duration_s", 600)
 
-    # 1. Direct configured UIDs (high performance, 0-cost, 100% reliable)
-    seen_mids = list(configured_mids)
+    print(f"  Targeting {len(configured_creators)} verified Bilibili craft masters")
 
-    # 2. If no configured UIDs and APIFY_TOKEN exists, discover via Apify scraper
-    if not seen_mids and os.environ.get("APIFY_TOKEN"):
-        keywords = discovery.get("keywords", ["木工", "老物件修复", "手工制作"])
-        search_keywords = keywords[:2]
-        print(f"Bilibili creator discovery via Apify: keywords={search_keywords}")
-        try:
-            items = _apify_run_and_wait(
-                "themineworks/bilibili-scraper",
-                {
-                    "keywords": search_keywords,
-                    "maxResultsPerKeyword": 30,
-                    "type": "video",
-                },
-                timeout_polls=45,
-                poll_interval=5,
-            )
-            for item in items:
-                if not isinstance(item, dict):
-                    continue
-                mid = str(item.get("mid") or item.get("author_id") or item.get("upMid") or "")
-                if mid and mid not in seen_mids:
-                    seen_mids.append(mid)
-                if len(seen_mids) >= max_creators:
-                    break
-        except Exception as exc:
-            print(f"  Apify Bilibili scraper fallback: {exc}")
-
-    print(f"  Targeting {len(seen_mids)} Bilibili creators: {seen_mids}")
-
-    # Fetch latest videos from each creator
     all_sources = []
-    for mid in seen_mids[:max_creators]:
+    for target in configured_creators[:max_creators]:
         videos = _fetch_bilibili_creator_videos(
-            mid,
+            target,
             max_count=max_videos_per_creator,
             min_duration_s=min_duration_s,
             max_duration_s=max_duration_s,

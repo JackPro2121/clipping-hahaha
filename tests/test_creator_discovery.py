@@ -20,16 +20,14 @@ def test_fetch_bilibili_creator_videos_success():
     mock_resp.status_code = 200
     mock_resp.json.return_value = {
         "data": {
-            "list": {
-                "vlist": [
-                    {
-                        "bvid": "BV1test123",
-                        "title": "Master Woodworker Chair Restoration",
-                        "play": 125000,
-                        "length": "02:45",
-                    }
-                ]
-            }
+            "result": [
+                {
+                    "bvid": "BV1test123",
+                    "title": "Master Woodworker Chair Restoration",
+                    "play": 125000,
+                    "duration": "02:45",
+                }
+            ]
         }
     }
     with patch("requests.get", return_value=mock_resp):
@@ -38,7 +36,7 @@ def test_fetch_bilibili_creator_videos_success():
         assert videos[0]["url"] == "https://www.bilibili.com/video/BV1test123"
         assert videos[0]["views"] == 125000
         assert videos[0]["length"] == 165
-        assert "bilibili_creator_12345" in videos[0]["category"]
+        assert "creator_12345" in videos[0]["category"]
 
 
 def test_discover_bilibili_creators_with_configured_uids():
