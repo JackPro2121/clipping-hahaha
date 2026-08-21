@@ -3,9 +3,9 @@
   "profiles": {
     "satisfying_crafts": {
       "name": "Satisfying Crafts & Restoration",
-      "description": "V1 Pipeline: Woodworking, restoration, satisfying crafting, and precision manufacturing",
       "discovery": {
         "strategy": "bilibili",
+        "order": "pubdate",
         "bilibili_creators": [
           "才疏学浅的才浅",
           "手工耿",
@@ -15,11 +15,26 @@
           "玉师傅手工匠人",
           "我的修复师",
           "听雨剑阁",
-          "机械造型"
+          "机械造型",
+          "好奇万花筒",
+          "手艺人的剑",
+          "好奇看全球dy",
+          "大脑洞记事",
+          "蜻蜓动漫CG",
+          "八零彪子",
+          "农民入门指南_Official",
+          "凹末灶客omozoc",
+          "冷科普",
+          "弹生",
+          "森达自动化设备厂家",
+          "彬哥分享机械",
+          "小师妹说机床",
+          "扇子有画",
+          "匠人集",
+          "环球挑战"
         ],
         "keywords": ["木工", "木工雕刻", "老物件修复", "手工制作", "解压手工", "传统手艺", "机械制造", "刀剑锻造"],
-        "order": "click",
-        "min_views": 50000,
+        "min_views": 30000,
         "min_source_duration_s": 35,
         "max_duration_s": 600,
         "max_new_sources": 2
@@ -118,6 +133,7 @@
   "discovery": {
     "enabled": true,
     "strategy": "bilibili",
+    "order": "pubdate",
     "bilibili_creators": [
       "才疏学浅的才浅",
       "手工耿",
@@ -127,12 +143,27 @@
       "玉师傅手工匠人",
       "我的修复师",
       "听雨剑阁",
-      "机械造型"
+      "机械造型",
+      "好奇万花筒",
+      "手艺人的剑",
+      "好奇看全球dy",
+      "大脑洞记事",
+      "蜻蜓动漫CG",
+      "八零彪子",
+      "农民入门指南_Official",
+      "凹末灶客omozoc",
+      "冷科普",
+      "弹生",
+      "森达自动化设备厂家",
+      "彬哥分享机械",
+      "小师妹说机床",
+      "扇子有画",
+      "匠人集",
+      "环球挑战"
     ],
     "keywords": ["木工", "木工雕刻", "老物件修复", "手工制作", "解压手工", "传统手艺", "机械制造", "刀剑锻造"],
-    "order": "click",
     "min_quality_score": 20,
-    "min_views": 50000,
+    "min_views": 30000,
     "max_duration_s": 600,
     "min_source_duration_s": 35,
     "max_new_sources": 2

@@ -79,9 +79,9 @@ def main():
             dy_creators = discover_douyin_creators(cfg)
             found = bili_creators + dy_creators
         elif strategy == "bilibili":
-            # If explicit creator UIDs configured, prioritize them
-            if discovery.get("bilibili_creator_uids"):
-                print(f"Bilibili discovery feed: Curated Creators")
+            # If explicit creators configured, prioritize them
+            if discovery.get("bilibili_creators") or discovery.get("bilibili_creator_uids"):
+                print(f"Bilibili discovery feed: Curated Creators Pool")
                 found = discover_bilibili_creators(cfg)
             elif target_type == "keyword":
                 print(f"Bilibili discovery feed: Keyword Search -> [{target_val}]")
@@ -101,7 +101,7 @@ def main():
             print(f"Chinese Apps discovery: Bilibili + Douyin -> [{target_val}]")
             bili_found = (
                 discover_bilibili_creators(cfg)
-                if discovery.get("bilibili_creator_uids")
+                if (discovery.get("bilibili_creators") or discovery.get("bilibili_creator_uids"))
                 else (
                     discover_bilibili(cfg, keyword=target_val)
                     if target_type == "keyword"
@@ -131,7 +131,14 @@ def main():
     for src in found:
         if src["url"] in known_urls:
             continue
-        if discovery.get("min_views") and src.get("views", 0) < discovery["min_views"]:
+
+        # For verified curated creators, relax min_views so freshly published clips get captured first!
+        min_views = (
+            discovery.get("creator_min_views", 1500)
+            if src.get("category", "").startswith("creator_")
+            else discovery.get("min_views", 30000)
+        )
+        if src.get("views", 0) < min_views:
             continue
 
         score = score_source(src)

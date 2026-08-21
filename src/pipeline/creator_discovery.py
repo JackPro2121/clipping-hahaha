@@ -91,8 +91,10 @@ def _parse_len(raw_len):
         return 0
 
 
-def _fetch_bilibili_creator_videos(creator_target, max_count=3, min_duration_s=35, max_duration_s=600):
-    """Fetch latest videos from a Bilibili creator name or UID via public search API."""
+def _fetch_bilibili_creator_videos(
+    creator_target, max_count=2, min_duration_s=35, max_duration_s=600, order="pubdate"
+):
+    """Fetch newest/latest videos from a Bilibili creator name or UID via public search API."""
     import tempfile
     import urllib.parse
     from pathlib import Path
@@ -105,7 +107,7 @@ def _fetch_bilibili_creator_videos(creator_target, max_count=3, min_duration_s=3
             kw_enc = urllib.parse.quote(str(creator_target))
             url = (
                 f"https://api.bilibili.com/x/web-interface/search/type"
-                f"?search_type=video&keyword={kw_enc}&order=click&page=1"
+                f"?search_type=video&keyword={kw_enc}&order={order}&page=1"
             )
             resp = requests.get(url, headers=headers, timeout=20)
             if resp.status_code != 200:
@@ -119,29 +121,39 @@ def _fetch_bilibili_creator_videos(creator_target, max_count=3, min_duration_s=3
                 if not bvid:
                     continue
 
-                raw_title = item.get("title", "").replace('<em class="keyword">', "").replace("</em>", "").strip()
+                raw_title = (
+                    item.get("title", "")
+                    .replace('<em class="keyword">', "")
+                    .replace("</em>", "")
+                    .strip()
+                )
                 length = _parse_len(item.get("duration"))
                 views = int(item.get("play") or 0)
 
                 if length < min_duration_s or (max_duration_s and length > max_duration_s):
                     continue
 
-                sources.append({
-                    "url": f"https://www.bilibili.com/video/{bvid}",
-                    "title": raw_title or bvid,
-                    "views": views,
-                    "length": length,
-                    "category": f"creator_{creator_target}",
-                })
+                sources.append(
+                    {
+                        "url": f"https://www.bilibili.com/video/{bvid}",
+                        "title": raw_title or bvid,
+                        "views": views,
+                        "length": length,
+                        "category": f"creator_{creator_target}",
+                    }
+                )
     except Exception as exc:
         print(f"  Bilibili creator video fetch error for '{creator_target}': {exc}")
     return sources
 
 
 def discover_bilibili_creators(cfg, max_creators=6, max_videos_per_creator=2):
-    """Discover candidate videos from curated craft creators."""
+    """Discover candidate videos from curated craft creators with random sampling and newest pubdate priority."""
+    import random
+
     discovery = cfg.get("discovery", {})
-    configured_creators = (
+    order = discovery.get("order", "pubdate")
+    configured_creators = list(
         discovery.get("bilibili_creators")
         or discovery.get("bilibili_creator_uids")
         or [
@@ -159,7 +171,12 @@ def discover_bilibili_creators(cfg, max_creators=6, max_videos_per_creator=2):
     min_duration_s = discovery.get("min_source_duration_s", 35)
     max_duration_s = discovery.get("max_duration_s", 600)
 
-    print(f"  Targeting {len(configured_creators)} verified Bilibili craft masters")
+    # Randomly shuffle creators pool on each run so different creators get discovered
+    random.shuffle(configured_creators)
+
+    print(
+        f"  Targeting {len(configured_creators)} verified Bilibili craft masters (Freshness Order: {order})"
+    )
 
     all_sources = []
     for target in configured_creators[:max_creators]:
@@ -168,6 +185,7 @@ def discover_bilibili_creators(cfg, max_creators=6, max_videos_per_creator=2):
             max_count=max_videos_per_creator,
             min_duration_s=min_duration_s,
             max_duration_s=max_duration_s,
+            order=order,
         )
         all_sources.extend(videos)
 
