@@ -11,6 +11,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from chocodata import discover as discover_youtube  # noqa: E402
 from bilibili import discover as discover_bilibili  # noqa: E402
 from douyin import discover as discover_douyin  # noqa: E402
+from pipeline.creator_discovery import (  # noqa: E402
+    discover_bilibili_creators,
+    discover_douyin_creators,
+)
 from pipeline.quality import score_source, should_process  # noqa: E402
 from utils.config import load_config  # noqa: E402
 from utils.state import (  # noqa: E402
@@ -67,23 +71,48 @@ def main():
     target_type, target_val = _get_next_target(cfg, state)
     current_label = target_val
 
-    # 2. Discover sources based on strategy & keyword/category
+    # 2. Discover sources based on strategy & keyword/category/creators
     try:
-        if strategy == "bilibili":
-            if target_type == "keyword":
+        if strategy == "creators" or strategy == "creator":
+            print(f"Creator-targeted discovery feed: Bilibili + Douyin top creators")
+            bili_creators = discover_bilibili_creators(cfg)
+            dy_creators = discover_douyin_creators(cfg)
+            found = bili_creators + dy_creators
+        elif strategy == "bilibili":
+            # If explicit creator UIDs configured, prioritize them
+            if discovery.get("bilibili_creator_uids"):
+                print(f"Bilibili discovery feed: Curated Creators")
+                found = discover_bilibili_creators(cfg)
+            elif target_type == "keyword":
                 print(f"Bilibili discovery feed: Keyword Search -> [{target_val}]")
                 found = discover_bilibili(cfg, keyword=target_val)
             else:
                 print(f"Bilibili discovery feed: Category Ranking -> [{target_val}]")
                 found = discover_bilibili(cfg, category=target_val)
         elif strategy == "douyin":
-            print(f"Douyin discovery feed: Topic -> [{target_val}]")
-            found = discover_douyin(cfg, keyword=target_val)
+            if discovery.get("douyin_creator_profiles"):
+                print(f"Douyin discovery feed: Seed Profiles")
+                found = discover_douyin_creators(cfg)
+            else:
+                print(f"Douyin discovery feed: Topic -> [{target_val}]")
+                found = discover_douyin(cfg, keyword=target_val)
         elif strategy == "chinese_apps":
             # Combined Bilibili + Douyin discovery
             print(f"Chinese Apps discovery: Bilibili + Douyin -> [{target_val}]")
-            bili_found = discover_bilibili(cfg, keyword=target_val) if target_type == "keyword" else discover_bilibili(cfg, category=target_val)
-            dy_found = discover_douyin(cfg, keyword=target_val)
+            bili_found = (
+                discover_bilibili_creators(cfg)
+                if discovery.get("bilibili_creator_uids")
+                else (
+                    discover_bilibili(cfg, keyword=target_val)
+                    if target_type == "keyword"
+                    else discover_bilibili(cfg, category=target_val)
+                )
+            )
+            dy_found = (
+                discover_douyin_creators(cfg)
+                if discovery.get("douyin_creator_profiles")
+                else discover_douyin(cfg, keyword=target_val)
+            )
             found = bili_found + dy_found
         else:
             if "CHOCODATA_API_KEY" not in os.environ:
