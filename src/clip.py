@@ -215,7 +215,9 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
     fps = cfg.get("fps", 30)
     chunk_s = cfg.get("transition_every_s", 4)
     xd = cfg.get("transition_duration_s", 0.15)
-    chunks = _chunks(start, duration, chunk_s)
+    chunks = _chunks(
+        start, duration, chunk_s, variable_pacing=cfg.get("variable_pacing", True)
+    )
 
     parts = []
     for i, (cs, cd) in enumerate(chunks):

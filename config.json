@@ -86,7 +86,7 @@
     "enabled": true,
     "bgm": true,
     "bgm_volume": 0.18,
-    "subtle_filter": "eq=contrast=1.06:saturation=1.12:brightness=0.015,unsharp=5:5:0.8:3:3:0.4,vignette=angle=PI/7"
+    "subtle_filter": "eq=contrast=1.08:saturation=1.14:brightness=0.012,colorbalance=rs=0.04:gs=0.01:bs=-0.035:rm=0.02:gm=0.01:bm=-0.02,unsharp=5:5:0.8:3:3:0.4,vignette=angle=PI/7"
   },
   "brand": {
     "enabled": true,
