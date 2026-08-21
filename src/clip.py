@@ -178,14 +178,22 @@ def _select_windows(duration, cfg):
     return windows
 
 
-def _chunks(start, duration, chunk_s):
+def _chunks(start, duration, chunk_s, variable_pacing=False):
     out = []
     t = 0.0
+    pacing_pattern = [0.85, 1.15, 0.95, 1.05]
+    step_idx = 0
     while t < duration - 0.05:
-        d = min(chunk_s, duration - t)
+        target_s = (
+            chunk_s * pacing_pattern[step_idx % len(pacing_pattern)]
+            if variable_pacing
+            else chunk_s
+        )
+        d = min(target_s, duration - t)
         if d >= 1.0:
-            out.append((start + t, d))
+            out.append((round(start + t, 3), round(d, 3)))
         t += d
+        step_idx += 1
     return out
 
 
