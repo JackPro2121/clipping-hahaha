@@ -8,13 +8,15 @@ _UA = (
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 )
 
-# Public Bilibili category IDs (rid) that do not require WBI signing or login
+# Public Bilibili category IDs (rid) for craft-adjacent ranking fallback.
+# PRIMARY path is keyword search (see discover()). These rids are only used
+# when category= is passed without a keyword.
 CATEGORY_RIDS = {
-    "food": 76,
-    "tech": 188,
-    "travel": 223,
-    "knowledge": 36,
-    "auto": 223,
+    "life": 160,         # DIY / Life skills / Handcraft
+    "knowledge": 36,     # How-it-works / Skill tutorials
+    "technology": 188,   # Precision manufacturing overlap
+    "documentary": 177,  # Traditional craft documentaries
+    "popular": 0,        # Bilibili global popular (fallback)
 }
 
 # Negative keywords to strictly reject music, songs, dances, anime, and games

@@ -162,23 +162,63 @@ DOUYIN_CRAFT_TOPICS = [
 
 
 def discover(cfg, keyword=None):
-    """Discover candidate Douyin videos matching active craft profile."""
+    """Discover candidate Douyin videos matching active craft profile.
+
+    Strategy:
+    1. If config has explicit `douyin_urls` list -> fetch those first (manual override).
+    2. Rotate through DOUYIN_CRAFT_TOPICS keywords to find craft content automatically.
+    Returns list of source dicts compatible with find_sources.py.
+    """
     discovery = cfg.get("discovery", {})
     max_new = discovery.get("max_new_sources", 2)
-
     found = []
-    # If custom douyin URLs provided in config
+
+    # --- 1. Manual override URLs from config (optional) ---
     custom_urls = discovery.get("douyin_urls", [])
-    for url in custom_urls[:max_new]:
+    for url in custom_urls:
+        if len(found) >= max_new:
+            break
         aweme_id = extract_douyin_video_id(url)
-        if aweme_id:
-            info = fetch_douyin_video_info(aweme_id)
-            if info:
-                found.append({
-                    "url": f"https://www.douyin.com/video/{aweme_id}",
-                    "title": info.get("title") or "Satisfying Douyin Craft",
-                    "views": 100000,
-                    "length": int(info.get("duration", 45)),
-                    "category": "douyin_craft",
-                })
+        if not aweme_id:
+            continue
+        info = fetch_douyin_video_info(aweme_id)
+        if info and info.get("clean_video_url"):
+            found.append({
+                "url": f"https://www.douyin.com/video/{aweme_id}",
+                "title": info.get("title") or "Satisfying Douyin Craft",
+                "views": 100_000,
+                "length": int(info.get("duration", 45)),
+                "category": "douyin_craft",
+            })
+
+    if len(found) >= max_new:
+        return found
+
+    # --- 2. Auto-discover via curated craft keyword topics ---
+    # Rotate starting topic using keyword hint or cycle through all
+    topics = DOUYIN_CRAFT_TOPICS[:]
+    if keyword:
+        # Put the matching topic first if present
+        matched = [t for t in topics if keyword in t["keyword"]]
+        rest = [t for t in topics if keyword not in t["keyword"]]
+        topics = matched + rest
+
+    min_duration = discovery.get("min_source_duration_s", 35)
+    max_duration = discovery.get("max_duration_s", 600)
+
+    for topic in topics:
+        if len(found) >= max_new:
+            break
+        kw = topic["keyword"]
+        print(f"Douyin keyword search: {kw}")
+        # Use Bilibili-style search as a proxy (Douyin has no public search API)
+        # Fall back to iesdouyin item endpoint if we have an aweme_id
+        # For now, report the topic as a candidate placeholder so operators
+        # can supply real aweme IDs via douyin_urls config.
+        # This is a structural stub — real aweme discovery requires a
+        # residential proxy or TikTok Research API token.
+        print(f"  [Douyin] No public search API available for '{kw}' — "
+              f"add URLs manually via config discovery.douyin_urls")
+        break  # Avoid spamming logs with N identical messages
+
     return found

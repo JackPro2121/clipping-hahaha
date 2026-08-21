@@ -107,6 +107,8 @@
   "discovery": {
     "enabled": true,
     "strategy": "bilibili",
+    "keywords": ["木工", "木工雕刻", "老物件修复", "手工制作", "解压手工", "传统手艺", "机械制造", "刀剑锻造"],
+    "order": "click",
     "min_quality_score": 20,
     "min_views": 50000,
     "max_duration_s": 600,
