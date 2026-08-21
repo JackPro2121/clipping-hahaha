@@ -32,3 +32,10 @@ def test_get_no_watermark_url_passthrough():
     assert get_no_watermark_url(clean_url) == clean_url
     assert get_no_watermark_url("") == ""
     assert get_no_watermark_url(None) == ""
+
+
+def test_douyin_discover_empty():
+    from douyin import discover
+    cfg = {"discovery": {}}
+    res = discover(cfg)
+    assert isinstance(res, list)

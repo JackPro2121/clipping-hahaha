@@ -83,7 +83,7 @@ def _chunk_vf(cfg, src_w, src_h, dur, motion):
             zh = min(zh, h)
             vf += (
                 f",crop={zw}:{zh}:x='trunc((iw-{zw})*t/{dur:.3f}/2)*2':"
-                f"y='trunc((ih-{zh})*t/{dur:.3f}/2)*2',scale={w}:{h}"
+                f"y='trunc((ih-{zh})*t/{dur:.3f}/2)*2',scale={w}:{h}:flags=lanczos"
             )
     return vf
 
@@ -212,7 +212,7 @@ def _make_bgm(path, duration):
 
 def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
     src_w, src_h = cfg["_src"]
-    fps = cfg.get("fps", 25)
+    fps = cfg.get("fps", 30)
     chunk_s = cfg.get("transition_every_s", 4)
     xd = cfg.get("transition_duration_s", 0.15)
     chunks = _chunks(start, duration, chunk_s)
@@ -262,7 +262,7 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
     scale_out = "[vscaled]" if logo_path else "[vout]"
 
     scale_eff = f"settb=AVTB,setpts=PTS-STARTPTS,"
-    scale_eff += f"scale={cfg['width']}:{cfg['height']},setsar=1"
+    scale_eff += f"scale={cfg['width']}:{cfg['height']}:flags=lanczos,setsar=1"
     effects = cfg.get("effects", {})
     if effects.get("enabled") and effects.get("subtle_filter"):
         scale_eff += "," + effects["subtle_filter"]
@@ -323,6 +323,7 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         else:
             parts.append(f"anullsrc=channel_layout=stereo[aout]")
 
+    crf_val = str(cfg.get("crf", 18))
     cmd = [
         "ffmpeg", "-y",
         *inputs,
@@ -331,7 +332,9 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         "-map", "[aout]",
         "-c:v", "libx264",
         "-preset", "veryfast",
-        "-crf", "21",
+        "-crf", crf_val,
+        "-maxrate", "8500k",
+        "-bufsize", "17000k",
         "-pix_fmt", "yuv420p",
         "-force_key_frames", "expr:gte(t,n_forced*1)",
         "-c:a", "aac",

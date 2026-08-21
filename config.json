@@ -74,6 +74,8 @@
     "aspect": "vertical",
     "width": 1080,
     "height": 1920,
+    "fps": 30,
+    "crf": 18,
     "max_source_duration_s": 900
   },
   "motion": {
@@ -84,7 +86,7 @@
     "enabled": true,
     "bgm": true,
     "bgm_volume": 0.18,
-    "subtle_filter": "eq=contrast=1.05:saturation=1.12:brightness=0.015,vignette=angle=PI/7"
+    "subtle_filter": "eq=contrast=1.06:saturation=1.12:brightness=0.015,unsharp=5:5:0.8:3:3:0.4,vignette=angle=PI/7"
   },
   "brand": {
     "enabled": true,

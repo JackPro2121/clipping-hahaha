@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from chocodata import discover as discover_youtube  # noqa: E402
 from bilibili import discover as discover_bilibili  # noqa: E402
+from douyin import discover as discover_douyin  # noqa: E402
 from pipeline.quality import score_source, should_process  # noqa: E402
 from utils.config import load_config  # noqa: E402
 from utils.state import (  # noqa: E402
@@ -75,6 +76,15 @@ def main():
             else:
                 print(f"Bilibili discovery feed: Category Ranking -> [{target_val}]")
                 found = discover_bilibili(cfg, category=target_val)
+        elif strategy == "douyin":
+            print(f"Douyin discovery feed: Topic -> [{target_val}]")
+            found = discover_douyin(cfg, keyword=target_val)
+        elif strategy == "chinese_apps":
+            # Combined Bilibili + Douyin discovery
+            print(f"Chinese Apps discovery: Bilibili + Douyin -> [{target_val}]")
+            bili_found = discover_bilibili(cfg, keyword=target_val) if target_type == "keyword" else discover_bilibili(cfg, category=target_val)
+            dy_found = discover_douyin(cfg, keyword=target_val)
+            found = bili_found + dy_found
         else:
             if "CHOCODATA_API_KEY" not in os.environ:
                 print("CHOCODATA_API_KEY not set, skipping discovery")
