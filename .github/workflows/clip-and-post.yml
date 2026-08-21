@@ -2,15 +2,14 @@ name: Clip & Post
 
 on:
   workflow_dispatch:
-  schedule:
-    # 1) UK/Europe Lunch & US Morning Peak (1:30 PM UK / 2:30 PM CET / 8:30 AM EST)
-    - cron: "30 12 * * *"
-    # 2) US Afternoon & UK/Europe Evening Prime Time (1:00 PM EST / 6:00 PM UK / 7:00 PM CET)
-    - cron: "0 17 * * *"
-    # 3) US Golden Prime Time & Australia Morning (7:00 PM EST / 4:00 PM PST / 9:00 AM AEST)
-    - cron: "0 23 * * *"
-    # 4) Australia Afternoon & APAC Peak Scrolling (4:00 PM Sydney / 11:00 PM PST)
-    - cron: "0 6 * * *"
+  # ⏸️ PAUSED 24h — TikTok API rate limit triggered (2026-08-21)
+  # Re-enable after 2026-08-22 14:00 UTC by restoring the schedule block below:
+  # schedule:
+  #   - cron: "0 11 * * *"   # UK lunch / US morning
+  #   - cron: "0 17 * * *"   # US afternoon / UK evening
+  #   - cron: "0 20 * * *"   # US prime / UK night
+  #   - cron: "0 23 * * *"   # US East prime time 🔥
+  #   - cron: "0 2 * * *"    # US West prime time 🔥
 
 permissions:
   contents: write
