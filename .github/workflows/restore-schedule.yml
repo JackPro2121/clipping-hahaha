@@ -1,0 +1,62 @@
+name: Restore Schedule (One-Shot 24h)
+
+# Fires ONCE at 2026-08-22 09:15 UTC — exactly 24h after the pause.
+# Restores the main clip-and-post.yml schedule and then this workflow
+# simply becomes inert (its cron date passes and never fires again).
+
+on:
+  schedule:
+    - cron: "15 9 22 8 *"   # 2026-08-22 09:15 UTC — one-shot, never repeats
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore clip-and-post.yml schedule
+        run: |
+          python3 - <<'PYEOF'
+          with open('.github/workflows/clip-and-post.yml', 'r', encoding='utf-8') as f:
+              content = f.read()
+
+          # The paused block to replace
+          PAUSED = """\
+  # ⏸️ PAUSED 24h — TikTok API rate limit triggered (2026-08-21)
+  # Re-enable after 2026-08-22 14:00 UTC by restoring the schedule block below:
+  # schedule:
+  #   - cron: "0 11 * * *"   # UK lunch / US morning
+  #   - cron: "0 17 * * *"   # US afternoon / UK evening
+  #   - cron: "0 20 * * *"   # US prime / UK night
+  #   - cron: "0 23 * * *"   # US East prime time 🔥
+  #   - cron: "0 2 * * *"    # US West prime time 🔥"""
+
+          # The restored active schedule
+          RESTORED = """\
+  schedule:
+    - cron: "0 11 * * *"   # UK lunch / US morning (high-CPM)
+    - cron: "0 17 * * *"   # US afternoon / UK evening
+    - cron: "0 20 * * *"   # US East prime time
+    - cron: "0 23 * * *"   # US late-night / West Coast evening
+    - cron: "0 2 * * *"    # US West prime time 🔥"""
+
+          if PAUSED in content:
+              content = content.replace(PAUSED, RESTORED)
+              with open('.github/workflows/clip-and-post.yml', 'w', encoding='utf-8') as f:
+                  f.write(content)
+              print("SUCCESS: Schedule restored in clip-and-post.yml")
+          else:
+              print("WARNING: Paused block not found — may have been restored already.")
+          PYEOF
+
+      - name: Commit restored schedule
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/clip-and-post.yml
+          git commit -m "restore(workflow): re-enable peak-time schedule after 24h TikTok cooldown [skip ci]" || echo "No changes to commit"
+          git push
