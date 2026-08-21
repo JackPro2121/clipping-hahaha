@@ -157,9 +157,9 @@
       "score": 75,
       "category": "手工制作",
       "discovered_at": "2026-08-21T07:36:50.584144+00:00",
-      "retry_count": 1,
-      "last_error": "Clipping failed: _chunks() got an unexpected keyword argument 'variable_pacing'",
-      "next_retry_after": "2026-08-21T09:36:58.247958+00:00"
+      "retry_count": 0,
+      "last_error": null,
+      "next_retry_after": null
     },
     {
       "url": "https://www.bilibili.com/video/BV1F4411P7uX",
@@ -168,9 +168,9 @@
       "score": 75,
       "category": "手工制作",
       "discovered_at": "2026-08-21T07:36:50.584144+00:00",
-      "retry_count": 1,
-      "last_error": "Clipping failed: _chunks() got an unexpected keyword argument 'variable_pacing'",
-      "next_retry_after": "2026-08-21T09:37:32.611533+00:00"
+      "retry_count": 0,
+      "last_error": null,
+      "next_retry_after": null
     },
     {
       "url": "https://www.bilibili.com/video/BV1TW3E6fEcV",

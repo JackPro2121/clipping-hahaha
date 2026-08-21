@@ -78,18 +78,22 @@ Runner has ffmpeg 6.1.1 (Ubuntu). **Local dev uses ffmpeg 8.1.2 gyan.dev** — s
 config.json  ──────────────► read by find_sources.py and main.py
 sources.json  ◄──────────── state: active sources, archived_urls, retry backoff, _meta metrics
 src/
-  find_sources.py       discovery entrypoint (quality scoring + category rotation)
+  find_sources.py       discovery entrypoint (creator-sourcing + quality scoring + category rotation)
   main.py               pipeline orchestrator (retry intelligence + cleanup + Slack summary)
   health_check.py       daily health check & queue monitoring
-  bilibili.py           bilibili multi-category discovery (popular, food, tech, music, etc.)
+  bilibili.py           bilibili multi-category discovery & keyword search
+  douyin.py             douyin no-watermark video extraction & topic discovery
   chocodata.py          ChocoData wrapper (YouTube discovery + transcripts)
-  download.py           video download (bilibili API path + YouTube yt-dlp strategies)
-  clip.py               clipping engine (transitions, motion, captions, brand watermark, bgm)
+  download.py           video download (bilibili API path + YouTube yt-dlp strategies + Douyin)
+  clip.py               clipping engine (variable pacing, motion, captions, brand watermark, bgm)
   media.py              Cloudinary upload
   buffer_api.py         Buffer GraphQL client (_request helper + QueueFullError)
   captions/
     bilibili_subtitles.py   Bilibili subtitle API & title fallback caption builder
+    translator.py           Autonomous $0 Chinese -> English translation
+    whisper_transcriber.py  Local Whisper AI audio transcription & translation
   pipeline/
+    creator_discovery.py    25 verified Chinese craft master scrapers & dynamic pool rotation
     quality.py          source video quality scorer (0-100 pts)
     cleanup.py          Cloudinary storage GC (14-day auto-purge)
     queue_manager.py    Buffer queue depth limiter
@@ -97,6 +101,7 @@ src/
   notifications/
     slack.py            Slack incoming webhook summaries and alerts
   utils/
+    config.py           Active profile loader and configuration manager
     errors.py           custom exception hierarchy (QueueFullError, DownloadError, etc.)
     state.py            state management, auto-archiving (>30d), and exponential backoff
 ```

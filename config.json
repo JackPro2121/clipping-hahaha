@@ -37,7 +37,7 @@
         "min_views": 30000,
         "min_source_duration_s": 35,
         "max_duration_s": 600,
-        "max_new_sources": 2
+        "max_new_sources": 1
       },
       "buffer": {
         "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
@@ -92,7 +92,7 @@
     }
   },
   "clipper": {
-    "max_clips_per_video": 3,
+    "max_clips_per_video": 2,
     "clip_length_s": 36,
     "transition_every_s": 4,
     "transition_duration_s": 0.15,
@@ -166,15 +166,15 @@
     "min_views": 30000,
     "max_duration_s": 600,
     "min_source_duration_s": 35,
-    "max_new_sources": 2
+    "max_new_sources": 1
   },
   "buffer": {
     "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
     "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
     "max_posts_per_channel": 2,
     "max_queue_depth": 10,
-    "mode": "shareNow",
-    "services": ["tiktok", "instagram"],
+    "mode": "addToQueue",
+    "services": ["tiktok"],
     "per_platform_captions": {
       "tiktok": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
       "instagram": "Satisfying {title} ✨ Follow @zencutofficials for daily satisfying craft videos! {hashtags}"

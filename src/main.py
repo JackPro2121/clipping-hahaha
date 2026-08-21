@@ -223,7 +223,7 @@ def process_source(src, cfg):
             # If not the first clip, apply natural random spacing (1 to 2.5 minutes, strictly under 5m)
             if i > 1:
                 import random
-                delay_s = random.randint(60, 150)
+                delay_s = random.randint(180, 480)  # 3–8 min natural spacing (prevents spam flags)
                 print(f"\nApplying {delay_s}s natural spacing before publishing next clip ({i}/{len(clips)})...")
                 time.sleep(delay_s)
 

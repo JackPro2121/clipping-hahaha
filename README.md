@@ -8,27 +8,28 @@ ZenCut is a fully-automated, **$0-budget content generation and distribution pip
 
 ## 🌟 Key Capabilities
 
+- **Curated Top-Tier Creator Sourcing**:
+  - **25 Verified Master Creators**: Actively samples from elite woodworking, antique restoration, Damascus forging, and precision CNC craft masters (e.g., *才疏学浅的才浅, 手工耿, 阿木爷爷, 王小师傅1, 机械造型*).
+  - **Freshness-First Priority (`pubdate`)**: Sources brand new, newly-published uploads to ensure zero reuse competition on TikTok & Instagram Reels.
+  - **Dynamic Random Sampling**: Randomizes the creator pool across runs for continuous content diversity.
 - **100% No-Watermark Extraction**:
   - **Bilibili**: Direct Akamai CDN DASH stream extraction (`.m4s`) with 6% safe overscan margin to eliminate corner creator stamps and app logos.
   - **Douyin (TikTok China)**: Direct API extraction that dynamically swaps `playwm` to `play` for raw 1080p watermark-free MP4s.
-- **Autonomous English Translation Engine**:
+- **Autonomous English Translation & Subtitle Engine**:
   - Real-time $0 translation of Chinese titles and subtitles into fluent English for Tier-1 audiences (US, UK, Germany, France).
-  - Automatically strips Chinese hashtags and generates high-converting English hooks.
-- **Modular Pipeline Profiles**:
-  - **V1 (`satisfying_crafts`)**: Woodworking, antique restoration, satisfying crafts, precision machine art.
-  - **V2 (`future_tech_gadgets`)**: Smart gadgets, future tech inventions, novel tools.
-  - **V3 (`street_food_asmr`)**: High-speed cooking, ASMR street food.
-- **Smart Vertical Clip Engine (FFmpeg)**:
-  - 1080x1920 9:16 vertical center-crop with 4-second motion cycles (pan-left, pan-right, smooth zoom).
-  - Keyframe every 1s (`-force_key_frames expr:gte(t,n_forced*1)`) for clean social seeking and cutting.
-  - Subtle acoustic EQ & frequency variation to change digital audio fingerprints safely without degrading natural ASMR sound.
-  - Synthesized ambient chill background soundscape (lowpass 950Hz, volume `0.18`).
-- **Brand Watermarking**:
-  - Crisp transparent Z-logo (`135px`) + persistent `@ZenCut` text watermark with drop shadow.
-  - Burned-in ASS captions in safe area (`MarginV=240`) to prevent UI overlap on TikTok & Instagram Reels.
+  - High-retention 3.2s curiosity hook overlay: `🔨 Wait For The Result ✨\n{Craft Title}`.
+- **Studio-Grade Transformative Video Engine (FFmpeg)**:
+  - **Ultra-HD Video Pipeline**: 30 FPS standard with `flags=lanczos` multi-tap filtering and `-crf 18` visually lossless encoding.
+  - **Organic Variable Pacing**: Replaces robotic cuts with natural human rhythms (`3.4s → 4.6s → 3.8s → 4.2s`).
+  - **Expanded Motion Cycles**: 4 dynamic camera movements (`pan_rl`, `zoom_in`, `pan_lr`, `slow_zoom`).
+  - **Cinematic Warm Color Grade**: Studio color balance curve (`colorbalance=rs=0.04:gs=0.01:bs=-0.035`) + unsharp texture enhancement.
+  - **Studio ASMR Audio Layering**: Dynamic `compand` compressor + `highpass=55Hz` + 4.5kHz presence boost + calming 3-tone harmonic ambient soundscape.
+- **Brand Identity & Social Footprint**:
+  - Crisp transparent logo (`135px`) + persistent `@zencutofficials` watermark overlay.
+  - Burned-in ASS captions in safe area (`MarginV=260`) to prevent UI overlap on TikTok & Instagram Reels.
 - **Multi-Channel Social Distribution**:
-  - Auto-posts to **TikTok** and **Instagram Reels** (`shouldShareToFeed: True`).
-  - Respects Buffer free-tier 10-slot queue limits with automatic schedule spacing.
+  - Auto-posts to **TikTok** and **Instagram Reels** (`@zencutofficials`) via Buffer GraphQL API.
+  - Respects Buffer queue limits with intelligent 71s human-like publish spacing.
 
 ---
 
@@ -37,8 +38,8 @@ ZenCut is a fully-automated, **$0-budget content generation and distribution pip
 ```
 .github/workflows/clip-and-post.yml
    │  1) Checkout, Python 3.12, FFmpeg, Pip Cache
-   │  2) pytest tests/ -v                       → Run 49 automated unit tests
-   │  3) python src/find_sources.py             → Profile keyword discovery (writes sources.json)
+   │  2) pytest tests/ -v                       → Run 57 automated unit tests
+   │  3) python src/find_sources.py             → Creator & keyword discovery (writes sources.json)
    │  4) python src/main.py                     → Download → Translate → Clip → Cloudinary → Buffer
    │  5) Commit sources.json state & push
    │
@@ -57,15 +58,28 @@ sources.json  ◄──────────── State Tracking & Auto-Arch
     "satisfying_crafts": {
       "name": "Satisfying Crafts & Restoration",
       "discovery": {
-        "keywords": ["木工", "修复", "解压", "手工", "机械制造"],
-        "min_views": 50000,
-        "max_new_sources": 3
+        "strategy": "bilibili",
+        "order": "pubdate",
+        "bilibili_creators": [
+          "才疏学浅的才浅",
+          "手工耿",
+          "阿木爷爷",
+          "王小师傅1",
+          "苏清吾",
+          "玉师傅手工匠人",
+          "我的修复师",
+          "听雨剑阁",
+          "机械造型"
+        ],
+        "keywords": ["木工", "木工雕刻", "老物件修复", "手工制作", "解压手工", "传统手艺", "机械制造", "刀剑锻造"],
+        "min_views": 30000,
+        "max_new_sources": 2
       },
       "buffer": {
         "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
         "per_platform_captions": {
-          "tiktok": "{title} 🔨✨ Wait for the end result! {hashtags}",
-          "instagram": "Satisfying {title} 🔨 Follow @ZenCut for daily satisfying craft videos! {hashtags}"
+          "tiktok": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
+          "instagram": "Satisfying {title} ✨ Follow @zencutofficials for daily satisfying craft videos! {hashtags}"
         }
       }
     }
@@ -75,21 +89,9 @@ sources.json  ◄──────────── State Tracking & Auto-Arch
 
 ---
 
-## 🔒 Secrets & Environment Variables
-
-| Variable | Service | Purpose |
-|---|---|---|
-| `BUFFER_API_KEY` | Buffer GraphQL API | Authenticates post scheduling to TikTok & Instagram |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary | Video hosting cloud name |
-| `CLOUDINARY_API_KEY` | Cloudinary | Upload authorization |
-| `CLOUDINARY_API_SECRET` | Cloudinary | Upload signing |
-| `SLACK_WEBHOOK_URL` | Slack *(Optional)* | Run summaries & queue alerts |
-
----
-
 ## 🧪 Testing
 
-Run the complete 49-test suite locally:
+Run the complete 57-test suite locally:
 
 ```bash
 python -m pytest tests/ -v
