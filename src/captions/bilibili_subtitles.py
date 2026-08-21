@@ -135,11 +135,11 @@ def fetch_bilibili_subtitles(bvid, headers=None):
 
 def make_title_captions(title, total_duration=900.0):
     """
-    Clean intro caption generator for ASMR and craftsmanship videos.
+    High-retention 3-second hook generator for ASMR and craftsmanship videos.
 
-    Displays the clean translated English title during the first 3.5 seconds
-    to establish context, then leaves the rest of the video 100% clean and
-    immersion-focused for pure visual/acoustic ASMR.
+    Displays a curiosity-inducing visual hook during the first 3.2 seconds
+    to maximize 3-second scroll-stop rate, then leaves the rest of the video
+    100% clean and immersion-focused for pure visual/acoustic ASMR.
 
     Args:
         title: Source video title string (translated English).
@@ -149,17 +149,18 @@ def make_title_captions(title, total_duration=900.0):
         List of {"start", "duration", "text"} dicts, or None if title is empty.
     """
     title_clean = (title or "").strip()
-    if len(title_clean) > 52:
-        title_clean = title_clean[:48] + "..."
+    if len(title_clean) > 48:
+        title_clean = title_clean[:44] + "..."
     if not title_clean:
         return None
 
-    # Only show clean intro hook for first 3.5 seconds
-    intro_dur = min(3.5, total_duration - 0.1)
+    # Only show high-retention hook for first 3.2 seconds
+    intro_dur = min(3.2, total_duration - 0.1)
     if intro_dur < 0.5:
         return None
 
-    return [{"start": 0.0, "duration": intro_dur, "text": title_clean}]
+    hook_text = f"🔨 Wait For The Result ✨\\N{title_clean}"
+    return [{"start": 0.0, "duration": intro_dur, "text": hook_text}]
 
 
 def bvid_from_url(url):

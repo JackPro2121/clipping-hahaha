@@ -67,10 +67,10 @@
   },
   "clipper": {
     "max_clips_per_video": 3,
-    "clip_length_s": 45,
+    "clip_length_s": 36,
     "transition_every_s": 4,
     "transition_duration_s": 0.15,
-    "min_clip_s": 30,
+    "min_clip_s": 24,
     "aspect": "vertical",
     "width": 1080,
     "height": 1920,

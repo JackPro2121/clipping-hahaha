@@ -30,7 +30,8 @@ def test_make_title_captions():
     assert caps is not None
     assert len(caps) > 0
     assert caps[0]["start"] == 0.0
-    assert caps[0]["text"] == title
+    assert title in caps[0]["text"]
+    assert "Wait For The Result" in caps[0]["text"]
 
 
 def test_make_title_captions_empty():

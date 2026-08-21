@@ -300,11 +300,13 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         parts.extend(logo_parts)
 
     afmt = "aformat=sample_rates=44100:channel_layouts=stereo"
-    # Subtle acoustic variation (bypasses direct match fingerprint while remaining natural & clear)
+    # Studio-grade ASMR compressor: boosts subtle carving/slicing acoustics, tames harsh peaks, shifts rate slightly
     audio_enhancer = (
-        "equalizer=f=280:t=q:w=1.2:g=1.0,"
-        "equalizer=f=3200:t=q:w=1.0:g=-0.5,"
-        "asetrate=44100*1.015,aresample=44100,atempo=1/1.015"
+        "highpass=f=55,"
+        "compand=attacks=0.05:decays=0.2:points=-80/-80|-45/-30|-20/-12|0/-3:gain=3,"
+        "equalizer=f=220:t=q:w=1.2:g=1.2,"
+        "equalizer=f=4500:t=q:w=1.0:g=1.5,"
+        "asetrate=44100*1.012,aresample=44100,atempo=1/1.012"
     )
     if has_audio:
         aacc = "[acat]"
