@@ -174,7 +174,7 @@
     "max_posts_per_channel": 2,
     "max_queue_depth": 8,
     "mode": "addToQueue",
-    "services": ["tiktok"],
+    "services": ["tiktok", "instagram"],
     "per_platform_captions": {
       "tiktok": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
       "instagram": "Satisfying {title} ✨ Follow @zencutofficials for daily satisfying craft videos! {hashtags}"

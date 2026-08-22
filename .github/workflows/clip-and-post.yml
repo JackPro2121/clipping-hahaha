@@ -2,14 +2,12 @@ name: Clip & Post
 
 on:
   workflow_dispatch:
-  # ⏸️ PAUSED 24h — TikTok API rate limit triggered (2026-08-21)
-  # Re-enable after 2026-08-22 14:00 UTC by restoring the schedule block below:
-  # schedule:
-  #   - cron: "0 11 * * *"   # UK lunch / US morning
-  #   - cron: "0 17 * * *"   # US afternoon / UK evening
-  #   - cron: "0 20 * * *"   # US prime / UK night
-  #   - cron: "0 23 * * *"   # US East prime time 🔥
-  #   - cron: "0 2 * * *"    # US West prime time 🔥
+  schedule:
+    - cron: "0 11 * * *"   # UK lunch / US morning (4:00 PM PKT)
+    - cron: "0 17 * * *"   # US afternoon / UK evening (10:00 PM PKT)
+    - cron: "0 20 * * *"   # US East prime time (1:00 AM PKT)
+    - cron: "0 23 * * *"   # US late-night / West evening (4:00 AM PKT)
+    - cron: "0 2 * * *"    # US West prime time (7:00 AM PKT)
 
 permissions:
   contents: write
