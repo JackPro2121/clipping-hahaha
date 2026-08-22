@@ -220,11 +220,11 @@ def process_source(src, cfg):
         post_mode = cfg.get("buffer", {}).get("mode", "shareNow")
 
         for i, clip in enumerate(clips, 1):
-            # If not the first clip, apply natural random spacing (1 to 2.5 minutes, strictly under 5m)
+            # In addToQueue mode, Buffer handles time slot spacing automatically.
+            # Only brief 3-5s spacing between API calls is needed.
             if i > 1:
-                import random
-                delay_s = random.randint(180, 480)  # 3–8 min natural spacing (prevents spam flags)
-                print(f"\nApplying {delay_s}s natural spacing before publishing next clip ({i}/{len(clips)})...")
+                delay_s = 5 if post_mode == "addToQueue" else 180
+                print(f"\nSpacing {delay_s}s before queueing next clip ({i}/{len(clips)})...")
                 time.sleep(delay_s)
 
             try:
