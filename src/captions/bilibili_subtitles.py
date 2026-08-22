@@ -43,7 +43,8 @@ def _get_cid(bvid, headers):
         if not pages:
             return None
         return pages[0]["cid"]
-    except Exception:
+    except Exception as exc:
+        print(f"bilibili pagelist failed for {bvid}: {exc}")
         return None
 
 
@@ -67,7 +68,8 @@ def _fetch_subtitle_url(bvid, cid, headers):
         if sub_url.startswith("//"):
             sub_url = "https:" + sub_url
         return sub_url or None
-    except Exception:
+    except Exception as exc:
+        print(f"bilibili player/v2 failed for {bvid} cid={cid}: {exc}")
         return None
 
 
@@ -96,7 +98,8 @@ def _parse_subtitle_file(url, headers):
                 {"start": float(start), "duration": duration, "text": text}
             )
         return segments or None
-    except Exception:
+    except Exception as exc:
+        print(f"bilibili parse subtitle file failed ({url[:40]}...): {exc}")
         return None
 
 

@@ -57,10 +57,9 @@ def test_should_retry_backoff():
     src["next_retry_after"] = past_time
     assert should_retry(src) is True
 
-    # 4. Max retries exceeded
+    # 4. Max retries exceeded (pure query returns False, status stays pending until schedule_retry)
     src["retry_count"] = 5
     assert should_retry(src) is False
-    assert src["status"] == "failed"
 
 
 def test_schedule_retry():
@@ -70,6 +69,12 @@ def test_schedule_retry():
     assert src["last_error"] == "Download timed out"
     assert src["next_retry_after"] is not None
     assert src["status"] == "pending"
+
+    # Test transition to failed when retry_count reaches 5
+    src["retry_count"] = 4
+    schedule_retry(src, "Permanent failure")
+    assert src["retry_count"] == 5
+    assert src["status"] == "failed"
 
 
 def test_mark_processed():

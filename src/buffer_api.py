@@ -26,37 +26,54 @@ def _get_token():
     return token
 
 
-def _request(query, variables=None):
-    """Single shared helper for all Buffer GraphQL requests.
+def _request(query, variables=None, max_retries=3):
+    """Single shared helper for all Buffer GraphQL requests with retry on transient errors.
 
     Args:
         query: GraphQL query/mutation string.
         variables: Optional dict of GraphQL variables.
+        max_retries: Number of retry attempts on network/server errors or 429/5xx (default: 3).
 
     Returns:
         The ``data`` field from the response payload.
 
     Raises:
-        RuntimeError: On GraphQL errors or HTTP failures.
+        RuntimeError: On GraphQL errors or persistent HTTP failures.
     """
+    import time
     payload = {"query": query}
     if variables:
         payload["variables"] = variables
 
-    resp = requests.post(
-        API_URL,
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {_get_token()}",
-        },
-        json=payload,
-        timeout=60,
-    )
-    resp.raise_for_status()
-    data = resp.json()
-    if data.get("errors"):
-        raise RuntimeError(f"Buffer GraphQL error: {data['errors']}")
-    return data["data"]
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {_get_token()}",
+    }
+
+    last_exc = None
+    for attempt in range(max_retries):
+        try:
+            resp = requests.post(API_URL, headers=headers, json=payload, timeout=60)
+            if resp.status_code in (429, 500, 502, 503, 504):
+                wait_time = (2 ** attempt) * 2
+                print(f"Buffer API HTTP {resp.status_code}, retrying in {wait_time}s (attempt {attempt+1}/{max_retries})...")
+                time.sleep(wait_time)
+                continue
+            resp.raise_for_status()
+            data = resp.json()
+            if data.get("errors"):
+                raise RuntimeError(f"Buffer GraphQL error: {data['errors']}")
+            return data["data"]
+        except requests.RequestException as exc:
+            last_exc = exc
+            if attempt < max_retries - 1:
+                wait_time = (2 ** attempt) * 2
+                print(f"Buffer request failed ({exc}), retrying in {wait_time}s...")
+                time.sleep(wait_time)
+            else:
+                break
+
+    raise RuntimeError(f"Buffer request failed after {max_retries} attempts: {last_exc}")
 
 
 def get_org_id():
@@ -151,4 +168,9 @@ def create_post(channel_id, text, video_url, thumbnail_offset=2000, service=None
             raise QueueFullError(f"Buffer queue full: {msg}")
         raise RuntimeError(f"Buffer createPost error: {msg}")
 
-    return result["post"]["id"]
+    post = result.get("post") or {}
+    post_id = post.get("id")
+    if not post_id:
+        raise RuntimeError(f"Buffer createPost returned unexpected payload (missing post.id): {result}")
+
+    return post_id

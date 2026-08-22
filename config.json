@@ -34,7 +34,7 @@
         "min_views": 30000,
         "min_source_duration_s": 35,
         "max_duration_s": 600,
-        "max_new_sources": 1
+        "max_new_sources": 2
       },
       "buffer": {
         "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
@@ -161,7 +161,7 @@
     "min_views": 30000,
     "max_duration_s": 600,
     "min_source_duration_s": 35,
-    "max_new_sources": 1
+    "max_new_sources": 2
   },
   "buffer": {
     "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",

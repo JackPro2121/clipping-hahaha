@@ -1,5 +1,4 @@
-import pytest
-from main import build_caption
+from main import build_caption, sanitize_caption_title
 
 
 def test_build_caption_formatting():
@@ -42,3 +41,16 @@ def test_build_caption_per_platform():
     assert tt_caption == "TikTok: Wood Art #craft"
     default_caption = build_caption(cfg, "Wood Art", 1, 1, service="youtube")
     assert default_caption == "Default Wood Art"
+
+
+def test_sanitize_caption_title():
+    # Craft titles should pass through
+    assert sanitize_caption_title("Making a Japanese Wood Chisel") == "Making a Japanese Wood Chisel"
+    assert sanitize_caption_title("Ancient Sword Restoration Process") == "Ancient Sword Restoration Process"
+    assert sanitize_caption_title("Satisfying lathe machining") == "Satisfying lathe machining"
+
+    # Off-niche titles should be replaced with generic on-brand fallback
+    off_niche = "The immune system fight against viral infections in humans"
+    assert sanitize_caption_title(off_niche) == "Incredible Craft Mastery You Have to See"
+    assert sanitize_caption_title("") == "Incredible Craft Mastery You Have to See"
+    assert sanitize_caption_title(None) == "Incredible Craft Mastery You Have to See"

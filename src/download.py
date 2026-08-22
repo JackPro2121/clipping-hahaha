@@ -101,7 +101,7 @@ def _bili_api_get(url, headers, retries=3):
     raise RuntimeError(f"bilibili API failed: {last}")
 
 
-def _bili_stream_download(url, dest, headers, retries=3):
+def _bili_stream_download(url, dest, headers, retries=3, min_bytes=50_000):
     for attempt in range(retries):
         try:
             with requests.get(url, headers=headers, stream=True, timeout=60) as resp:
@@ -109,9 +109,9 @@ def _bili_stream_download(url, dest, headers, retries=3):
                 with open(dest, "wb") as fh:
                     for chunk in resp.iter_content(1024 * 1024):
                         fh.write(chunk)
-            if dest.stat().st_size > 10_000:
+            if dest.stat().st_size >= min_bytes:
                 return
-            raise RuntimeError("stream too small")
+            raise RuntimeError(f"stream too small ({dest.stat().st_size}B < {min_bytes}B)")
         except (requests.RequestException, RuntimeError) as exc:
             last = str(exc)[:160]
             if attempt == retries - 1:
@@ -168,12 +168,12 @@ def _bili_download(url, out_dir, max_duration_s):
     )
 
     v_path = out_dir / f"{bvid}_video.m4s"
-    _bili_stream_download(v_url, v_path, headers)
+    _bili_stream_download(v_url, v_path, headers, min_bytes=200_000)
 
     out = out_dir / f"{bvid}.mp4"
     if a_url:
         a_path = out_dir / f"{bvid}_audio.m4s"
-        _bili_stream_download(a_url, a_path, headers)
+        _bili_stream_download(a_url, a_path, headers, min_bytes=30_000)
         cmd = [
             "ffmpeg",
             "-y",

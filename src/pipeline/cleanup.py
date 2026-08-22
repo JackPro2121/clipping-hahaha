@@ -39,30 +39,39 @@ def cleanup_cloudinary_clips(folder="clips", keep_days=14):
     deleted_count = 0
 
     try:
-        # Fetch uploaded video assets under prefix
-        response = cloudinary.api.resources(
-            type="upload",
-            resource_type="video",
-            prefix=folder,
-            max_results=500,
-        )
-        resources = response.get("resources") or []
+        next_cursor = None
+        while True:
+            kwargs = {
+                "type": "upload",
+                "resource_type": "video",
+                "prefix": folder,
+                "max_results": 500,
+            }
+            if next_cursor:
+                kwargs["next_cursor"] = next_cursor
 
-        for item in resources:
-            public_id = item.get("public_id")
-            created_at_str = item.get("created_at")
+            response = cloudinary.api.resources(**kwargs)
+            resources = response.get("resources") or []
 
-            if not public_id or not created_at_str:
-                continue
+            for item in resources:
+                public_id = item.get("public_id")
+                created_at_str = item.get("created_at")
 
-            try:
-                # Format: 2026-08-20T10:00:00Z
-                created_dt = datetime.fromisoformat(created_at_str.replace("Z", "+00:00"))
-                if created_dt < cutoff:
-                    cloudinary.uploader.destroy(public_id, resource_type="video")
-                    deleted_count += 1
-            except Exception as exc:
-                print(f"Failed to delete {public_id}: {exc}")
+                if not public_id or not created_at_str:
+                    continue
+
+                try:
+                    # Format: 2026-08-20T10:00:00Z
+                    created_dt = datetime.fromisoformat(created_at_str.replace("Z", "+00:00"))
+                    if created_dt < cutoff:
+                        cloudinary.uploader.destroy(public_id, resource_type="video")
+                        deleted_count += 1
+                except Exception as exc:
+                    print(f"Failed to delete {public_id}: {exc}")
+
+            next_cursor = response.get("next_cursor")
+            if not next_cursor:
+                break
 
         if deleted_count > 0:
             print(f"Cloudinary cleanup: Deleted {deleted_count} clips older than {keep_days} days")

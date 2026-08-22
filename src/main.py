@@ -137,6 +137,37 @@ def _fetch_captions(src, captions_cfg):
     return segments
 
 
+# ─────────────────────────────────────────────────────────────
+# Caption title sanitization (BUG-05, BUG-15)
+# ─────────────────────────────────────────────────────────────
+_CAPTION_CRAFT_PATTERNS = [
+    re.compile(r"\b" + re.escape(kw), re.IGNORECASE)
+    for kw in [
+        "wood", "carv", "craft", "restor", "knife", "sword", "lathe", "forge",
+        "handmade", "repair", "machin", "jade", "bamboo", "weav", "chisel",
+        "tool", "metal", "iron", "steel", "weld", "polish", "sculpt", "engrav",
+        "fan", "clay", "potter", "making", "build", "creat", "art", "master",
+        "satisfying", "traditional", "ancient", "skill", "technique", "carpenter",
+        "blacksmith", "craftsman", "woodwork"
+    ]
+]
+
+
+def sanitize_caption_title(translated: str) -> str:
+    """Return translated title if craft-relevant, else a safe generic fallback."""
+    if not translated:
+        return "Incredible Craft Mastery You Have to See"
+    for pat in _CAPTION_CRAFT_PATTERNS:
+        if pat.search(translated):
+            return translated
+    # Off-niche translation detected — use generic on-brand caption
+    print(
+        f"  [caption-sanitize] Off-niche title detected: '{translated[:60]}' "
+        f"→ using generic craft caption"
+    )
+    return "Incredible Craft Mastery You Have to See"
+
+
 def process_source(src, cfg):
     """Process one pending source end-to-end.
 
@@ -162,8 +193,8 @@ def process_source(src, cfg):
             return False, 0, err
 
         # 1b. Smart AI Speech-to-Text via Faster-Whisper
-        # If no official subtitle track, check audio for spoken Chinese
-        if captions_cfg.get("enabled", True):
+        # BUG-10 fix: Only transcribe if no official subtitle track was fetched
+        if captions_cfg.get("enabled", True) and not transcript:
             from captions.whisper_transcriber import transcribe_and_translate
             try:
                 whisper_segments = transcribe_and_translate(raw)
@@ -205,35 +236,12 @@ def process_source(src, cfg):
             print(err)
             return False, 0, err
 
-        # Translate title to English for Buffer captions, then sanitize.
-        # If the translated title contains no craft keywords (e.g. it's about immune systems
-        # or was from an off-niche video that slipped through), use a safe generic fallback
-        # so captions always stay on-brand for the @zencutofficials Satisfying Crafts channel.
-        _CAPTION_CRAFT_KW = [
-            "wood", "carv", "craft", "restor", "knife", "sword", "lathe", "forge",
-            "handmade", "repair", "machin", "jade", "bamboo", "weav", "chisel",
-            "tool", "metal", "iron", "steel", "weld", "polish", "sculpt", "engrav",
-            "fan", "clay", "pottery", "making", "build", "creat", "art", "master",
-            "satisfying", "traditional", "ancient", "skill", "technique",
-        ]
-
-        def _sanitize_caption_title(translated: str) -> str:
-            """Return translated title if craft-relevant, else a safe generic fallback."""
-            t = translated.lower()
-            if any(kw in t for kw in _CAPTION_CRAFT_KW):
-                return translated
-            # Off-niche translation detected — use generic on-brand caption
-            print(
-                f"  [caption-sanitize] Off-niche title detected: '{translated[:60]}' "
-                f"→ using generic craft caption"
-            )
-            return "Incredible Craft Mastery You Have to See"
-
+        # Translate title to English for Buffer captions, then sanitize
         raw_title = src.get("title") or raw.stem
         title = translate_to_english(raw_title)
         if title != raw_title:
             print(f"Title translated for captions: '{raw_title[:40]}' → '{title[:60]}'")
-        title = _sanitize_caption_title(title)
+        title = sanitize_caption_title(title)
         max_posts = cfg["buffer"].get("max_posts_per_channel", 8)
         clips = clips[:max_posts]
         posted = 0

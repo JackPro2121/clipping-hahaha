@@ -146,15 +146,26 @@ def main():
         # Bamboo / fan / weave
         "扇子", "竹编", "编织", "草编", "竹艺",
         # General craft signals
-        "解压", "手工制作", "制作", "工艺", "传统", "古法", "民间技艺",
+        "解压手工", "手工制作", "传统工艺", "古法工艺", "民间技艺", "手工",
         # English (for translated titles already in English)
         "wood", "carv", "craft", "restor", "knife", "sword", "lathe", "forge",
         "handmade", "repair", "machin", "jade", "bamboo", "weav", "chisel",
     ]
 
+    _NEGATIVE_KW = [
+        # Food / cooking (prevents "美食制作" food prep sneaking in)
+        "美食", "做菜", "食谱", "吃播", "料理", "炒菜", "小吃", "甜品", "烹饪",
+        # Gaming / Anime / Music
+        "游戏", "实况", "动漫", "二次元", "音乐", "唱歌", "舞蹈", "跳舞",
+        # General non-craft trivia
+        "搞笑", "段子", "免疫系统", "科普", "冷知识", "未解之谜"
+    ]
+
     def _is_niche_relevant(title: str) -> bool:
-        """Return True if title contains at least one niche craft keyword."""
+        """Return True if title contains at least one niche craft keyword and no negative keywords."""
         t = title.lower()
+        if any(neg.lower() in t for neg in _NEGATIVE_KW):
+            return False
         return any(kw.lower() in t for kw in _NICHE_KW)
 
     # 3. Quality score and filter candidate videos

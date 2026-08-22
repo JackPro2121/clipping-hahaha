@@ -63,7 +63,7 @@ def test_discover_bilibili_creators_with_configured_uids():
         assert len(results) == 1
         assert results[0]["url"] == "https://www.bilibili.com/video/BV1xyz"
         mock_fetch.assert_called_once_with(
-            "12345", max_count=2, min_duration_s=30, max_duration_s=600, order="pubdate"
+            "12345", max_count=1, min_duration_s=30, max_duration_s=600, order="pubdate"
         )
 
 

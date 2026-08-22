@@ -5,6 +5,18 @@ Monitors active scheduled posts per channel and prevents queue flooding.
 
 from buffer_api import _request, get_org_id
 
+# BUG-01 fix: org_id never changes within a run — cache it at module level
+# to avoid one extra GraphQL API call per clip × per channel.
+_ORG_ID_CACHE = None
+
+
+def _get_org_id_cached():
+    """Return org_id, fetching from API only on first call per process."""
+    global _ORG_ID_CACHE
+    if _ORG_ID_CACHE is None:
+        _ORG_ID_CACHE = get_org_id()
+    return _ORG_ID_CACHE
+
 
 def get_channel_queue_depth(channel_id):
     """Retrieve the number of pending scheduled posts in a Buffer channel.
@@ -12,7 +24,7 @@ def get_channel_queue_depth(channel_id):
     Returns:
         int: Number of pending/scheduled posts, or 0 if query fails.
     """
-    org_id = get_org_id()
+    org_id = _get_org_id_cached()
     query = """
     query GetPendingPosts($orgId: OrganizationId!, $channelId: ChannelId!) {
       posts(input: {

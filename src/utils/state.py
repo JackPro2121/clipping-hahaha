@@ -98,7 +98,7 @@ def archive_old_sources(data, keep_days=30):
         status = src.get("status")
         processed_at = src.get("processed_at")
 
-        if status in ("processed", "failed") and processed_at:
+        if status == "processed" and processed_at:
             try:
                 dt = datetime.fromisoformat(processed_at.replace("Z", "+00:00"))
                 if dt < cutoff:
@@ -116,16 +116,13 @@ def archive_old_sources(data, keep_days=30):
 
 
 def should_retry(src, max_retries=5):
-    """Check if a pending source is eligible for retry."""
+    """Check if a pending source is eligible for retry (pure query without side-effects)."""
     status = src.get("status", "pending")
-    if status == "processed":
-        return False
-    if status == "failed":
+    if status != "pending":
         return False
 
     retries = src.get("retry_count", 0)
     if retries >= max_retries:
-        src["status"] = "failed"
         return False
 
     next_retry = src.get("next_retry_after")
