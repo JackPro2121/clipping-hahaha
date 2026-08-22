@@ -5,20 +5,20 @@ It is the companion to `AGENTS.md` (operational reference). Read `AGENTS.md` fir
 
 ---
 
-## 1. Data flow
+## 1. Data Flow
 
 ```
- discovery ──► sources.json ──► download ──► translator ──► clip engine ──► Cloudinary ──► Buffer ──► TikTok / IG Reels
- (bilibili     {url,title,    (bilibili      (Google web    (ffmpeg         (SDK          (GraphQL     (scheduled queue
-  keywords/     status,        CDN /          $0 engine)     filters &       upload)       mutation)    per-platform)
-  douyin)       score}         douyin)                       branding)
+ discovery ──► sources.json ──► download ──► translator ──► clip engine ──► Cloudinary ──► Buffer ──► TikTok / IG / FB
+ (25 Master    {url,title,    (Bilibili      (Faster-Whisper (ffmpeg 6-tier  (SDK          (GraphQL     (5 peak daily
+  Creators)     status,        DASH CDN       + Google web   Smart Narrative  upload)       addToQueue   scheduled slots)
+                score}         no watermark)  $0 engine)     & ASMR audio)                  mutation)
 ```
 
 Two entrypoints, both invoked by the GitHub Action:
 
 | Entrypoint | Command | Responsibility |
 |---|---|---|
-| `find_sources.py` | `python src/find_sources.py` | Profile keyword discovery & quality scoring, writes `sources.json` |
+| `find_sources.py` | `python src/find_sources.py` | Creator discovery (`order="pubdate"`), quality scoring, writes `sources.json` |
 | `main.py` | `python src/main.py` | Full orchestrator: Download ➔ Translate ➔ Clip ➔ Cloudinary ➔ Buffer |
 
 ---
@@ -26,7 +26,7 @@ Two entrypoints, both invoked by the GitHub Action:
 ## 2. Profile-Based Configuration Architecture (`src/utils/config.py`)
 
 The pipeline supports **Modular Pipeline Profiles** to operate dedicated accounts per niche:
-- **V1 (`satisfying_crafts`)**: Woodworking, antique restoration, satisfying crafts, precision machine art.
+- **V1 (`satisfying_crafts`)**: Woodworking, antique restoration, satisfying crafts, precision machine art, Damascus forging.
 - **V2 (`future_tech_gadgets`)**: Smart gadgets, future tech inventions, novel tools.
 - **V3 (`street_food_asmr`)**: High-speed cooking, ASMR street food.
 
@@ -36,14 +36,11 @@ The pipeline supports **Modular Pipeline Profiles** to operate dedicated account
 
 ## 3. Discovery Engine
 
-### 3.1 Bilibili Discovery (`src/bilibili.py`)
-- **Keyword Search Mode**: Calls `GET https://api.bilibili.com/x/web-interface/search/type` with `search_type=video`, `order=click`, and profile-specific keywords (`木工`, `修复`, `解压`, etc.).
-- **Category Ranking Mode**: Calls `GET https://api.bilibili.com/x/web-interface/ranking/v2` with category `rid` (e.g. food=76, tech=188).
-- Uses `_bili_headers` for buvid3/buvid4 cookie injection to bypass WAF.
-- Quality score (0–100 pts) filters out candidate videos below `min_views` (50,000+).
-
-### 3.2 YouTube Discovery (`src/chocodata.py`) — Legacy
-- Uses ChocoData API (`/search`, `/channel`) for YouTube keyword/channel discovery.
+### 3.1 Curated Creator Discovery (`src/pipeline/creator_discovery.py`)
+- **25 Verified Master Creators**: Pool of top-tier craftsmen (*才疏学浅的才浅, 手工耿, 阿木爷爷, 王小师傅1, 苏清吾, 玉师傅手工匠人, 我的修复师, 听雨剑阁, 机械造型*, etc.).
+- **Freshness First (`order="pubdate"`)**: Calls `https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword={creator}&order=pubdate&page=1` to capture fresh videos within hours of release.
+- **Dynamic Sampling**: Shuffles the pool on every run with `random.shuffle()` to maintain feed diversity.
+- **Relaxed Threshold**: Verified creators use `creator_min_views: 1500` so newly uploaded masterpieces are captured before competitor aggregators find them.
 
 ---
 
@@ -52,52 +49,56 @@ The pipeline supports **Modular Pipeline Profiles** to operate dedicated account
 ### 4.1 Bilibili (CDN m4s Stream)
 - Bilibili's Akamai CDN streams (`upos-*-mirror*.bilivideo.com`) do **not** carry platform watermarks.
 - Requests DASH stream (`qn=80/64/48`), downloads video and audio `.m4s`, and merges with `ffmpeg -c copy`.
+- **Defensive Fallback**: If audio DASH stream is absent (silent/interleaved video), automatically synthesizes lossless stereo audio track without crashing.
 - To eliminate any creator-stamped corner UIDs or mobile app logos, a **6% safe-zone overscan margin** is applied in `_center_crop`.
 
 ### 4.2 Douyin / TikTok China (`src/douyin.py`)
 - Resolves short share URLs (`v.douyin.com/...`) by following redirects to extract `aweme_id`.
 - Queries Douyin item endpoint `https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={aweme_id}`.
 - Replaces `/playwm/` with `/play/` in the CDN URL to obtain the **100% watermark-free original 1080p MP4**.
-- Stream downloads directly into the workspace.
 
 ---
 
-## 5. Autonomous English Translation Engine (`src/captions/translator.py`)
+## 5. Autonomous Speech AI & Translation Engine (`src/captions/`)
 
-- **$0 Free Translation Engine**: Uses Google Translate web endpoint with automatic fallback.
-- **Title Translation**: Chinese titles are translated to fluent English for Buffer & social captions. Automatically strips embedded Chinese hashtags (`#高空伐木` etc.).
-- **Subtitle Translation**: Subtitle tracks and title fallback segments are translated to English before rendering into ASS subtitle files for video burn-in.
+- **Faster-Whisper AI Transcriber (`whisper_transcriber.py`)**:
+  - Uses `int8` CPU quantization with Voice Activity Detection (VAD).
+  - Translates spoken Chinese directly into English timestamped segments.
+  - If speech probability is low (pure ASMR crafting), automatically disables subtitle burn-in for 100% clean visual immersion.
+- **Google Translate Web Engine (`translator.py`)**:
+  - Translates Chinese titles and subtitle segments to fluent English for Tier-1 audiences.
+  - Strips Chinese hashtags (`#高空伐木` etc.) via regex cleaning.
+- **3.2s Curiosity Hook (`bilibili_subtitles.py`)**:
+  - Renders `🔨 Wait For The Result ✨\N{title}` during the first 3.2s to maximize 3-second scroll retention.
 
 ---
 
-## 6. Clip Engine (`src/clip.py`)
+## 6. Transformative Video Engine (`src/clip.py`)
 
 Everything runs in a single `ffmpeg -filter_complex` graph per clip.
 
-### 6.1 Safe-Zone Overscan & Center-Crop (`_center_crop`)
-- **Portrait/Vertical (9:16)**: Applies 6% overscan crop (`w = src_w * 0.94, h = w * 16/9`) to completely eliminate corner logos and UIDs.
-- **Landscape/Horizontal (16:9)**: Center 9:16 crop (`h = src_h * 0.97, w = h * 9/16`) cuts 40% off each side.
+### 6.1 Smart Narrative Arc (`_select_windows`)
+- **Clip 1 (The Hook & Process)**: First 36 seconds (`0.0s` to `36.0s`) covering raw material cutting and shaping.
+- **Clip 2 (The Climax & Grand Reveal)**: Final 36 seconds (`duration - 38.0s` to `duration - 2.0s`) capturing sanding, oiling, testing, and the finished masterpiece.
 
-### 6.2 Motion Cycle
-- Chunks split into 4s intervals with fade transitions (`0.15s`).
-- Cycles through `pan_rl`, `pan_lr`, and `zoom_in` (1.12x factor).
+### 6.2 Organic Motion & Transitions
+- Variable pacing chunks (`[0.85, 1.15, 0.95, 1.05]`) with `0.15s` smooth boundary transitions.
+- Cycles through `pan_rl`, `pan_lr`, and `zoom_in` (1.12x Lanczos factor).
 
-### 6.3 Burned-In Captions
-- Formatted as ASS subtitles (`Fontsize=72, Bold, Outline 4, Alignment 2, MarginV=240`) placed in the safe lower-third above TikTok/Instagram UI controls.
-- Dynamic hook rotation: `{Clean Title}` ➔ `"Satisfying Craftsmanship ✨"` ➔ `"Wait for the final result 🔨"` ➔ `"Follow @ZenCut for daily craft 🔥"`.
+### 6.3 Studio ASMR Audio Compressor & Acoustic Variation
+- `highpass=55, compand=..., equalizer=f=220:g=1.2, equalizer=f=4500:g=1.5, asetrate=44100*1.012, aresample=44100, atempo=1/1.012`.
+- Boosts subtle tool carving sounds, tames harsh peaks, and shifts digital audio hash.
 
-### 6.4 Audio Fingerprint Variation & Ambient BGM
-- **Acoustic Variation**: `equalizer=f=280:t=q:w=1.2:g=1.0,equalizer=f=3200:t=q:w=1.0:g=-0.5,asetrate=44100*1.015,aresample=44100,atempo=1/1.015`. Alters digital audio frequencies to bypass automated copyright matching while preserving natural, crisp ASMR sounds.
-- **Ambient BGM (`_make_bgm`)**: Synthesizes a warm, soothing ambient chord (C3/E3/G3, lowpass 950Hz, volume `0.18`).
-
-### 6.5 Branding Overlay (`src/pipeline/brand.py`)
-- Overlays transparent Z-logo (`135px`, `opacity: 0.92`) at `50:130`.
-- Overlays persistent `@ZenCut` text watermark with drop shadow directly beneath the logo.
+### 6.4 Branding Overlay (`src/pipeline/brand.py`)
+- Overlays transparent Z-logo (`135px`) at top-left safe zone `50:130`.
+- Overlays persistent `@zencutofficials` text watermark with drop shadow beneath the logo.
 
 ---
 
 ## 7. Multi-Channel Distribution (`src/buffer_api.py`)
 
-- **TikTok (`jackoscar287`)**: Video queued with `{title} 🔨✨ Wait for the end result! {hashtags}`.
-- **Instagram Reels (`zencutofficials`)**: Queued with `metadata: { instagram: { type: "reel", shouldShareToFeed: True } }` and tailored engagement captions.
-- **Buffer Queue Spacing**: Uses Buffer's posting schedule to space out posts over the day.
+- **TikTok (`jackoscar287`)**: Queued with `{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}`.
+- **Instagram Reels (`zencutofficials`)**: Queued with `metadata: { instagram: { type: "reel", shouldShareToFeed: True } }`.
+- **Facebook Reels (`ZenCut`)**: Queued with `metadata: { facebook: { type: "reel" } }` for native Reels feed distribution.
+- **Safe Mode**: Strictly **`mode: "addToQueue"`** spreading posts across 5 peak High-CPM slots without account spam triggers.
+- **30-Minute Early Trigger**: GitHub Actions workflow triggers 30m prior to Buffer slots for zero-latency publishing on the exact hour.

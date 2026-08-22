@@ -16,7 +16,7 @@ Fully-automated, **$0-budget** pipeline that runs on **GitHub Actions**:
 4. Clips it into **30–90s vertical TikTok-style videos** with **a transition every 4 seconds**, styled
    burned-in English captions, brand watermark (@ZenCut), motion variation, and synthesized ambient music.
 5. Uploads clips to **Cloudinary**.
-6. Queues tailored posts to **Buffer** for both **TikTok** and **Instagram** channels.
+6. Queues tailored posts to **Buffer** for **TikTok**, **Instagram Reels**, and **Facebook Pages**.
 
 - Repo: `https://github.com/JackPro2121/clipping-hahaha` (public, branch `main`)
 - Owner: JackPro2121
@@ -47,7 +47,7 @@ Fully-automated, **$0-budget** pipeline that runs on **GitHub Actions**:
 | Translation engine | Autonomous $0 Google web translation (Chinese → English) |
 | Subtitle burn-in | `ffmpeg` `subtitles` filter with generated ASS files |
 | Video hosting | `cloudinary` (official Python SDK) |
-| Posting queue | Buffer GraphQL API (`api.buffer.com`) for TikTok & Instagram |
+| Posting queue | Buffer GraphQL API (`api.buffer.com`) for TikTok, Instagram & Facebook |
 | Transcripts | ChocoData API (YouTube only) / Bilibili player subtitle API |
 
 `requirements.txt`:

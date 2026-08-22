@@ -9,7 +9,7 @@ Companion to `AGENTS.md` and `ARCHITECTURE.md`.
 
 `.github/workflows/clip-and-post.yml` runs on:
 - `workflow_dispatch` — manual trigger from GitHub Actions dashboard.
-- `schedule: "0 */6 * * *"` — recurring automated run every 6 hours (UTC).
+- `schedule` — 5 pre-load triggers set 30m prior to Buffer publishing slots (10:30, 16:30, 19:30, 22:30, 01:30 UTC = 3:30 PM, 9:30 PM, 12:30 AM, 3:30 AM, 6:30 AM PKT).
 - `concurrency: clip-post` guarantees only one run at a time to prevent race conditions.
 
 ---
@@ -22,10 +22,10 @@ Companion to `AGENTS.md` and `ARCHITECTURE.md`.
 | setup-python | `actions/setup-python@v5`, 3.12 | Initializes Python toolchain |
 | Install ffmpeg | `apt-get install -y ffmpeg` | Installs system FFmpeg media processor |
 | Install deps | `pip install -r requirements.txt` | Installs requests, cloudinary, yt-dlp, pytest |
-| Run Test Suite | `pytest tests/ -v` | Executes 49 unit tests to validate pipeline health |
-| Discover Sources | `python src/find_sources.py` | Profile-based keyword search & scoring; updates `sources.json` |
+| Run Test Suite | `pytest tests/ -v` | Executes 58 unit tests to validate pipeline health |
+| Discover Sources | `python src/find_sources.py` | 25-creator pool discovery & quality scoring; updates `sources.json` |
 | Process & Post | `python src/main.py` | Downloads ➔ Translates ➔ Clips ➔ Uploads ➔ Buffer queue |
-| Commit State | `git add sources.json; git commit; git push` | Persists processed markers and runtime metrics |
+| Commit State | `git add sources.json; git pull --rebase; git push` | Persists processed markers and runtime metrics |
 
 ---
 
