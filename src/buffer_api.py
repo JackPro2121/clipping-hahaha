@@ -125,12 +125,18 @@ def create_post(channel_id, text, video_url, thumbnail_offset=2000, service=None
         ],
     }
 
-    # Instagram requires post type (reel) and shouldShareToFeed flag
+    # Platform-specific metadata
     if service == "instagram":
         post_input["metadata"] = {
             "instagram": {
                 "type": "reel",
                 "shouldShareToFeed": True,
+            }
+        }
+    elif service == "facebook":
+        post_input["metadata"] = {
+            "facebook": {
+                "type": "reel",
             }
         }
 

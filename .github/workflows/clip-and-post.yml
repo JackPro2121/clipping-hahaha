@@ -3,11 +3,12 @@ name: Clip & Post
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 11 * * *"   # UK lunch / US morning (4:00 PM PKT)
-    - cron: "0 17 * * *"   # US afternoon / UK evening (10:00 PM PKT)
-    - cron: "0 20 * * *"   # US East prime time (1:00 AM PKT)
-    - cron: "0 23 * * *"   # US late-night / West evening (4:00 AM PKT)
-    - cron: "0 2 * * *"    # US West prime time (7:00 AM PKT)
+    # Triggers 30m before each Buffer slot so clips are pre-loaded and ready
+    - cron: "30 10 * * *"  # 3:30 PM PKT (prepares for 4:00 PM UK lunch slot)
+    - cron: "30 16 * * *"  # 9:30 PM PKT (prepares for 10:00 PM US afternoon slot)
+    - cron: "30 19 * * *"  # 12:30 AM PKT (prepares for 1:00 AM US East peak slot)
+    - cron: "30 22 * * *"  # 3:30 AM PKT (prepares for 4:00 AM US West evening slot)
+    - cron: "30 1 * * *"   # 6:30 AM PKT (prepares for 7:00 AM US late-night slot)
 
 permissions:
   contents: write

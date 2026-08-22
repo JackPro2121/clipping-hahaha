@@ -168,12 +168,34 @@ def build_subtitles(segments, start, duration, out_path, timeline=None):
 def _select_windows(duration, cfg):
     clip_len = cfg.get("clip_length_s", 45)
     max_clips = cfg.get("max_clips_per_video", 3)
+    min_clip = cfg.get("min_clip_s", 10)
+    narrative = cfg.get("narrative_arc", True)
+
+    if duration < min_clip:
+        return []
+
+    # If single clip or short video
+    if max_clips <= 1 or duration <= clip_len:
+        d = min(clip_len, duration)
+        return [(0.0, d)] if d >= min_clip else []
+
+    # Narrative 2-clip strategy: Part 1 = Process Start, Part 2 = Climax / Final Reveal
+    if narrative and max_clips == 2 and duration >= clip_len * 1.6:
+        w1_dur = min(clip_len, duration)
+        w2_start = max(w1_dur, round(duration - clip_len - 1.0, 2))
+        w2_dur = min(clip_len, round(duration - w2_start, 2))
+        windows = [(0.0, w1_dur)]
+        if w2_dur >= min_clip and w2_start >= w1_dur:
+            windows.append((w2_start, w2_dur))
+        return windows
+
+    # Standard sequential slicing for 3+ clips or shorter durations
     windows = []
     t = 0.0
     while t < duration - 2 and len(windows) < max_clips:
         d = min(clip_len, duration - t)
-        if d >= cfg.get("min_clip_s", 10):
-            windows.append((t, d))
+        if d >= min_clip:
+            windows.append((round(t, 2), round(d, 2)))
         t += clip_len
     return windows
 

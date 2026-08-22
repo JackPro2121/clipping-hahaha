@@ -151,37 +151,58 @@ def _bili_download(url, out_dir, max_duration_s):
             f"no playable dash for {bvid}: {playurl.get('message', 'unknown error')}"
         )
 
-    vids = dash["video"]
-    auds = dash["audio"]
+    vids = dash.get("video") or []
+    auds = dash.get("audio") or []
+    if not vids:
+        raise RuntimeError(f"no video streams found for {bvid}")
+
     vid = max(vids, key=lambda x: (x.get("width") or 0) * (x.get("height") or 0))
-    aud = max(auds, key=lambda x: x.get("bandwidth") or 0)
+    aud = max(auds, key=lambda x: x.get("bandwidth") or 0) if auds else None
     v_url = vid.get("baseUrl") or vid.get("backupUrl", [""])[0]
-    a_url = aud.get("baseUrl") or aud.get("backupUrl", [""])[0]
+    a_url = (aud.get("baseUrl") or aud.get("backupUrl", [""])[0]) if aud else None
+    
+    aud_kbps = (aud.get('bandwidth') // 1000) if aud else 0
     print(
         f"bilibili {bvid}: picking video {vid.get('width')}x{vid.get('height')} "
-        f"+ audio {aud.get('bandwidth') // 1000}kbps"
+        f"+ audio {aud_kbps}kbps"
     )
 
     v_path = out_dir / f"{bvid}_video.m4s"
-    a_path = out_dir / f"{bvid}_audio.m4s"
     _bili_stream_download(v_url, v_path, headers)
-    _bili_stream_download(a_url, a_path, headers)
 
     out = out_dir / f"{bvid}.mp4"
-    cmd = [
-        "ffmpeg",
-        "-y",
-        "-i", str(v_path),
-        "-i", str(a_path),
-        "-c", "copy",
-        "-movflags", "+faststart",
-        str(out),
-    ]
+    if a_url:
+        a_path = out_dir / f"{bvid}_audio.m4s"
+        _bili_stream_download(a_url, a_path, headers)
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i", str(v_path),
+            "-i", str(a_path),
+            "-c", "copy",
+            "-movflags", "+faststart",
+            str(out),
+        ]
+    else:
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i", str(v_path),
+            "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
+            "-c:v", "copy",
+            "-c:a", "aac",
+            "-shortest",
+            "-movflags", "+faststart",
+            str(out),
+        ]
+        a_path = None
+
     proc = subprocess.run(cmd, check=True, capture_output=True, text=True, timeout=600)
     if out.stat().st_size < 100_000:
         raise RuntimeError(f"merged file too small ({out.stat().st_size}B)")
     v_path.unlink(missing_ok=True)
-    a_path.unlink(missing_ok=True)
+    if a_path:
+        a_path.unlink(missing_ok=True)
     return out
 
 
