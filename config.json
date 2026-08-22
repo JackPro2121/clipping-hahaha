@@ -37,12 +37,12 @@
         "max_new_sources": 2
       },
       "buffer": {
-        "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
-        "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
+        "caption_template": "{title}{part} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
+        "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade",
         "per_platform_captions": {
-          "tiktok": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
-          "instagram": "Satisfying {title} ✨ Follow @zencutofficials for daily satisfying craft videos! {hashtags}",
-          "facebook": "{title} ✨ Follow for daily satisfying craftsmanship & restoration videos! {hashtags}"
+          "tiktok": "{title}{part} 🔨 Wait for the result! Follow for daily crafts #satisfying #woodworking #restoration #craftsmanship #fyp",
+          "instagram": "Satisfying {title}{part} ✨ Save this & follow @zencutofficials for daily crafts #satisfying #woodworking #restoration #craftsmanship #handmade",
+          "facebook": "{title}{part} 🛠️ Incredible craftsmanship! Follow for daily restoration videos #satisfying #woodworking #restoration #craftsmanship"
         }
       }
     },
@@ -59,11 +59,12 @@
         "max_new_sources": 2
       },
       "buffer": {
-        "caption_template": "Is this the future? \ud83e\udd16 {title} {hashtags}",
-        "hashtags": "#tech #gadgets #futuretech #innovation #smartgadgets #technology #fyp",
+        "caption_template": "Is this the future? 🤖 {title}{part} {hashtags}",
+        "hashtags": "#tech #gadgets #futuretech #innovation #technology",
         "per_platform_captions": {
-          "tiktok": "Is this the future? \ud83e\udd16 {title} {hashtags}",
-          "instagram": "Futuristic Tech: {title} \ud83d\udca1 Follow @ZenCut for daily tech innovations! {hashtags}"
+          "tiktok": "Is this the future? 🤖 {title}{part} #tech #gadgets #futuretech #innovation #fyp",
+          "instagram": "Futuristic Tech: {title}{part} 💡 Follow @ZenCut for daily tech innovations! #tech #gadgets #futuretech #innovation #smartgadgets",
+          "facebook": "{title}{part} 💡 Smart invention! Follow for daily tech innovations #tech #gadgets #futuretech #innovation"
         }
       }
     },
@@ -80,11 +81,12 @@
         "max_new_sources": 2
       },
       "buffer": {
-        "caption_template": "Satisfying Street Food Mastery \ud83c\udf73 {title} {hashtags}",
-        "hashtags": "#streetfood #asmrcooking #foodie #satisfyingfood #delicious #fyp",
+        "caption_template": "Satisfying Street Food Mastery 🍳 {title}{part} {hashtags}",
+        "hashtags": "#streetfood #asmrcooking #foodie #satisfyingfood #delicious",
         "per_platform_captions": {
-          "tiktok": "Satisfying Street Food Mastery \ud83c\udf73 {title} {hashtags}",
-          "instagram": "Street Food: {title} \ud83c\udf5c Follow @ZenCut for more delicious clips! {hashtags}"
+          "tiktok": "Satisfying Street Food Mastery 🍳 {title}{part} #streetfood #asmrcooking #foodie #satisfyingfood #fyp",
+          "instagram": "Street Food Mastery: {title}{part} 🍜 Follow @ZenCut for daily delicious clips! #streetfood #asmrcooking #foodie #satisfyingfood #delicious",
+          "facebook": "Satisfying Street Food: {title}{part} 🍳 Incredible cooking skill! #streetfood #asmrcooking #foodie #delicious"
         }
       }
     }
@@ -164,16 +166,16 @@
     "max_new_sources": 2
   },
   "buffer": {
-    "caption_template": "{title} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
-    "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade #diy #oddlysatisfying #fyp #foryou",
+    "caption_template": "{title}{part} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
+    "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade",
     "max_posts_per_channel": 2,
     "max_queue_depth": 8,
     "mode": "addToQueue",
     "services": ["tiktok", "instagram", "facebook"],
     "per_platform_captions": {
-      "tiktok": "{title} ✨ Follow @zencutofficials for daily satisfying crafts & restoration! {hashtags}",
-      "instagram": "Satisfying {title} ✨ Follow @zencutofficials for daily satisfying craft videos! {hashtags}",
-      "facebook": "{title} ✨ Follow for daily satisfying craftsmanship & restoration videos! {hashtags}"
+      "tiktok": "{title}{part} 🔨 Wait for the result! Follow for daily crafts #satisfying #woodworking #restoration #craftsmanship #fyp",
+      "instagram": "Satisfying {title}{part} ✨ Save this & follow @zencutofficials for daily crafts #satisfying #woodworking #restoration #craftsmanship #handmade",
+      "facebook": "{title}{part} 🛠️ Incredible craftsmanship! Follow for daily restoration videos #satisfying #woodworking #restoration #craftsmanship"
     }
   },
   "storage": {

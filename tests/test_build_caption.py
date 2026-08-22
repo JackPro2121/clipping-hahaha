@@ -43,6 +43,27 @@ def test_build_caption_per_platform():
     assert default_caption == "Default Wood Art"
 
 
+def test_build_caption_multipart():
+    cfg = {
+        "buffer": {
+            "per_platform_captions": {
+                "instagram": "Satisfying {title}{part} ✨ Follow @zencut #wood #craft",
+                "tiktok": "{title}{part} #fyp #craft"
+            }
+        }
+    }
+    # Single clip (total=1) -> no part suffix
+    caption_single = build_caption(cfg, "Wood Carving", 1, 1, service="instagram")
+    assert caption_single == "Satisfying Wood Carving ✨ Follow @zencut #wood #craft"
+
+    # Multi-clip (total=2) -> dynamic part suffix
+    caption_part1 = build_caption(cfg, "Wood Carving", 1, 2, service="instagram")
+    assert caption_part1 == "Satisfying Wood Carving (Part 1/2) ✨ Follow @zencut #wood #craft"
+
+    caption_part2 = build_caption(cfg, "Wood Carving", 2, 2, service="tiktok")
+    assert caption_part2 == "Wood Carving (Part 2/2) #fyp #craft"
+
+
 def test_sanitize_caption_title():
     # Craft titles should pass through
     assert sanitize_caption_title("Making a Japanese Wood Chisel") == "Making a Japanese Wood Chisel"

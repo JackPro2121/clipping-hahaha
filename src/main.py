@@ -80,7 +80,14 @@ def build_caption(cfg, title, index, total, service=None):
         else buffer_cfg.get("caption_template", "{title} {hashtags}")
     )
     hashtags = buffer_cfg.get("hashtags", "")
-    return template.format(title=title, index=index, total=total, hashtags=hashtags).strip()
+    part = f" (Part {index}/{total})" if total and total > 1 else ""
+    return template.format(
+        title=title,
+        index=index,
+        total=total,
+        part=part,
+        hashtags=hashtags,
+    ).strip()
 
 
 def _fetch_captions(src, captions_cfg):
