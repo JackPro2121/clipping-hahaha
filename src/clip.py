@@ -181,25 +181,52 @@ def _select_windows(duration, cfg):
     if duration < min_clip:
         return []
 
-    # If single clip or short video
-    if max_clips <= 1 or duration <= clip_len:
+    # If single clip configured or short video (< 1.8x clip_len) -> 1 single complete highlight
+    if max_clips <= 1 or duration < clip_len * 1.8:
         d = min(clip_len, duration)
-        return [(0.0, d)] if d >= min_clip else []
+        return [(0.0, round(d, 2))] if d >= min_clip else []
 
-    # Narrative 2-clip strategy: Part 1 = Process Start, Part 2 = Climax / Final Reveal
-    if narrative and max_clips == 2 and duration >= clip_len * 1.6:
-        w1_dur = min(clip_len, duration)
-        w2_start = max(w1_dur, round(duration - clip_len - 1.0, 2))
-        w2_dur = min(clip_len, round(duration - w2_start, 2))
-        windows = [(0.0, w1_dur)]
-        if w2_dur >= min_clip and w2_start >= w1_dur:
-            windows.append((w2_start, w2_dur))
-        return windows
+    # Adaptive duration scaling:
+    # 70s - 180s (1.2m - 3m) -> 2 clips (Start Hook + Climax/Finish)
+    # >= 180s (3m - 10m) -> 3 clips (Start Hook + Middle Craft + Grand Finish)
+    effective_max = max_clips
+    if duration < 180.0 and effective_max > 2:
+        effective_max = 2
 
-    # Standard sequential slicing for 3+ clips or shorter durations
+    if narrative:
+        if effective_max == 2 and duration >= clip_len * 1.6:
+            w1_dur = min(clip_len, duration)
+            w2_start = max(w1_dur, round(duration - clip_len - 1.0, 2))
+            w2_dur = min(clip_len, round(duration - w2_start, 2))
+            windows = [(0.0, round(w1_dur, 2))]
+            if w2_dur >= min_clip and w2_start >= w1_dur:
+                windows.append((round(w2_start, 2), round(w2_dur, 2)))
+            return windows
+
+        if effective_max >= 3 and duration >= clip_len * 2.5:
+            # 3-clip distributed narrative arc:
+            # Part 1: Initial Hook / Project Start (0.0 to clip_len)
+            # Part 2: Middle Transformation / Craft Action (centered around mid)
+            # Part 3: Grand Climax / Final Reveal (ending at duration - 1.0)
+            w1_dur = min(clip_len, duration)
+            mid_target = duration / 2.0
+            w2_start = max(w1_dur + 1.0, round(mid_target - clip_len / 2.0, 2))
+            w2_dur = min(clip_len, round(duration - w2_start, 2))
+
+            w3_start = max(w2_start + w2_dur + 1.0, round(duration - clip_len - 1.0, 2))
+            w3_dur = min(clip_len, round(duration - w3_start, 2))
+
+            windows = [(0.0, round(w1_dur, 2))]
+            if w2_dur >= min_clip and w2_start > w1_dur:
+                windows.append((round(w2_start, 2), round(w2_dur, 2)))
+            if w3_dur >= min_clip and w3_start > (w2_start + w2_dur if len(windows) > 1 else w1_dur):
+                windows.append((round(w3_start, 2), round(w3_dur, 2)))
+            return windows
+
+    # Standard sequential slicing for fallback or narrative=False
     windows = []
     t = 0.0
-    while t < duration - 2 and len(windows) < max_clips:
+    while t < duration - 2 and len(windows) < effective_max:
         d = min(clip_len, duration - t)
         if d >= min_clip:
             windows.append((round(t, 2), round(d, 2)))

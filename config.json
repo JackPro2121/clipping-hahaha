@@ -92,7 +92,7 @@
     }
   },
   "clipper": {
-    "max_clips_per_video": 2,
+    "max_clips_per_video": 3,
     "clip_length_s": 36,
     "transition_every_s": 4,
     "transition_duration_s": 0.15,
@@ -168,8 +168,8 @@
   "buffer": {
     "caption_template": "{title}{part} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
     "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade",
-    "max_posts_per_channel": 2,
-    "max_queue_depth": 8,
+    "max_posts_per_channel": 3,
+    "max_queue_depth": 10,
     "mode": "addToQueue",
     "services": ["tiktok", "instagram", "facebook"],
     "per_platform_captions": {
