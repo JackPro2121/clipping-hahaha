@@ -205,11 +205,35 @@ def process_source(src, cfg):
             print(err)
             return False, 0, err
 
-        # Translate title to English for Buffer captions
+        # Translate title to English for Buffer captions, then sanitize.
+        # If the translated title contains no craft keywords (e.g. it's about immune systems
+        # or was from an off-niche video that slipped through), use a safe generic fallback
+        # so captions always stay on-brand for the @zencutofficials Satisfying Crafts channel.
+        _CAPTION_CRAFT_KW = [
+            "wood", "carv", "craft", "restor", "knife", "sword", "lathe", "forge",
+            "handmade", "repair", "machin", "jade", "bamboo", "weav", "chisel",
+            "tool", "metal", "iron", "steel", "weld", "polish", "sculpt", "engrav",
+            "fan", "clay", "pottery", "making", "build", "creat", "art", "master",
+            "satisfying", "traditional", "ancient", "skill", "technique",
+        ]
+
+        def _sanitize_caption_title(translated: str) -> str:
+            """Return translated title if craft-relevant, else a safe generic fallback."""
+            t = translated.lower()
+            if any(kw in t for kw in _CAPTION_CRAFT_KW):
+                return translated
+            # Off-niche translation detected — use generic on-brand caption
+            print(
+                f"  [caption-sanitize] Off-niche title detected: '{translated[:60]}' "
+                f"→ using generic craft caption"
+            )
+            return "Incredible Craft Mastery You Have to See"
+
         raw_title = src.get("title") or raw.stem
         title = translate_to_english(raw_title)
         if title != raw_title:
             print(f"Title translated for captions: '{raw_title[:40]}' → '{title[:60]}'")
+        title = _sanitize_caption_title(title)
         max_posts = cfg["buffer"].get("max_posts_per_channel", 8)
         clips = clips[:max_posts]
         posted = 0
