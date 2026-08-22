@@ -23,3 +23,22 @@ def test_build_caption_no_hashtags():
     title = "Recipe Tutorial"
     caption = build_caption(cfg, title, 2, 4)
     assert caption == "Recipe Tutorial (2/4)"
+
+
+def test_build_caption_per_platform():
+    cfg = {
+        "buffer": {
+            "caption_template": "Default {title}",
+            "hashtags": "#craft",
+            "per_platform_captions": {
+                "facebook": "{title} - Daily Crafts! {hashtags}",
+                "tiktok": "TikTok: {title} {hashtags}"
+            }
+        }
+    }
+    fb_caption = build_caption(cfg, "Wood Art", 1, 1, service="facebook")
+    assert fb_caption == "Wood Art - Daily Crafts! #craft"
+    tt_caption = build_caption(cfg, "Wood Art", 1, 1, service="tiktok")
+    assert tt_caption == "TikTok: Wood Art #craft"
+    default_caption = build_caption(cfg, "Wood Art", 1, 1, service="youtube")
+    assert default_caption == "Default Wood Art"
