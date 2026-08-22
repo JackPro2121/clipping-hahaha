@@ -209,6 +209,63 @@ def main():
         if added >= max_new:
             break
 
+    # ---------------------------------------------------------------------------
+    # Keyword fallback — fires ONLY when creator pool yields 0 niche-relevant sources.
+    # Searches Bilibili directly by craft keyword so the Buffer queue never runs dry.
+    # ---------------------------------------------------------------------------
+    if added == 0 and discovery.get("keywords"):
+        keywords = discovery["keywords"]
+        # Pick the keyword after the last one used (round-robin, same as normal)
+        last_kw = state.get("_meta", {}).get("last_keyword")
+        if last_kw and last_kw in keywords:
+            fallback_kw = keywords[(keywords.index(last_kw) + 1) % len(keywords)]
+        else:
+            fallback_kw = keywords[0]
+
+        print(f"\n  [fallback] Creator pool: 0 niche hits → keyword search: [{fallback_kw}]")
+        try:
+            fallback_found = discover_bilibili(cfg, keyword=fallback_kw)
+            fallback_candidates = []
+            for src in fallback_found:
+                if src["url"] in known_urls:
+                    continue
+                fb_title = src.get("title", "")
+                if not _is_niche_relevant(fb_title):
+                    continue
+                min_views_fb = discovery.get("min_views", 30000)
+                if src.get("views", 0) < min_views_fb:
+                    continue
+                fb_score = score_source(src)
+                if fb_score >= min_score:
+                    fallback_candidates.append((fb_score, src))
+
+            fallback_candidates.sort(key=lambda x: x[0], reverse=True)
+            for fb_score, src in fallback_candidates:
+                state["sources"].append(
+                    {
+                        "url": src["url"],
+                        "title": src.get("title", ""),
+                        "status": "pending",
+                        "score": fb_score,
+                        "category": f"keyword_{fallback_kw}",
+                        "discovered_at": now_iso,
+                        "retry_count": 0,
+                    }
+                )
+                known_urls.add(src["url"])
+                added += 1
+                print(f"  [fallback] Added ({fb_score}/100 pts): {src['title'][:60]}")
+                if added >= max_new:
+                    break
+
+            if added > 0:
+                state["_meta"]["last_keyword"] = fallback_kw
+                print(f"  [fallback] Keyword search rescued run: {added} source(s) added.")
+            else:
+                print(f"  [fallback] Keyword search also yielded 0 niche sources — run skipped.")
+        except Exception as exc:
+            print(f"  [fallback] Keyword search failed: {exc}")
+
     # 4. Update metadata and save state
     if target_type == "keyword":
         state["_meta"]["last_keyword"] = current_label

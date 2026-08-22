@@ -147,8 +147,14 @@ def _fetch_bilibili_creator_videos(
     return sources
 
 
-def discover_bilibili_creators(cfg, max_creators=6, max_videos_per_creator=2):
-    """Discover candidate videos from curated craft creators with random sampling and newest pubdate priority."""
+
+def discover_bilibili_creators(cfg, max_creators=None, max_videos_per_creator=1):
+    """Discover candidate videos from ALL curated craft creators, 1 video each.
+
+    Checking all creators (not just 6) maximises the chance of finding niche-relevant
+    content on every run, reducing the risk of the niche filter returning 0 sources.
+    max_videos_per_creator=1 keeps the pool diverse — one fresh video per creator.
+    """
     import random
 
     discovery = cfg.get("discovery", {})
@@ -171,15 +177,19 @@ def discover_bilibili_creators(cfg, max_creators=6, max_videos_per_creator=2):
     min_duration_s = discovery.get("min_source_duration_s", 35)
     max_duration_s = discovery.get("max_duration_s", 600)
 
-    # Randomly shuffle creators pool on each run so different creators get discovered
+    # Shuffle so even if max_creators is capped externally, variety is preserved
     random.shuffle(configured_creators)
 
+    # Use all creators unless caller explicitly restricts
+    pool = configured_creators if max_creators is None else configured_creators[:max_creators]
+
     print(
-        f"  Targeting {len(configured_creators)} verified Bilibili craft masters (Freshness Order: {order})"
+        f"  Targeting {len(pool)}/{len(configured_creators)} Bilibili craft creators "
+        f"({max_videos_per_creator} video each, order: {order})"
     )
 
     all_sources = []
-    for target in configured_creators[:max_creators]:
+    for target in pool:
         videos = _fetch_bilibili_creator_videos(
             target,
             max_count=max_videos_per_creator,
@@ -190,6 +200,7 @@ def discover_bilibili_creators(cfg, max_creators=6, max_videos_per_creator=2):
         all_sources.extend(videos)
 
     return all_sources
+
 
 
 # ---------------------------------------------------------------------------
