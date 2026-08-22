@@ -153,22 +153,26 @@
     {
       "url": "https://www.bilibili.com/video/BV1FL4y1e7Bk",
       "title": "儿童玩具之用彩虹糖给小宝宝洗澡",
-      "status": "pending",
+      "status": "processed",
       "score": 75,
       "category": "手工制作",
       "discovered_at": "2026-08-21T07:36:50.584144+00:00",
       "retry_count": 0,
+      "processed_at": "2026-08-22T09:40:00.000000+00:00",
+      "clips_count": 2,
       "last_error": null,
       "next_retry_after": null
     },
     {
       "url": "https://www.bilibili.com/video/BV1F4411P7uX",
       "title": "自制倒立洗头机",
-      "status": "pending",
+      "status": "processed",
       "score": 75,
       "category": "手工制作",
       "discovered_at": "2026-08-21T07:36:50.584144+00:00",
       "retry_count": 0,
+      "processed_at": "2026-08-22T09:40:00.000000+00:00",
+      "clips_count": 2,
       "last_error": null,
       "next_retry_after": null
     },

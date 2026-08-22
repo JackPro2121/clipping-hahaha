@@ -276,7 +276,8 @@ def main():
     print(f"Running pipeline for Active Profile: [{prof_name}]")
     state = load_state()
 
-    pending = [s for s in state["sources"] if should_retry(s)]
+    max_src_run = cfg.get("clipper", {}).get("max_sources_per_run", 1)
+    pending = [s for s in state["sources"] if should_retry(s)][:max_src_run]
     if not pending:
         print("No pending sources ready for processing (all up-to-date or in retry backoff).")
         cleanup_cloudinary_clips(keep_days=cfg.get("storage", {}).get("retention_days", 14))
