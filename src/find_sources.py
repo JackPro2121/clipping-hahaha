@@ -126,10 +126,48 @@ def main():
     known_urls = get_known_urls(state)
     min_score = discovery.get("min_quality_score", 20)
 
+    # ---------------------------------------------------------------------------
+    # Niche relevance filter — craft/woodworking/restoration keyword gate
+    # A video must contain at least ONE keyword to pass. This prevents off-niche
+    # content from curated creators (curiosity channels, animation, science trivia)
+    # from entering the queue even if they pass view/quality thresholds.
+    # ---------------------------------------------------------------------------
+    _NICHE_KW = [
+        # Woodworking / carpentry (Chinese)
+        "木工", "木头", "木板", "木雕", "榫卯", "实木", "原木", "木料", "木作", "木匠",
+        # Hand tools / blade / sword
+        "手工", "刀", "剑", "刃", "锻造", "手艺", "匠", "锉刀", "凿子", "斧头",
+        # Restoration / repair
+        "修复", "修缮", "复原", "翻新", "旧物", "老物件", "修理", "还原",
+        # Metalwork / machining
+        "机械", "机床", "车床", "铸造", "焊接", "金属", "铁", "钢铁",
+        # Stone / jade / clay craft
+        "玉", "石雕", "陶", "泥塑", "雕刻", "篆刻",
+        # Bamboo / fan / weave
+        "扇子", "竹编", "编织", "草编", "竹艺",
+        # General craft signals
+        "解压", "手工制作", "制作", "工艺", "传统", "古法", "民间技艺",
+        # English (for translated titles already in English)
+        "wood", "carv", "craft", "restor", "knife", "sword", "lathe", "forge",
+        "handmade", "repair", "machin", "jade", "bamboo", "weav", "chisel",
+    ]
+
+    def _is_niche_relevant(title: str) -> bool:
+        """Return True if title contains at least one niche craft keyword."""
+        t = title.lower()
+        return any(kw.lower() in t for kw in _NICHE_KW)
+
     # 3. Quality score and filter candidate videos
+
     scored_candidates = []
     for src in found:
         if src["url"] in known_urls:
+            continue
+
+        # Niche gate — reject off-topic titles before any further processing
+        title = src.get("title", "")
+        if not _is_niche_relevant(title):
+            print(f"  [niche-skip] Off-topic title: {title[:70]}")
             continue
 
         # For verified curated creators, relax min_views so freshly published clips get captured first!
@@ -140,6 +178,7 @@ def main():
         )
         if src.get("views", 0) < min_views:
             continue
+
 
         score = score_source(src)
         if score >= min_score:

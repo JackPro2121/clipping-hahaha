@@ -38,8 +38,10 @@ def _center_crop(cfg, src_w, src_h):
         if target_w % 2:
             target_w -= 1
         if target_w > src_w:
-            # Source is portrait/vertical -> apply 6% overscan margin to eliminate corner logos/UIDs
-            w = round(src_w * 0.94)
+            # Source is portrait/vertical.
+            # 10% overscan (was 6%) — eliminates corner logos, Bilibili watermarks, creator UIDs.
+            # 5% cropped from each edge: top-right and top-left watermarks fall outside frame.
+            w = round(src_w * 0.90)
             if w % 2:
                 w -= 1
             h = round(w * 16 / 9)
@@ -48,15 +50,20 @@ def _center_crop(cfg, src_w, src_h):
             x = (src_w - w) // 2
             y = (src_h - h) // 2
         else:
-            # Source is landscape/horizontal -> center 9:16 crop + subtle top/bottom safe margin
-            h = round(src_h * 0.97)
+            # Source is landscape/horizontal → 9:16 vertical crop with top-bias.
+            # Bilibili and creator watermarks sit at top-right corner.
+            # Shift crop window UPWARD so the top edge is inside the watermark zone,
+            # cutting it out without losing action content (which is center-frame).
+            h = round(src_h * 0.94)    # 6% total vertical margin (was 3%)
             if h % 2:
                 h -= 1
             w = round(h * 9 / 16)
             if w % 2:
                 w -= 1
             x = (src_w - w) // 2
-            y = (src_h - h) // 2
+            # Shift upward by 8% of source height → top-right watermark falls above crop
+            top_shift = round(src_h * 0.08)
+            y = max(0, (src_h - h) // 2 - top_shift)
     else:
         w, h = src_w, src_h
         x, y = 0, 0
