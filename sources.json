@@ -297,8 +297,10 @@
       "score": 35,
       "category": "douyin_apify",
       "discovered_at": "2026-08-23T11:34:06.723367+00:00",
-      "retry_count": 0,
-      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/e3aa56a6779a8b24304451c932f110b5/6a8ae97c/video/tos/cn/tos-cn-ve-15/ogNqNFDf9AAVFIp7I8EQjZBAngVgYp7NUqfmma/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1258&bt=1258&cs=2&ds=4&ft=bmB3qDWzuV~.0AO5fA3qHxwbml7_VKCERfT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=ZDc4Ojs1ZGU3aTo4aGdpM0Bpam10bm45cnhnPDMzNGkzM0AtXzNjNl5hNV8xYjJiMDYuYSM2aWBuMmRzYDVhLS1kLWFzcw%3D%3D&btag=c0050e000a8008&cdn_type=2&cquery=103W_103Y_100b_105E_103Q&dy_q=1787484842&feature_id=3658cf63000045f73b09bd23c0b89ae8&l=202608231934001AB3589EB992A2D63FBB&pwid=1&req_cdn_type=r"
+      "retry_count": 1,
+      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/e3aa56a6779a8b24304451c932f110b5/6a8ae97c/video/tos/cn/tos-cn-ve-15/ogNqNFDf9AAVFIp7I8EQjZBAngVgYp7NUqfmma/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1258&bt=1258&cs=2&ds=4&ft=bmB3qDWzuV~.0AO5fA3qHxwbml7_VKCERfT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=ZDc4Ojs1ZGU3aTo4aGdpM0Bpam10bm45cnhnPDMzNGkzM0AtXzNjNl5hNV8xYjJiMDYuYSM2aWBuMmRzYDVhLS1kLWFzcw%3D%3D&btag=c0050e000a8008&cdn_type=2&cquery=103W_103Y_100b_105E_103Q&dy_q=1787484842&feature_id=3658cf63000045f73b09bd23c0b89ae8&l=202608231934001AB3589EB992A2D63FBB&pwid=1&req_cdn_type=r",
+      "last_error": "Download failed: douyin download failed: Could not fetch clean video URL for Douyin ID: 7660861500638154018",
+      "next_retry_after": "2026-08-23T15:00:53.633573+00:00"
     },
     {
       "url": "https://www.douyin.com/video/7659388043295460642",
@@ -307,16 +309,18 @@
       "score": 35,
       "category": "douyin_apify",
       "discovered_at": "2026-08-23T11:34:06.723367+00:00",
-      "retry_count": 0,
-      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/9b4c70134c80372cf7a4bc9d303e7083/6a8ae98f/video/tos/cn/tos-cn-ve-15/owFvVeNqSAs7A5rgEib5Z9UBDmMfIuZQAG4gQD/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1158&bt=1158&cs=2&ds=4&ft=iLB7TIZzuV~.0AO5fA3qHxwbml7_VKCERfT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=N2U4OzVnNTtmM2g4PDM5O0BpM3ZtbWs5cnRzPDMzNGkzM0AzYjMyYjVeNS8xNV8wMi41YSNyb2EuMmRzazJhLS1kLTBzcw%3D%3D&btag=c0090e000a8008&cdn_type=2&cquery=100b_105E_103Q_103W_103Y&dy_q=1787484842&feature_id=c748ae14bac781988922a31df5946c7a&l=202608231934001AB3589EB992A2D63FBB&pwid=1&req_cdn_type=r"
+      "retry_count": 1,
+      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/9b4c70134c80372cf7a4bc9d303e7083/6a8ae98f/video/tos/cn/tos-cn-ve-15/owFvVeNqSAs7A5rgEib5Z9UBDmMfIuZQAG4gQD/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1158&bt=1158&cs=2&ds=4&ft=iLB7TIZzuV~.0AO5fA3qHxwbml7_VKCERfT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=N2U4OzVnNTtmM2g4PDM5O0BpM3ZtbWs5cnRzPDMzNGkzM0AzYjMyYjVeNS8xNV8wMi41YSNyb2EuMmRzazJhLS1kLTBzcw%3D%3D&btag=c0090e000a8008&cdn_type=2&cquery=100b_105E_103Q_103W_103Y&dy_q=1787484842&feature_id=c748ae14bac781988922a31df5946c7a&l=202608231934001AB3589EB992A2D63FBB&pwid=1&req_cdn_type=r",
+      "last_error": "Download failed: douyin download failed: Could not fetch clean video URL for Douyin ID: 7659388043295460642",
+      "next_retry_after": "2026-08-23T15:01:12.793423+00:00"
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-23T11:34:07.118886+00:00",
+    "last_run": "2026-08-23T13:00:33.088402+00:00",
     "total_processed": 21,
     "total_clips_posted": 62,
     "last_category": "food",
-    "last_keyword": "机械制造"
+    "last_keyword": "刀剑锻造"
   }
 }
