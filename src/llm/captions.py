@@ -37,7 +37,7 @@ def generate_caption(title, transcript_text=None, fallback="", service=None, ind
     prompt = f"{_PROMPT}\n\nVideo info:\n{context}"
 
     try:
-        text = llm_complete(prompt, max_tokens=200)
+        text = llm_complete(prompt, max_tokens=400)
     except Exception:
         return fallback
     if not text:
