@@ -245,12 +245,16 @@
     {
       "url": "https://www.douyin.com/video/7654513987116231281",
       "title": "我用矿泉水瓶做了一座如梦境般的广寒宫。 一起来看制作过程吧！\n#手工 #手工diy #变废为宝 #手工制作",
-      "status": "pending",
+      "status": "processed",
       "score": 35,
       "category": "douyin_apify",
       "discovered_at": "2026-08-23T10:34:46.471392+00:00",
       "retry_count": 0,
-      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/c851e4173810c4dc4437aaec70c73a87/6a8adb0f/video/tos/cn/tos-cn-ve-15c000-ce/o8OEgIcQ7ZeIUAVe7WfdgJdnHt5GBDLHQKWJhq/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1865&bt=1865&cs=2&ds=4&ft=iLB7TIZzuV~.jAO5fA3qHxwbml7_VKCE3NJ7dug3HLaZHVQ9H6eM&mime_type=video_mp4&qs=0&rc=MzM2OTQ5OTlmNTxmNWk0NkBpanB3O3E5cjs3OzMzbGkzNUAyYjM2MDI1XjIxNjZiMC8zYSNzXmMuMmRzanFhLS1kLTVzcw%3D%3D&btag=c0050e000a8048&cdn_type=3&cquery=103Q_103R_103S_100b_105E&dy_q=1787481280&feature_id=e1ad133ae833e7b223f83730f5f43935&l=20260823183438E0FD6F2D7DEFA7E17941&pdp=no_detect_popularity&pwid=1&req_cdn_type=r"
+      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/c851e4173810c4dc4437aaec70c73a87/6a8adb0f/video/tos/cn/tos-cn-ve-15c000-ce/o8OEgIcQ7ZeIUAVe7WfdgJdnHt5GBDLHQKWJhq/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1865&bt=1865&cs=2&ds=4&ft=iLB7TIZzuV~.jAO5fA3qHxwbml7_VKCE3NJ7dug3HLaZHVQ9H6eM&mime_type=video_mp4&qs=0&rc=MzM2OTQ5OTlmNTxmNWk0NkBpanB3O3E5cjs3OzMzbGkzNUAyYjM2MDI1XjIxNjZiMC8zYSNzXmMuMmRzanFhLS1kLTVzcw%3D%3D&btag=c0050e000a8048&cdn_type=3&cquery=103Q_103R_103S_100b_105E&dy_q=1787481280&feature_id=e1ad133ae833e7b223f83730f5f43935&l=20260823183438E0FD6F2D7DEFA7E17941&pdp=no_detect_popularity&pwid=1&req_cdn_type=r",
+      "processed_at": "2026-08-23T10:55:24.962042+00:00",
+      "clips_count": 3,
+      "next_retry_after": null,
+      "last_error": null
     },
     {
       "url": "https://www.douyin.com/video/7644878094712478132",
@@ -271,14 +275,24 @@
       "discovered_at": "2026-08-23T10:46:10.049752+00:00",
       "retry_count": 0,
       "play_url": "https://v11-wha.douyinvod.com/6d21bd86bf245bbe6c4b70270ce61f6a/6a8addbb/video/tos/cn/tos-cn-ve-15c000-ce/oIXGePLUDA0AJfnAQCoVQ7wDQxa8RfRYBZoggM/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=497&bt=497&cs=2&ds=6&eid=45312&ft=YiTKQE6WwwZR6Gskao1PDSY7QhplCA_VvrK8.xNCto0g3iI&mime_type=video_mp4&qs=11&rc=Nmc8aGYzNDQ6ZGc7O2VlNUBpMzo7bXI5cm5kOzMzbGkzNUAtYWIvMS9fXy0xNGAzLTFgYSNxZDU2MmRzZTBhLS1kLTVzcw%3D%3D&btag=80050e000ad008&cdn_type=2&cquery=100b_105E_103Q_103R_103S&dy_q=1787481964&feature_id=27703fba0430012a7c1570f68d3f2948&l=20260823184603DDDB651114DE13EC21A9&pwid=313&req_cdn_type=r"
+    },
+    {
+      "url": "https://www.douyin.com/video/7588471878939905334",
+      "title": "民间传承唢呐制作.是喜是忧皆用它…… #非物质文化遗产 #传统手艺  #民间唢呐 #乡村守护人 #抖音热点记忆2025",
+      "status": "pending",
+      "score": 25,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T10:53:53.609881+00:00",
+      "retry_count": 0,
+      "play_url": "https://v5-hl-zenl-ov.zjcdn.com/5788b206e21da4195ad519e8f92f6412/6a8ae077/video/tos/cn/tos-cn-ve-15/owCAfvUXAsyB0CGS79fCBl3BVIE9IQLQjtgneG/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=889&bt=889&cs=2&ds=4&ft=iLB7TIZzuV~.0AO5fA3qHxwbml7_VKCEfMT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=M2k0ZjUzNTtpPDZkOWVpZUBpanFpbWo5cmx0ODMzNGkzM0BeMDMvMjZfX2MxNDUtYS42YSNzMnNpMmRzYDRhLS1kLTBzcw%3D%3D&btag=c0090e000b0008&cdn_type=1&cquery=103Y_100b_105E_103Q_103W&dy_q=1787482428&feature_id=191094fd2bda18bbf0508afb82b7bf2a&l=202608231853470632C266D81A46CFF973&pdp=online_xy&pwid=1&req_cdn_type=r"
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-23T10:46:10.439378+00:00",
-    "total_processed": 19,
-    "total_clips_posted": 53,
+    "last_run": "2026-08-23T10:53:53.986975+00:00",
+    "total_processed": 20,
+    "total_clips_posted": 56,
     "last_category": "food",
-    "last_keyword": "解压手工"
+    "last_keyword": "传统手艺"
   }
 }
