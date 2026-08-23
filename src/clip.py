@@ -24,11 +24,22 @@ def probe(path):
             f"ffprobe failed on {path}:\n{result.stderr[:400]}"
         )
     out = json.loads(result.stdout)
-    if not out.get("streams"):
-        raise ClipError(f"ffprobe returned no streams for {path}")
-    stream = out["streams"][0]
-    has_audio = any(s.get("codec_type") == "audio" for s in out["streams"])
-    return stream["width"], stream["height"], float(out["format"]["duration"]), has_audio
+    streams = out.get("streams") or []
+    # Some containers (e.g. Douyin mp4s) list an audio or cover-image stream
+    # first — always pick the first real video stream, not streams[0].
+    vstream = _pick_video_stream(streams)
+    if vstream is None:
+        raise ClipError(f"no video stream found for {path}")
+    has_audio = any(s.get("codec_type") == "audio" for s in streams)
+    return vstream["width"], vstream["height"], float(out["format"]["duration"]), has_audio
+
+
+def _pick_video_stream(streams):
+    """Return the first stream that carries video dimensions, else None."""
+    for s in streams:
+        if s.get("codec_type") == "video" and s.get("width"):
+            return s
+    return None
 
 
 
