@@ -193,7 +193,7 @@
     "max_duration_s": 600,
     "min_source_duration_s": 35,
     "max_new_sources": 2,
-    "douyin_apify_max_items": 8
+    "douyin_apify_max_items": 6
   },
   "buffer": {
     "caption_template": "{title}{part} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
