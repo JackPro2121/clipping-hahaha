@@ -317,7 +317,13 @@ def main():
     state = load_state()
 
     max_src_run = cfg.get("clipper", {}).get("max_sources_per_run", 1)
-    pending = [s for s in state["sources"] if should_retry(s)][:max_src_run]
+    ready = [s for s in state["sources"] if should_retry(s)]
+    # Douyin play URLs expire ~1h after discovery — process the freshest ones
+    # first, otherwise an old expired-URL source blocks fresh sources behind it.
+    with_url = [s for s in ready if s.get("play_url")]
+    with_url.sort(key=lambda s: s.get("discovered_at", ""), reverse=True)
+    rest = [s for s in ready if not s.get("play_url")]
+    pending = (with_url + rest)[:max_src_run]
     if not pending:
         print("No pending sources ready for processing (all up-to-date or in retry backoff).")
         cleanup_cloudinary_clips(keep_days=cfg.get("storage", {}).get("retention_days", 14))

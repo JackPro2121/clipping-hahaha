@@ -91,9 +91,16 @@ def main():
                 print(f"Bilibili discovery feed: Category Ranking -> [{target_val}]")
                 found = discover_bilibili(cfg, category=target_val)
         elif strategy == "douyin":
-            if os.environ.get("APIFY_TOKEN"):
+            dy_backlog = sum(
+                1 for s in state["sources"]
+                if s.get("status") == "pending" and "douyin.com" in s.get("url", "")
+            )
+            if os.environ.get("APIFY_TOKEN") and dy_backlog < 2:
                 print(f"Douyin discovery feed: Apify 1080p Search -> [{target_val}]")
                 found = discover_douyin_apify(cfg, keyword=target_val)
+            elif os.environ.get("APIFY_TOKEN"):
+                print(f"douyin_apify skipped: {dy_backlog} douyin sources already pending")
+                found = []
             elif discovery.get("douyin_creator_profiles"):
                 print(f"Douyin discovery feed: Seed Profiles")
                 found = discover_douyin_creators(cfg)
@@ -113,7 +120,17 @@ def main():
                 )
             )
             if os.environ.get("APIFY_TOKEN"):
-                dy_found = discover_douyin_apify(cfg, keyword=target_val)
+                # Apify credits + play URLs (~1h expiry) are wasted if we keep
+                # scraping while older douyin sources are still unprocessed.
+                dy_backlog = sum(
+                    1 for s in state["sources"]
+                    if s.get("status") == "pending" and "douyin.com" in s.get("url", "")
+                )
+                if dy_backlog < 2:
+                    dy_found = discover_douyin_apify(cfg, keyword=target_val)
+                else:
+                    print(f"douyin_apify skipped: {dy_backlog} douyin sources already pending")
+                    dy_found = []
             else:
                 dy_found = (
                     discover_douyin_creators(cfg)

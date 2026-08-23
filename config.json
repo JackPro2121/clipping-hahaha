@@ -121,7 +121,8 @@
     "height": 1920,
     "fps": 30,
     "crf": 18,
-    "max_source_duration_s": 900
+    "max_source_duration_s": 900,
+    "max_sources_per_run": 2
   },
   "motion": {
     "enabled": true,
