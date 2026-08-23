@@ -218,6 +218,44 @@ def process_source(src, cfg):
             "effects": cfg.get("effects", {}),
             "brand": cfg.get("brand", {}),
         }
+        # Smart window selection: LLM reads the transcript (or audio-energy
+        # peaks for music/ASMR videos) to pick the most engaging moments.
+        # Falls back to the built-in heuristic windows on any failure.
+        smart_windows = None
+        if cfg["clipper"].get("smart_windows", True):
+            try:
+                from clip import probe as _probe
+                from llm.windows import compute_windows
+                from utils.audio_energy import (
+                    extract_loudness_profile,
+                    find_energy_peaks,
+                )
+
+                _, _, duration_s, _ = _probe(raw)
+                cl = cfg["clipper"]
+                audio_candidates = None
+                if not transcript:
+                    profile = extract_loudness_profile(raw)
+                    audio_candidates = find_energy_peaks(
+                        profile,
+                        duration_s,
+                        cl.get("clip_length_s", 45),
+                        cl.get("max_clips_per_video", 3) + 2,
+                        cl.get("min_clip_s", 10),
+                    )
+                smart_windows = compute_windows(
+                    duration_s,
+                    cl,
+                    transcript=transcript,
+                    audio_candidates=audio_candidates,
+                )
+                if smart_windows:
+                    print(f"Smart windows: {smart_windows}")
+                else:
+                    print("Smart windows: using heuristic fallback")
+            except Exception as exc:
+                smart_windows = None
+                print(f"Smart windows skipped: {str(exc)[:80]}")
         try:
             clips = build_clips(
                 raw,
@@ -225,6 +263,7 @@ def process_source(src, cfg):
                 clipper_cfg,
                 transcript=transcript,
                 captions_enabled=captions_cfg.get("burn_in", True),
+                windows=smart_windows,
             )
         except Exception as exc:
             err = f"Clipping failed: {exc}"

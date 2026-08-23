@@ -122,7 +122,8 @@
     "fps": 30,
     "crf": 18,
     "max_source_duration_s": 900,
-    "max_sources_per_run": 2
+    "max_sources_per_run": 2,
+    "smart_windows": true
   },
   "motion": {
     "enabled": true,

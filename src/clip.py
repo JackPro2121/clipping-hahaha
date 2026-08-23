@@ -424,12 +424,12 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
     return cmd
 
 
-def build_clips(path, out_dir, cfg, transcript=None, captions_enabled=False):
+def build_clips(path, out_dir, cfg, transcript=None, captions_enabled=False, windows=None):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     src_w, src_h, duration, has_audio = probe(path)
     cfg = {**cfg, "_src": (src_w, src_h)}
-    windows = _select_windows(duration, cfg)
+    windows = windows or _select_windows(duration, cfg)
     if not windows:
         windows = [(0.0, duration)]
 
