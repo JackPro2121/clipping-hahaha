@@ -273,6 +273,30 @@ def process_source(src, cfg):
                 print(f"Cloudinary upload failed for {clip.name}: {exc}")
                 continue
 
+            # LLM caption: one unique hook caption per clip (shared across channels).
+            # Falls back to the per-service template whenever LLM is unavailable.
+            llm_caption = None
+            try:
+                from llm.captions import generate_caption
+
+                transcript_text = (
+                    " ".join(
+                        (seg.get("text") or seg.get("caption") or "").strip()
+                        for seg in (transcript or [])
+                    ).strip()
+                    or None
+                )
+                llm_caption = generate_caption(
+                    title,
+                    transcript_text=transcript_text,
+                    index=i,
+                    total=len(clips),
+                )
+                if llm_caption:
+                    print(f"LLM caption: {llm_caption[:80]}")
+            except Exception as exc:
+                print(f"LLM caption skipped: {str(exc)[:80]}")
+
             for channel in channels:
                 service = channel.get("service")
                 allowed, depth = can_queue_posts(channel["id"], max_queue_depth=max_queue)
@@ -282,7 +306,9 @@ def process_source(src, cfg):
                     send_slack_alert(f"Queue Full on {service}", msg, is_error=False)
                     return False, posted, msg
 
-                caption = build_caption(cfg, title, i, len(clips), service=service)
+                caption = llm_caption or build_caption(
+                    cfg, title, i, len(clips), service=service
+                )
 
                 try:
                     post_id = create_post(
