@@ -21,8 +21,8 @@ def _get_org_id_cached():
 def get_channel_queue_depth(channel_id):
     """Retrieve the number of pending scheduled posts in a Buffer channel.
 
-    Returns:
-        int: Number of pending/scheduled posts, or 0 if query fails.
+    Note: the API key is not authorized for ``posts.totalCount`` (FORBIDDEN),
+    so we fetch edges and count client-side instead.
     """
     org_id = _get_org_id_cached()
     query = """
@@ -34,13 +34,14 @@ def get_channel_queue_depth(channel_id):
           status: scheduled
         }
       }) {
-        totalCount
+        edges { node { id } }
       }
     }
     """
     try:
         data = _request(query, variables={"orgId": org_id, "channelId": channel_id})
-        return data.get("posts", {}).get("totalCount", 0)
+        edges = data.get("posts", {}).get("edges") or []
+        return len(edges)
     except Exception as exc:
         print(f"Could not retrieve queue depth for channel {channel_id}: {exc}")
         return 0
