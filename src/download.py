@@ -135,10 +135,12 @@ def _bili_download(url, out_dir, max_duration_s):
 
     dash = None
     playurl = {}  # initialize so it's always defined if the loop body never assigns it
-    for qn in (80, 64, 48, 32):
+    # Request quality levels from 4K (120), 1080p60 (116), High-Bitrate (112), 1080p (80), 720p (64) downwards.
+    # fnval=4048 unlocks 4K, 1080p60, and high-bitrate DASH streams on Bilibili's public player API.
+    for qn in (120, 116, 112, 80, 64, 48, 32):
         playurl = _bili_api_get(
             f"https://api.bilibili.com/x/player/playurl"
-            f"?bvid={bvid}&cid={cid}&qn={qn}&fnval=16&fourk=1",
+            f"?bvid={bvid}&cid={cid}&qn={qn}&fnval=4048&fourk=1",
             headers,
         )
         if playurl.get("code") == 0:
@@ -156,14 +158,18 @@ def _bili_download(url, out_dir, max_duration_s):
     if not vids:
         raise RuntimeError(f"no video streams found for {bvid}")
 
-    vid = max(vids, key=lambda x: (x.get("width") or 0) * (x.get("height") or 0))
+    vid = max(
+        vids,
+        key=lambda x: ((x.get("width") or 0) * (x.get("height") or 0), x.get("bandwidth") or 0)
+    )
     aud = max(auds, key=lambda x: x.get("bandwidth") or 0) if auds else None
     v_url = vid.get("baseUrl") or vid.get("backupUrl", [""])[0]
     a_url = (aud.get("baseUrl") or aud.get("backupUrl", [""])[0]) if aud else None
     
     aud_kbps = (aud.get('bandwidth') // 1000) if aud else 0
     print(
-        f"bilibili {bvid}: picking video {vid.get('width')}x{vid.get('height')} "
+        f"bilibili {bvid}: picking max-quality video {vid.get('width')}x{vid.get('height')} "
+        f"({vid.get('frameRate') or '30'}fps, {((vid.get('bandwidth') or 0)//1000)}kbps) "
         f"+ audio {aud_kbps}kbps"
     )
 
@@ -209,7 +215,7 @@ def _bili_download(url, out_dir, max_duration_s):
 def _ytdlp(url, out_dir, client, cookies_file, max_duration_s):
     cmd = [
         "yt-dlp",
-        "-f", "bv*[height<=1080]+ba/b[height<=1080]",
+        "-f", "bv*[height<=2160]+ba/b[height<=2160]/bv*+ba/b",
         "--merge-output-format", "mp4",
         "--no-playlist",
         "--no-progress",
@@ -319,7 +325,7 @@ def _locate_output(attempt_dir, video_id):
     return max(candidates, key=lambda p: p.stat().st_size)
 
 
-def download_video(url, out_dir, max_duration_s=None):
+def download_video(url, out_dir, max_duration_s=None, play_url=None):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_id = _video_id(url)
@@ -343,9 +349,23 @@ def download_video(url, out_dir, max_duration_s=None):
             raise RuntimeError(f"bilibili download failed: {str(exc)[:200]}") from exc
 
     if _DOUYIN_RE.search(url):
-        from douyin import download_douyin_video
         attempt_dir = out_dir / "attempt-0-douyin"
         attempt_dir.mkdir(parents=True, exist_ok=True)
+        # Fast path: fresh signed play URL from Apify discovery (same-run, not yet expired)
+        if play_url:
+            try:
+                from douyin_apify import download_douyin_direct
+
+                dest = attempt_dir / f"{video_id}.mp4"
+                size = download_douyin_direct(play_url, dest)
+                print(
+                    f"Download OK via 'douyin-direct' -> "
+                    f"{dest.name} ({size // 1024 // 1024}MB)"
+                )
+                return dest
+            except Exception as exc:
+                print(f"douyin-direct failed, falling back to iteminfo API: {str(exc)[:120]}")
+        from douyin import download_douyin_video
         try:
             result = download_douyin_video(url, attempt_dir)
             return result

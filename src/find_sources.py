@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from chocodata import discover as discover_youtube  # noqa: E402
 from bilibili import discover as discover_bilibili  # noqa: E402
 from douyin import discover as discover_douyin  # noqa: E402
+from douyin_apify import discover_douyin_apify  # noqa: E402
 from pipeline.creator_discovery import (  # noqa: E402
     discover_bilibili_creators,
     discover_douyin_creators,
@@ -90,7 +91,10 @@ def main():
                 print(f"Bilibili discovery feed: Category Ranking -> [{target_val}]")
                 found = discover_bilibili(cfg, category=target_val)
         elif strategy == "douyin":
-            if discovery.get("douyin_creator_profiles"):
+            if os.environ.get("APIFY_TOKEN"):
+                print(f"Douyin discovery feed: Apify 1080p Search -> [{target_val}]")
+                found = discover_douyin_apify(cfg, keyword=target_val)
+            elif discovery.get("douyin_creator_profiles"):
                 print(f"Douyin discovery feed: Seed Profiles")
                 found = discover_douyin_creators(cfg)
             else:
@@ -108,11 +112,14 @@ def main():
                     else discover_bilibili(cfg, category=target_val)
                 )
             )
-            dy_found = (
-                discover_douyin_creators(cfg)
-                if discovery.get("douyin_creator_profiles")
-                else discover_douyin(cfg, keyword=target_val)
-            )
+            if os.environ.get("APIFY_TOKEN"):
+                dy_found = discover_douyin_apify(cfg, keyword=target_val)
+            else:
+                dy_found = (
+                    discover_douyin_creators(cfg)
+                    if discovery.get("douyin_creator_profiles")
+                    else discover_douyin(cfg, keyword=target_val)
+                )
             found = bili_found + dy_found
         else:
             if "CHOCODATA_API_KEY" not in os.environ:
@@ -182,11 +189,13 @@ def main():
             continue
 
         # For verified curated creators, relax min_views so freshly published clips get captured first!
-        min_views = (
-            discovery.get("creator_min_views", 1500)
-            if src.get("category", "").startswith("creator_")
-            else discovery.get("min_views", 30000)
-        )
+        # Apify douyin sources: free tier doesn't expose playCount — gate on niche + duration instead.
+        if src.get("origin") == "douyin_apify":
+            min_views = 0
+        elif src.get("category", "").startswith("creator_"):
+            min_views = discovery.get("creator_min_views", 1500)
+        else:
+            min_views = discovery.get("min_views", 30000)
         if src.get("views", 0) < min_views:
             continue
 
@@ -203,17 +212,19 @@ def main():
     now_iso = datetime.now(timezone.utc).isoformat()
 
     for score, src in scored_candidates:
-        state["sources"].append(
-            {
-                "url": src["url"],
-                "title": src.get("title", ""),
-                "status": "pending",
-                "score": score,
-                "category": src.get("category", current_label),
-                "discovered_at": now_iso,
-                "retry_count": 0,
-            }
-        )
+        entry = {
+            "url": src["url"],
+            "title": src.get("title", ""),
+            "status": "pending",
+            "score": score,
+            "category": src.get("category", current_label),
+            "discovered_at": now_iso,
+            "retry_count": 0,
+        }
+        # Apify douyin sources carry a ~1h-lived signed play URL for same-run download
+        if src.get("play_url"):
+            entry["play_url"] = src["play_url"]
+        state["sources"].append(entry)
         known_urls.add(src["url"])
         added += 1
         print(f"Added source ({score}/100 pts): {src['title'][:60]} -> {src['url']}")
@@ -252,17 +263,18 @@ def main():
 
             fallback_candidates.sort(key=lambda x: x[0], reverse=True)
             for fb_score, src in fallback_candidates:
-                state["sources"].append(
-                    {
-                        "url": src["url"],
-                        "title": src.get("title", ""),
-                        "status": "pending",
-                        "score": fb_score,
-                        "category": f"keyword_{fallback_kw}",
-                        "discovered_at": now_iso,
-                        "retry_count": 0,
-                    }
-                )
+                entry = {
+                    "url": src["url"],
+                    "title": src.get("title", ""),
+                    "status": "pending",
+                    "score": fb_score,
+                    "category": f"keyword_{fallback_kw}",
+                    "discovered_at": now_iso,
+                    "retry_count": 0,
+                }
+                if src.get("play_url"):
+                    entry["play_url"] = src["play_url"]
+                state["sources"].append(entry)
                 known_urls.add(src["url"])
                 added += 1
                 print(f"  [fallback] Added ({fb_score}/100 pts): {src['title'][:60]}")

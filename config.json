@@ -30,7 +30,16 @@
           "乡村木匠阿明",
           "传统技艺传承人"
         ],
-        "keywords": ["木工", "木工雕刻", "老物件修复", "手工制作", "解压手工", "传统手艺", "机械制造", "刀剑锻造"],
+        "keywords": [
+          "木工",
+          "木工雕刻",
+          "老物件修复",
+          "手工制作",
+          "解压手工",
+          "传统手艺",
+          "机械制造",
+          "刀剑锻造"
+        ],
         "min_views": 30000,
         "min_source_duration_s": 35,
         "max_duration_s": 600,
@@ -51,7 +60,12 @@
       "description": "V2 Pipeline: Novel electronics, smart home gadgets, and futuristic tools",
       "discovery": {
         "strategy": "bilibili",
-        "keywords": ["黑科技", "科技数码", "智能家居", "创意发明"],
+        "keywords": [
+          "黑科技",
+          "科技数码",
+          "智能家居",
+          "创意发明"
+        ],
         "order": "click",
         "min_views": 50000,
         "min_source_duration_s": 35,
@@ -73,7 +87,12 @@
       "description": "V3 Pipeline: High-speed street cooking, satisfying food preparation",
       "discovery": {
         "strategy": "bilibili",
-        "keywords": ["街头美食", "路边摊", "解压做饭", "特色小吃"],
+        "keywords": [
+          "街头美食",
+          "路边摊",
+          "解压做饭",
+          "特色小吃"
+        ],
         "order": "click",
         "min_views": 50000,
         "min_source_duration_s": 35,
@@ -132,7 +151,7 @@
   },
   "discovery": {
     "enabled": true,
-    "strategy": "bilibili",
+    "strategy": "chinese_apps",
     "order": "pubdate",
     "bilibili_creators": [
       "才疏学浅的才浅",
@@ -158,12 +177,22 @@
       "乡村木匠阿明",
       "传统技艺传承人"
     ],
-    "keywords": ["木工", "木工雕刻", "老物件修复", "手工制作", "解压手工", "传统手艺", "机械制造", "刀剑锻造"],
+    "keywords": [
+      "木工",
+      "木工雕刻",
+      "老物件修复",
+      "手工制作",
+      "解压手工",
+      "传统手艺",
+      "机械制造",
+      "刀剑锻造"
+    ],
     "min_quality_score": 20,
     "min_views": 30000,
     "max_duration_s": 600,
     "min_source_duration_s": 35,
-    "max_new_sources": 2
+    "max_new_sources": 2,
+    "douyin_apify_max_items": 8
   },
   "buffer": {
     "caption_template": "{title}{part} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
@@ -171,7 +200,11 @@
     "max_posts_per_channel": 3,
     "max_queue_depth": 10,
     "mode": "addToQueue",
-    "services": ["tiktok", "instagram", "facebook"],
+    "services": [
+      "tiktok",
+      "instagram",
+      "facebook"
+    ],
     "per_platform_captions": {
       "tiktok": "{title}{part} 🔨 Wait for the result! Follow for daily crafts #satisfying #woodworking #restoration #craftsmanship #fyp",
       "instagram": "Satisfying {title}{part} ✨ Save this & follow @zencutofficials for daily crafts #satisfying #woodworking #restoration #craftsmanship #handmade",

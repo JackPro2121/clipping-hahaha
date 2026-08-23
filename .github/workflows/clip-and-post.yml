@@ -52,6 +52,7 @@ jobs:
       - name: Discover sources
         env:
           CHOCODATA_API_KEY: ${{ secrets.CHOCODATA_API_KEY }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
         run: python src/find_sources.py
 
       - name: Run pipeline

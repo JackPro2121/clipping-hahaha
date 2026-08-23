@@ -83,6 +83,7 @@ src/
   health_check.py       daily health check & queue monitoring
   bilibili.py           bilibili multi-category discovery & keyword search
   douyin.py             douyin no-watermark video extraction & topic discovery
+  douyin_apify.py       Apify-based Douyin discovery (zen-studio actor) + direct CDN download
   chocodata.py          ChocoData wrapper (YouTube discovery + transcripts)
   download.py           video download (bilibili API path + YouTube yt-dlp strategies + Douyin)
   clip.py               clipping engine (variable pacing, motion, captions, brand watermark, bgm)
@@ -384,6 +385,12 @@ python src/main.py
 - [x] Clip engine rewrite: 45s windows, transition every 4s, styled ASS captions, motion cycle, bgm
 - [x] bilibili discovery (popular API) + API-only downloader (bypasses www 412) — verified on runner
 - [x] End-to-end run: 3 videos → 9 clips posted to TikTok (scheduled in Buffer)
+- [x] Douyin as premium source via Apify (`douyin_apify.py`, strategy `chinese_apps`): native vertical
+  **1080x1920** (up to 4K) videos, no cookies, no watermark — verified locally end-to-end. Discovery
+  uses `APIFY_TOKEN` + zen-studio/douyin-search-scraper; the signed `play_url` (~1h expiry) is stored
+  on the source entry and consumed by `download_video(play_url=...)` in the same run. Apify free-tier
+  gives no playCount, so douyin_apify sources bypass the min_views gate. Requires `APIFY_TOKEN`
+  secret in GitHub (already in workflow env).
 - [ ] **Rotate the exposed GitHub token** (`ghp_31Ack…`)
 - [ ] Decide Buffer queue policy (older test clips may still be scheduled; TikTok queue fills each 6h run)
 - [ ] Optional: restore per-source captions for non-Chinese content (bilibili has no transcript API here)

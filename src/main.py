@@ -193,6 +193,7 @@ def process_source(src, cfg):
                 src["url"],
                 work,
                 max_duration_s=cfg["clipper"].get("max_source_duration_s"),
+                play_url=src.get("play_url"),
             )
         except (DownloadError, RuntimeError) as exc:
             err = f"Download failed: {exc}"
