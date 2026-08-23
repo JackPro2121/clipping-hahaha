@@ -259,12 +259,16 @@
     {
       "url": "https://www.douyin.com/video/7644878094712478132",
       "title": "自制声控解压玩具玩坏这个板#手工 #解压 #声控 #自制玩具",
-      "status": "pending",
+      "status": "processed",
       "score": 35,
       "category": "douyin_apify",
       "discovered_at": "2026-08-23T10:46:10.049752+00:00",
       "retry_count": 0,
-      "play_url": "https://v9-s.douyinvod.com/81e9e95eb11d6c8d877456e898cb8b4c/6a8addc4/video/tos/cn/tos-cn-ve-15/osXPPIZwxEI9iQQU1sMPnA7iBhugaAKWiEMPY/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1412&bt=1412&cs=2&ds=4&ft=7TK4kmrxyxxouML.g3PN12lc9d0XAOik9VJEm~fjObPD-Itz&mime_type=video_mp4&qs=0&rc=Zjo7ZjpoNjs2OGc0Ojg4aUBpajdybW85cnMzOzMzNGkzM0BhYTBjNDJiNTIxYS1eNTZhYSNnbHFsMmQ0cmBhLS1kLTBzcw%3D%3D&btag=80088e000a8048&cdn_type=2&cquery=103S_100b_105E_103Q_103R&dy_q=1787481964&feature_id=9d3b25048575d8661ba702640e0735c5&l=20260823184603DDDB651114DE13EC21A9&pwid=196&req_cdn_type=r"
+      "play_url": "https://v9-s.douyinvod.com/81e9e95eb11d6c8d877456e898cb8b4c/6a8addc4/video/tos/cn/tos-cn-ve-15/osXPPIZwxEI9iQQU1sMPnA7iBhugaAKWiEMPY/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1412&bt=1412&cs=2&ds=4&ft=7TK4kmrxyxxouML.g3PN12lc9d0XAOik9VJEm~fjObPD-Itz&mime_type=video_mp4&qs=0&rc=Zjo7ZjpoNjs2OGc0Ojg4aUBpajdybW85cnMzOzMzNGkzM0BhYTBjNDJiNTIxYS1eNTZhYSNnbHFsMmQ0cmBhLS1kLTBzcw%3D%3D&btag=80088e000a8048&cdn_type=2&cquery=103S_100b_105E_103Q_103R&dy_q=1787481964&feature_id=9d3b25048575d8661ba702640e0735c5&l=20260823184603DDDB651114DE13EC21A9&pwid=196&req_cdn_type=r",
+      "processed_at": "2026-08-23T11:37:30.931454+00:00",
+      "clips_count": 6,
+      "next_retry_after": null,
+      "last_error": null
     },
     {
       "url": "https://www.douyin.com/video/7639979744306749297",
@@ -285,14 +289,34 @@
       "discovered_at": "2026-08-23T10:53:53.609881+00:00",
       "retry_count": 0,
       "play_url": "https://v5-hl-zenl-ov.zjcdn.com/5788b206e21da4195ad519e8f92f6412/6a8ae077/video/tos/cn/tos-cn-ve-15/owCAfvUXAsyB0CGS79fCBl3BVIE9IQLQjtgneG/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=889&bt=889&cs=2&ds=4&ft=iLB7TIZzuV~.0AO5fA3qHxwbml7_VKCEfMT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=M2k0ZjUzNTtpPDZkOWVpZUBpanFpbWo5cmx0ODMzNGkzM0BeMDMvMjZfX2MxNDUtYS42YSNzMnNpMmRzYDRhLS1kLTBzcw%3D%3D&btag=c0090e000b0008&cdn_type=1&cquery=103Y_100b_105E_103Q_103W&dy_q=1787482428&feature_id=191094fd2bda18bbf0508afb82b7bf2a&l=202608231853470632C266D81A46CFF973&pdp=online_xy&pwid=1&req_cdn_type=r"
+    },
+    {
+      "url": "https://www.douyin.com/video/7660861500638154018",
+      "title": "一口气带你了解三轴和五轴数控机床 #cnc  #数控加工  #数控机床  #涨知识啦 #工业观",
+      "status": "pending",
+      "score": 35,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T11:34:06.723367+00:00",
+      "retry_count": 0,
+      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/e3aa56a6779a8b24304451c932f110b5/6a8ae97c/video/tos/cn/tos-cn-ve-15/ogNqNFDf9AAVFIp7I8EQjZBAngVgYp7NUqfmma/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1258&bt=1258&cs=2&ds=4&ft=bmB3qDWzuV~.0AO5fA3qHxwbml7_VKCERfT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=ZDc4Ojs1ZGU3aTo4aGdpM0Bpam10bm45cnhnPDMzNGkzM0AtXzNjNl5hNV8xYjJiMDYuYSM2aWBuMmRzYDVhLS1kLWFzcw%3D%3D&btag=c0050e000a8008&cdn_type=2&cquery=103W_103Y_100b_105E_103Q&dy_q=1787484842&feature_id=3658cf63000045f73b09bd23c0b89ae8&l=202608231934001AB3589EB992A2D63FBB&pwid=1&req_cdn_type=r"
+    },
+    {
+      "url": "https://www.douyin.com/video/7659388043295460642",
+      "title": "人类最强上帝之拳！———八万吨模锻液压机！锻造工业的绝对巅峰 #大国重器 #机械 #制造业 #液压机",
+      "status": "pending",
+      "score": 35,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T11:34:06.723367+00:00",
+      "retry_count": 0,
+      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/9b4c70134c80372cf7a4bc9d303e7083/6a8ae98f/video/tos/cn/tos-cn-ve-15/owFvVeNqSAs7A5rgEib5Z9UBDmMfIuZQAG4gQD/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1158&bt=1158&cs=2&ds=4&ft=iLB7TIZzuV~.0AO5fA3qHxwbml7_VKCERfT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=N2U4OzVnNTtmM2g4PDM5O0BpM3ZtbWs5cnRzPDMzNGkzM0AzYjMyYjVeNS8xNV8wMi41YSNyb2EuMmRzazJhLS1kLTBzcw%3D%3D&btag=c0090e000a8008&cdn_type=2&cquery=100b_105E_103Q_103W_103Y&dy_q=1787484842&feature_id=c748ae14bac781988922a31df5946c7a&l=202608231934001AB3589EB992A2D63FBB&pwid=1&req_cdn_type=r"
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-23T10:53:53.986975+00:00",
-    "total_processed": 20,
-    "total_clips_posted": 56,
+    "last_run": "2026-08-23T11:34:07.118886+00:00",
+    "total_processed": 21,
+    "total_clips_posted": 62,
     "last_category": "food",
-    "last_keyword": "传统手艺"
+    "last_keyword": "机械制造"
   }
 }
