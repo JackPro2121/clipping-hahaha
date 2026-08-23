@@ -231,13 +231,16 @@
     {
       "url": "https://www.douyin.com/video/7618952160042289851",
       "title": "凭咱俩的关系 亲手给我做这个花球不过分吧 #手工折纸 #手工diy  #折纸教程 #花球 #展示你的手工diy成果",
-      "status": "pending",
+      "status": "processed",
       "score": 35,
       "category": "douyin_apify",
       "discovered_at": "2026-08-23T10:34:46.471392+00:00",
       "retry_count": 0,
       "play_url": "https://v5-dy-ov-experiment.zjcdn.com/03b73d2a1b8e502bd091e05586dd4847/6a8adb6a/video/tos/cn/tos-cn-ve-15c000-ce/o0fwAOARQtMA7geWepGlLmah7DeT2DCSg3xr8b/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1737&bt=1737&cs=2&ds=4&eid=45312&ft=iLB7TIZzuV~.jAO5fA3qHxwbml7_VKCE3NJ7dug3HLaZHVQ9H6eM&mime_type=video_mp4&qs=0&rc=OGkzODM7NDRkPDY3aTlnNEBpM3RodHE5cmd5OTMzbGkzNUA0NGBjLzI1NWIxY2I2MWFjYSNsYV5jMmRrNXFhLS1kLTVzcw%3D%3D&btag=c0090e000a8048&cdn_type=3&cquery=105E_103Q_103R_103S_100b&dy_q=1787481280&feature_id=1cf0fea1492a6db1bc2335fccc892fcd&l=20260823183438E0FD6F2D7DEFA7E17941&pdp=detect_popularity&pwid=1&req_cdn_type=r",
-      "last_error": "Clipping failed: 'width'"
+      "last_error": null,
+      "processed_at": "2026-08-23T10:49:19.237781+00:00",
+      "clips_count": 6,
+      "next_retry_after": null
     },
     {
       "url": "https://www.douyin.com/video/7654513987116231281",
@@ -248,14 +251,34 @@
       "discovered_at": "2026-08-23T10:34:46.471392+00:00",
       "retry_count": 0,
       "play_url": "https://v5-dy-ov-experiment.zjcdn.com/c851e4173810c4dc4437aaec70c73a87/6a8adb0f/video/tos/cn/tos-cn-ve-15c000-ce/o8OEgIcQ7ZeIUAVe7WfdgJdnHt5GBDLHQKWJhq/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1865&bt=1865&cs=2&ds=4&ft=iLB7TIZzuV~.jAO5fA3qHxwbml7_VKCE3NJ7dug3HLaZHVQ9H6eM&mime_type=video_mp4&qs=0&rc=MzM2OTQ5OTlmNTxmNWk0NkBpanB3O3E5cjs3OzMzbGkzNUAyYjM2MDI1XjIxNjZiMC8zYSNzXmMuMmRzanFhLS1kLTVzcw%3D%3D&btag=c0050e000a8048&cdn_type=3&cquery=103Q_103R_103S_100b_105E&dy_q=1787481280&feature_id=e1ad133ae833e7b223f83730f5f43935&l=20260823183438E0FD6F2D7DEFA7E17941&pdp=no_detect_popularity&pwid=1&req_cdn_type=r"
+    },
+    {
+      "url": "https://www.douyin.com/video/7644878094712478132",
+      "title": "自制声控解压玩具玩坏这个板#手工 #解压 #声控 #自制玩具",
+      "status": "pending",
+      "score": 35,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T10:46:10.049752+00:00",
+      "retry_count": 0,
+      "play_url": "https://v9-s.douyinvod.com/81e9e95eb11d6c8d877456e898cb8b4c/6a8addc4/video/tos/cn/tos-cn-ve-15/osXPPIZwxEI9iQQU1sMPnA7iBhugaAKWiEMPY/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1412&bt=1412&cs=2&ds=4&ft=7TK4kmrxyxxouML.g3PN12lc9d0XAOik9VJEm~fjObPD-Itz&mime_type=video_mp4&qs=0&rc=Zjo7ZjpoNjs2OGc0Ojg4aUBpajdybW85cnMzOzMzNGkzM0BhYTBjNDJiNTIxYS1eNTZhYSNnbHFsMmQ0cmBhLS1kLTBzcw%3D%3D&btag=80088e000a8048&cdn_type=2&cquery=103S_100b_105E_103Q_103R&dy_q=1787481964&feature_id=9d3b25048575d8661ba702640e0735c5&l=20260823184603DDDB651114DE13EC21A9&pwid=196&req_cdn_type=r"
+    },
+    {
+      "url": "https://www.douyin.com/video/7639979744306749297",
+      "title": "当你拥有一个原味蛋糕捏捏✨【教程版】 #手工#解压#捏捏#自制#跟我一起做手工",
+      "status": "pending",
+      "score": 35,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T10:46:10.049752+00:00",
+      "retry_count": 0,
+      "play_url": "https://v11-wha.douyinvod.com/6d21bd86bf245bbe6c4b70270ce61f6a/6a8addbb/video/tos/cn/tos-cn-ve-15c000-ce/oIXGePLUDA0AJfnAQCoVQ7wDQxa8RfRYBZoggM/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=497&bt=497&cs=2&ds=6&eid=45312&ft=YiTKQE6WwwZR6Gskao1PDSY7QhplCA_VvrK8.xNCto0g3iI&mime_type=video_mp4&qs=11&rc=Nmc8aGYzNDQ6ZGc7O2VlNUBpMzo7bXI5cm5kOzMzbGkzNUAtYWIvMS9fXy0xNGAzLTFgYSNxZDU2MmRzZTBhLS1kLTVzcw%3D%3D&btag=80050e000ad008&cdn_type=2&cquery=100b_105E_103Q_103R_103S&dy_q=1787481964&feature_id=27703fba0430012a7c1570f68d3f2948&l=20260823184603DDDB651114DE13EC21A9&pwid=313&req_cdn_type=r"
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-23T10:34:46.855386+00:00",
-    "total_processed": 18,
-    "total_clips_posted": 47,
+    "last_run": "2026-08-23T10:46:10.439378+00:00",
+    "total_processed": 19,
+    "total_clips_posted": 53,
     "last_category": "food",
-    "last_keyword": "手工制作"
+    "last_keyword": "解压手工"
   }
 }
