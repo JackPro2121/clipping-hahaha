@@ -77,12 +77,27 @@ def _request(query, variables=None, max_retries=3):
 
 
 def get_org_id():
+    """Return the org that actually has connected channels.
+
+    The account can hold multiple organizations (order is not stable), so
+    picking organizations[0] nondeterministically broke channel access.
+    """
     data = _request(
         "query GetOrganizations { account { organizations { id name } } }"
     )
     orgs = data["account"]["organizations"]
     if not orgs:
         raise RuntimeError("No Buffer organization found under this API key.")
+    if len(orgs) == 1:
+        return orgs[0]["id"]
+    channels_query = (
+        "query GetChannels($orgId: OrganizationId!) { "
+        "channels(input: { organizationId: $orgId }) { id } }"
+    )
+    for org in orgs:
+        ch = _request(channels_query, variables={"orgId": org["id"]}).get("channels") or []
+        if ch:
+            return org["id"]
     return orgs[0]["id"]
 
 

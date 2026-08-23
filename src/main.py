@@ -379,6 +379,31 @@ def main():
     cfg = load_config()
     prof_name = cfg.get("_active_profile_name", "Default")
     print(f"Running pipeline for Active Profile: [{prof_name}]")
+
+    # Run gate: when any channel queue is at/over the threshold, skip the
+    # entire run (no discovery processing, no downloads, no posting).
+    gate_threshold = cfg.get("buffer", {}).get("run_gate_depth", 8)
+    try:
+        channels = get_channels(cfg.get("buffer", {}).get("services") or [])
+        depths = {c["id"]: get_channel_queue_depth(c["id"]) for c in channels}
+        full = [
+            f"{c['service']}={depths[c['id']]}"
+            for c in channels
+            if depths[c["id"]] >= gate_threshold
+        ]
+        if full:
+            msg = (
+                f"Run gate: queue >= {gate_threshold} on {', '.join(full)} — "
+                "skipping pipeline run entirely"
+            )
+            print(msg)
+            send_slack_alert("Pipeline skipped (queue near full)", msg, is_error=False)
+            return
+        print(f"Run gate passed: depths {list(depths.values())} < {gate_threshold}")
+    except Exception as exc:
+        # Buffer unreachable -> proceed; the per-post guard still protects queues.
+        print(f"Run gate check failed (proceeding anyway): {str(exc)[:100]}")
+
     state = load_state()
 
     max_src_run = cfg.get("clipper", {}).get("max_sources_per_run", 1)

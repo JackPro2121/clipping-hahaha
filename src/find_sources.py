@@ -61,6 +61,25 @@ def main():
         print("Discovery disabled in config")
         return
 
+    # Run gate: when any channel queue is at/over the threshold, skip
+    # discovery entirely (saves Apify credits; nothing new is needed).
+    gate_threshold = cfg.get("buffer", {}).get("run_gate_depth", 8)
+    try:
+        from buffer_api import get_channels
+        from pipeline.queue_manager import get_channel_queue_depth
+
+        channels = get_channels(discovery.get("services") or cfg.get("buffer", {}).get("services") or [])
+        full = [
+            f"{c['service']}={get_channel_queue_depth(c['id'])}"
+            for c in channels
+        ]
+        full = [x for x in full if int(x.split("=")[1]) >= gate_threshold]
+        if full:
+            print(f"Run gate: queue >= {gate_threshold} on {', '.join(full)} — skipping discovery")
+            return
+    except Exception as exc:
+        print(f"Discovery run-gate check failed (proceeding anyway): {str(exc)[:100]}")
+
     state = load_state()
 
     # 1. Run automatic archiving on sources older than 30 days
