@@ -4,7 +4,7 @@
     "satisfying_crafts": {
       "name": "Satisfying Crafts & Restoration",
       "discovery": {
-        "strategy": "bilibili",
+        "strategy": "chinese_apps",
         "order": "pubdate",
         "bilibili_creators": [
           "才疏学浅的才浅",
@@ -59,7 +59,7 @@
       "name": "Futuristic Tech & Smart Inventions",
       "description": "V2 Pipeline: Novel electronics, smart home gadgets, and futuristic tools",
       "discovery": {
-        "strategy": "bilibili",
+        "strategy": "chinese_apps",
         "keywords": [
           "黑科技",
           "科技数码",
@@ -86,7 +86,7 @@
       "name": "Street Food & ASMR Cooking",
       "description": "V3 Pipeline: High-speed street cooking, satisfying food preparation",
       "discovery": {
-        "strategy": "bilibili",
+        "strategy": "chinese_apps",
         "keywords": [
           "街头美食",
           "路边摊",
