@@ -8,11 +8,15 @@ It is the companion to `AGENTS.md` (operational reference). Read `AGENTS.md` fir
 ## 1. Data Flow
 
 ```
- discovery ──► sources.json ──► download ──► translator ──► clip engine ──► Cloudinary ──► Buffer ──► TikTok / IG / FB
- (25 Master    {url,title,    (Bilibili      (Faster-Whisper (ffmpeg 6-tier  (SDK          (GraphQL     (5 peak daily
-  Creators)     status,        DASH CDN       + Google web   Smart Narrative  upload)       addToQueue   scheduled slots)
-                score}         no watermark)  $0 engine)     & ASMR audio)                  mutation)
+ discovery ──► sources.json ──► download ──► translator ──► smart windows ──► clip engine ──► LLM caption ──► Cloudinary ──► Buffer ──► TikTok / IG / FB
+ (Apify douyin  {url,title,    (Douyin CDN    (Faster-Whisper (LLM transcript   (ffmpeg 6-tier  (Groq/Gemini/  (SDK          (GraphQL     (5 peak daily
+  1080p + 25    status,        signed play    + Google web   OR audio-energy  Smart Narrative  OpenRouter     upload)       addToQueue   scheduled slots)
+  Creators)     score}         ~1h expiry)    $0 engine)     peaks, LLM)      & ASMR audio)   fallback)                    mutation)
 ```
+
+> **LLM subsystem**: provider fallback chain, captions, and smart-window tiers are documented in
+> [`docs/LLM.md`](LLM.md). Every LLM step has a rule-based fallback — LLM outage degrades
+> quality, never availability.
 
 Two entrypoints, both invoked by the GitHub Action:
 

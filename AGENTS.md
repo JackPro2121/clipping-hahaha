@@ -45,6 +45,7 @@ Fully-automated, **$0-budget** pipeline that runs on **GitHub Actions**:
 | douyin downloader | Direct `requests` resolving aweme_id & clean `play` CDN URLs |
 | Image/audio synthesis | `ffmpeg` lavfi filters (sine tones → chill ambient bgm) |
 | Translation engine | Autonomous $0 Google web translation (Chinese → English) |
+| LLM engine | Groq `gpt-oss-120b` → Gemini `flash-latest` → OpenRouter `glm-5.2:free` fallback chain (captions + smart windows; see `docs/LLM.md`) |
 | Subtitle burn-in | `ffmpeg` `subtitles` filter with generated ASS files |
 | Video hosting | `cloudinary` (official Python SDK) |
 | Posting queue | Buffer GraphQL API (`api.buffer.com`) for TikTok, Instagram & Facebook |
@@ -93,11 +94,15 @@ src/
     bilibili_subtitles.py   Bilibili subtitle API & title fallback caption builder
     translator.py           Autonomous $0 Chinese -> English translation
     whisper_transcriber.py  Local Whisper AI audio transcription & translation
+  llm/
+    client.py           multi-provider LLM chain (Groq -> Gemini -> OpenRouter), never raises
+    captions.py         unique per-clip hook captions (template fallback)
+    windows.py          smart clip window selection (transcript / audio-energy tiers)
   pipeline/
     creator_discovery.py    25 verified Chinese craft master scrapers & dynamic pool rotation
     quality.py          source video quality scorer (0-100 pts)
     cleanup.py          Cloudinary storage GC (14-day auto-purge)
-    queue_manager.py    Buffer queue depth limiter
+    queue_manager.py    Buffer queue depth limiter (edges-based count; totalCount is FORBIDDEN)
     brand.py            channel watermark & branding filter generator
   notifications/
     slack.py            Slack incoming webhook summaries and alerts
@@ -105,6 +110,7 @@ src/
     config.py           Active profile loader and configuration manager
     errors.py           custom exception hierarchy (QueueFullError, DownloadError, etc.)
     state.py            state management, auto-archiving (>30d), and exponential backoff
+    audio_energy.py     per-second loudness profile + energy-peak windows (music/ASMR clips)
 ```
 
 Flow for one source:
@@ -245,6 +251,8 @@ Apify 360p path. Vertical bilibili videos come through as e.g. `480x852`.
 | | `aspect` | `vertical` | `vertical` = 9:16 center crop |
 | | `width` / `height` | 1080 / 1920 | Output resolution |
 | | `max_source_duration_s` | 900 | Hard cap for downloads |
+| | `max_sources_per_run` | 2 | Sources processed per pipeline run (match discovery rate) |
+| | `smart_windows` | true | LLM/audio-energy clip window selection (see `docs/LLM.md`) |
 | `motion` | `enabled` | true | Motion applied (pan/zoom cycle) |
 | | `zoom_factor` | 1.1 | Zoom strength |
 | `effects` | `enabled` | true | Subtle color filter + bgm |
@@ -255,12 +263,13 @@ Apify 360p path. Vertical bilibili videos come through as e.g. `480x852`.
 | | `burn_in` | true | Burn captions into video |
 | | `lang` | `en` | Transcript language |
 | `discovery` | `enabled` | true | Turn on/off discovery |
-| | `strategy` | `bilibili` | `bilibili` \| `search` \| `channel` |
+| | `strategy` | `chinese_apps` | `chinese_apps` (bilibili + douyin) \| `bilibili` \| `douyin` \| `search` \| `channel` \| `creators` |
 | | `targets` / `search_terms` | [] | For YouTube strategies |
-| | `min_views` | 10000 | Drop lower-view sources |
+| | `min_views` | 30000 | Drop lower-view sources (bypassed for douyin_apify origin) |
 | | `max_duration_s` | 900 | Source duration cap |
 | | `min_source_duration_s` | 40 | Source must be ≥40s for a good window |
-| | `max_new_sources` | 3 | New sources added per run |
+| | `max_new_sources` | 2 | New sources added per run |
+| | `douyin_apify_max_items` | 6 | Apify search results per scrape (~$0.03 each) |
 | `buffer` | `caption_template` | `{title} - clip {index}/{total} {hashtags}` | Post text |
 | | `hashtags` | `#shorts` | Appended to caption |
 | | `max_posts_per_channel` | 8 | Cap clips posted per channel |
@@ -277,7 +286,10 @@ Apify 360p path. Vertical bilibili videos come through as e.g. `480x852`.
 | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | `media.py` | Cloudinary upload |
 | `CHOCODATA_API_KEY` | `find_sources.py` / `main.py` | ChocoData discovery + transcripts |
 | `YT_COOKIES` | `download.py` | Base64 Netscape cookies for YouTube |
-| `APIFY_TOKEN` | `download.py` | Apify actor (YouTube fallback) |
+| `APIFY_TOKEN` | `douyin_apify.py` / `download.py` | Apify douyin discovery + YouTube fallback |
+| `GROQ_API_KEY` | `llm/client.py` | LLM captions + smart windows (primary provider) |
+| `GEMINI_API_KEY` | `llm/client.py` | LLM fallback provider 2 |
+| `OPENROUTER_API_KEY` | `llm/client.py` | LLM fallback provider 3 |
 
 ### Local `.env` (gitignored)
 Not read by the Python code directly — `main.py` reads env vars. If you run locally, export them.
@@ -285,6 +297,7 @@ Note the file uses **spaced/hyphenated keys**: `Buffer api key` and `CHOCODATA-A
 key is the 43-char `Buffer api key` value (org `6a85a8289189f6da59a63fb7`, TikTok channel
 `6a85c601ccaf649a67d74968`). A stale `BUFFER_API_KEY` value in the shell points at a *different* Buffer
 org (a Twitter-only org) — always source Buffer creds from `Buffer api key` in `.env`.
+LLM keys use plain names locally: `GROQ_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`.
 
 ---
 
@@ -391,13 +404,31 @@ python src/main.py
   on the source entry and consumed by `download_video(play_url=...)` in the same run. Apify free-tier
   gives no playCount, so douyin_apify sources bypass the min_views gate. Requires `APIFY_TOKEN`
   secret in GitHub (already in workflow env).
-- [ ] **Rotate the exposed GitHub token** (`ghp_31Ack…`)
-- [ ] Decide Buffer queue policy (older test clips may still be scheduled; TikTok queue fills each 6h run)
-- [ ] Optional: restore per-source captions for non-Chinese content (bilibili has no transcript API here)
-- [ ] Optional: explore a Chinese text-to-caption path or a fixed local source list
+- [x] Play-URL expiry scheduling (2026-08-23): freshest play_url sources processed first;
+  Apify scrape skipped while ≥2 douyin sources pending; `max_sources_per_run: 2` matches
+  discovery rate. Profile-level `discovery.strategy` overrides top-level config — all three
+  profiles are `chinese_apps`.
+- [x] LLM captions (2026-08-23): unique per-clip hook captions via Groq → Gemini →
+  OpenRouter fallback chain (`src/llm/`, `docs/LLM.md`). Template caption stays as
+  fallback — LLM failure degrades quality, never breaks the run.
+- [x] Smart clip windows (2026-08-23): LLM reads transcript to pick hook/action/payoff
+  windows; music/ASMR videos (no transcript) use per-second audio-energy peaks
+  (`src/utils/audio_energy.py`) instead. Heuristic windows remain the final fallback.
+  `clipper.smart_windows: true`.
+- [x] Buffer queue-depth fix (2026-08-23): `posts.totalCount` is FORBIDDEN for this key's
+  scope — queue_manager counts `edges` client-side instead. Overflow guard now works.
+- [x] probe() video-stream fix: douyin mp4s list an audio/cover stream first —
+  `_pick_video_stream()` selects the first stream that actually has dimensions.
+- [x] Verified full douyin flow on runner (2026-08-23): discovery → 1080p download →
+  LLM captions → 12 clips queued across TikTok/IG/Facebook in one run.
+- [ ] **Rotate the exposed GitHub token** (`ghp_31Ack…` — still embedded in the git remote URL)
+- [ ] Optional: LLM niche-relevance filter (replace keyword-list gate in find_sources)
+- [ ] Watch Apify free credit usage (~$3/month projected, $5 free) and the actor's
+  15-lifetime-free-runs evaluation cap on zen-studio/douyin-search-scraper
 
 Docs:
 - `docs/REQUIREMENTS.md` — **the user's spec**: what he actually wants, the instructions he gave, and
   the captions-focused vision. Read this before any product decision.
+- `docs/LLM.md` — LLM subsystem: provider chain, captions, smart windows, costs, fallbacks.
 - `docs/PIPELINE.md`, `docs/ARCHITECTURE.md`, `docs/OPERATIONS.md`.
 - Legacy problem statement: `PROBLEM.md`.
