@@ -65,6 +65,9 @@ jobs:
           YT_COOKIES: ${{ secrets.YT_COOKIES }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python src/main.py
 
       - name: Commit state
