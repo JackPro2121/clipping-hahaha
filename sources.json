@@ -227,14 +227,36 @@
       "clips_count": 6,
       "next_retry_after": null,
       "last_error": null
+    },
+    {
+      "url": "https://www.douyin.com/video/7618952160042289851",
+      "title": "凭咱俩的关系 亲手给我做这个花球不过分吧 #手工折纸 #手工diy  #折纸教程 #花球 #展示你的手工diy成果",
+      "status": "pending",
+      "score": 35,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T10:34:46.471392+00:00",
+      "retry_count": 1,
+      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/03b73d2a1b8e502bd091e05586dd4847/6a8adb6a/video/tos/cn/tos-cn-ve-15c000-ce/o0fwAOARQtMA7geWepGlLmah7DeT2DCSg3xr8b/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1737&bt=1737&cs=2&ds=4&eid=45312&ft=iLB7TIZzuV~.jAO5fA3qHxwbml7_VKCE3NJ7dug3HLaZHVQ9H6eM&mime_type=video_mp4&qs=0&rc=OGkzODM7NDRkPDY3aTlnNEBpM3RodHE5cmd5OTMzbGkzNUA0NGBjLzI1NWIxY2I2MWFjYSNsYV5jMmRrNXFhLS1kLTVzcw%3D%3D&btag=c0090e000a8048&cdn_type=3&cquery=105E_103Q_103R_103S_100b&dy_q=1787481280&feature_id=1cf0fea1492a6db1bc2335fccc892fcd&l=20260823183438E0FD6F2D7DEFA7E17941&pdp=detect_popularity&pwid=1&req_cdn_type=r",
+      "last_error": "Clipping failed: 'width'",
+      "next_retry_after": "2026-08-23T12:35:03.695028+00:00"
+    },
+    {
+      "url": "https://www.douyin.com/video/7654513987116231281",
+      "title": "我用矿泉水瓶做了一座如梦境般的广寒宫。 一起来看制作过程吧！\n#手工 #手工diy #变废为宝 #手工制作",
+      "status": "pending",
+      "score": 35,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T10:34:46.471392+00:00",
+      "retry_count": 0,
+      "play_url": "https://v5-dy-ov-experiment.zjcdn.com/c851e4173810c4dc4437aaec70c73a87/6a8adb0f/video/tos/cn/tos-cn-ve-15c000-ce/o8OEgIcQ7ZeIUAVe7WfdgJdnHt5GBDLHQKWJhq/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1865&bt=1865&cs=2&ds=4&ft=iLB7TIZzuV~.jAO5fA3qHxwbml7_VKCE3NJ7dug3HLaZHVQ9H6eM&mime_type=video_mp4&qs=0&rc=MzM2OTQ5OTlmNTxmNWk0NkBpanB3O3E5cjs3OzMzbGkzNUAyYjM2MDI1XjIxNjZiMC8zYSNzXmMuMmRzanFhLS1kLTVzcw%3D%3D&btag=c0050e000a8048&cdn_type=3&cquery=103Q_103R_103S_100b_105E&dy_q=1787481280&feature_id=e1ad133ae833e7b223f83730f5f43935&l=20260823183438E0FD6F2D7DEFA7E17941&pdp=no_detect_popularity&pwid=1&req_cdn_type=r"
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-22T16:53:36.908729+00:00",
+    "last_run": "2026-08-23T10:34:46.855386+00:00",
     "total_processed": 18,
     "total_clips_posted": 47,
     "last_category": "food",
-    "last_keyword": "老物件修复"
+    "last_keyword": "手工制作"
   }
 }
