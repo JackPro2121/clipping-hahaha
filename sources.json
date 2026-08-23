@@ -313,14 +313,42 @@
       "play_url": "https://v5-dy-ov-experiment.zjcdn.com/9b4c70134c80372cf7a4bc9d303e7083/6a8ae98f/video/tos/cn/tos-cn-ve-15/owFvVeNqSAs7A5rgEib5Z9UBDmMfIuZQAG4gQD/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=1158&bt=1158&cs=2&ds=4&ft=iLB7TIZzuV~.0AO5fA3qHxwbml7_VKCERfT7dug3a2S5aVQ9H6eM&mime_type=video_mp4&qs=0&rc=N2U4OzVnNTtmM2g4PDM5O0BpM3ZtbWs5cnRzPDMzNGkzM0AzYjMyYjVeNS8xNV8wMi41YSNyb2EuMmRzazJhLS1kLTBzcw%3D%3D&btag=c0090e000a8008&cdn_type=2&cquery=100b_105E_103Q_103W_103Y&dy_q=1787484842&feature_id=c748ae14bac781988922a31df5946c7a&l=202608231934001AB3589EB992A2D63FBB&pwid=1&req_cdn_type=r",
       "last_error": "Download failed: douyin download failed: Could not fetch clean video URL for Douyin ID: 7659388043295460642",
       "next_retry_after": "2026-08-23T15:01:12.793423+00:00"
+    },
+    {
+      "url": "https://www.douyin.com/video/7587651564904674481",
+      "title": "如何把一块木头的三个角变成一个角的简便方法，简单好学！#木工 #木工技巧 #技巧 #手工 #热点",
+      "status": "processed",
+      "score": 35,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T13:05:27.380709+00:00",
+      "retry_count": 0,
+      "play_url": "https://v5-coldy.douyinvod.com/9d45b7a997d8e91889b4e5f7ffaa2266/6a8afebd/video/tos/cn/tos-cn-ve-15c000-ce/oMIDpTg2cz1MABM3JFBEWTfAElnDNuTQGwfF9Y/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=521&bt=521&cs=2&ds=6&ft=3bCskZZI0PD1iTtjPuqC7nRfH--lX84kSYVc&mime_type=video_mp4&qs=0&rc=NzZoZzQ8ZzZkOTc8Zjc2aUBpM3E5cnU5cndmODMzbGkzNUAtMDUxNDBeNTExYi9fLjAvYSMwZ29hMmRjLTNhLS1kLTRzcw%3D%3D&btag=80050e000ad048&cdn_type=3&cquery=103R_103S_100b_105E_103Q&dy_q=1787490321&feature_id=c6ee8476530956a2ff1dff096a9e9bd8&l=20260823210520388CFFD94B85155ED988&pdp=no_detect_popularity&pwid=313&req_cdn_type=r",
+      "processed_at": "2026-08-23T13:08:26.344886+00:00",
+      "clips_count": 6,
+      "next_retry_after": null,
+      "last_error": null
+    },
+    {
+      "url": "https://www.douyin.com/video/7637826898654924038",
+      "title": "传统木工书桌制作 #见识下非遗新青年的厉害 #非遗新青年 #百young非遗 #木作 #女木工",
+      "status": "processed",
+      "score": 35,
+      "category": "douyin_apify",
+      "discovered_at": "2026-08-23T13:05:27.380709+00:00",
+      "retry_count": 0,
+      "play_url": "https://v11-cold.douyinvod.com/c02152827db7e748c7e6f61fccb98ffe/6a8afe84/video/tos/cn/tos-cn-ve-15/oQpeByAeeAgmjWvnAGtPtrJE0IEoLHGQNfgReI/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=657&bt=657&cs=2&ds=4&eid=45312&ft=3bCskZZI0PD1iTtjPuqC7nRfH--lX84kSYVc&mime_type=video_mp4&qs=0&rc=MzNmaWg3Z2c7M2c4Zjk6OEBpamY8cGw5cmppOjMzNGkzM0A2XjMuYWFjNTAxNF5fXi40YSNkNW8uMmQ0aXNhLS1kLWFzcw%3D%3D&btag=80090e000ad008&cdn_type=1&cquery=103Q_103W_103Y_100b_105E&dy_q=1787490321&feature_id=3a3cffa6441893017beab760e71bc03f&l=20260823210520388CFFD94B85155ED988&pdp=online_xy&pwid=313&req_cdn_type=r",
+      "processed_at": "2026-08-23T13:11:31.412918+00:00",
+      "clips_count": 6,
+      "next_retry_after": null,
+      "last_error": null
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-23T13:00:33.088402+00:00",
-    "total_processed": 21,
-    "total_clips_posted": 62,
+    "last_run": "2026-08-23T13:05:27.845457+00:00",
+    "total_processed": 23,
+    "total_clips_posted": 74,
     "last_category": "food",
-    "last_keyword": "刀剑锻造"
+    "last_keyword": "木工"
   }
 }
