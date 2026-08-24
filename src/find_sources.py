@@ -23,6 +23,7 @@ from utils.state import (  # noqa: E402
     save_state,
     get_known_urls,
     archive_old_sources,
+    reap_expired_play_urls,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -81,6 +82,14 @@ def main():
         print(f"Discovery run-gate check failed (proceeding anyway): {str(exc)[:100]}")
 
     state = load_state()
+
+    # Reap douyin sources with expired play_urls BEFORE the backlog gate below.
+    # Without this, zombies keep dy_backlog >= 2 and permanently suppress new
+    # Apify discovery. (Discovery runs before main.py in the workflow.)
+    reaped = reap_expired_play_urls(state)
+    if reaped:
+        save_state(state)
+        print(f"Reaped {len(reaped)} expired play-url source(s): {reaped}")
 
     # 1. Run automatic archiving on sources older than 30 days
     archived = archive_old_sources(state, keep_days=30)

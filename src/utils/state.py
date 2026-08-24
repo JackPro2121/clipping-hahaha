@@ -115,6 +115,72 @@ def archive_old_sources(data, keep_days=30):
     return archived_count
 
 
+def _parse_iso(ts):
+    try:
+        return datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None
+
+
+# Douyin CDN play URLs are signed and expire ~1h after the Apify scrape.
+# 90 min gives safe margin against clock skew before a URL is declared dead.
+PLAY_URL_MAX_AGE_S = 5400
+
+
+def play_url_is_stale(src, max_age_s=PLAY_URL_MAX_AGE_S):
+    """True when a source's signed play_url is past its usable lifetime."""
+    if not src.get("play_url"):
+        return False
+    discovered = _parse_iso(src.get("discovered_at"))
+    if discovered is None:
+        return False
+    age_s = (datetime.now(timezone.utc) - discovered).total_seconds()
+    return age_s > max_age_s
+
+
+def abandon_source(src, error_msg):
+    """Mark a source failed immediately — for deterministically unrecoverable errors.
+
+    Unlike schedule_retry, no backoff window is set: retrying would be futile
+    (e.g. an expired douyin play URL cannot be renewed).
+    """
+    src["status"] = "failed"
+    src["last_error"] = str(error_msg)[:200]
+    src["next_retry_after"] = None
+
+
+def reap_expired_play_urls(state, max_age_s=PLAY_URL_MAX_AGE_S):
+    """Fail pending douyin sources whose signed play_url has expired.
+
+    Retrying these is guaranteed futile: the CDN signature cannot be renewed,
+    and each doomed attempt used to burn a processing slot and suppress new
+    douyin discovery via the backlog gate. Idempotent — already-failed sources
+    are skipped on subsequent calls.
+
+    Returns:
+        list[str]: URLs of sources marked failed by this call.
+    """
+    reaped = []
+    for src in state.get("sources", []):
+        if src.get("status") != "pending":
+            continue
+        if not play_url_is_stale(src, max_age_s=max_age_s):
+            continue
+        discovered = _parse_iso(src.get("discovered_at"))
+        age_h = (
+            (datetime.now(timezone.utc) - discovered).total_seconds() / 3600
+            if discovered
+            else 0
+        )
+        abandon_source(
+            src,
+            f"play_url expired ({age_h:.1f}h old) — douyin CDN signatures "
+            "cannot be refreshed; retries skipped",
+        )
+        reaped.append(src["url"])
+    return reaped
+
+
 def should_retry(src, max_retries=5):
     """Check if a pending source is eligible for retry (pure query without side-effects)."""
     status = src.get("status", "pending")
@@ -127,12 +193,9 @@ def should_retry(src, max_retries=5):
 
     next_retry = src.get("next_retry_after")
     if next_retry:
-        try:
-            dt = datetime.fromisoformat(next_retry.replace("Z", "+00:00"))
-            if dt > datetime.now(timezone.utc):
-                return False  # Still in backoff window
-        except (ValueError, TypeError):
-            pass
+        dt = _parse_iso(next_retry)
+        if dt and dt > datetime.now(timezone.utc):
+            return False  # Still in backoff window
 
     return True
 

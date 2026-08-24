@@ -28,11 +28,14 @@ from pipeline.queue_manager import can_queue_posts  # noqa: E402
 from utils.config import load_config  # noqa: E402
 from utils.errors import DownloadError, QueueFullError  # noqa: E402
 from utils.state import (  # noqa: E402
+    abandon_source,
     load_state,
     save_state,
     should_retry,
     schedule_retry,
     mark_processed,
+    play_url_is_stale,
+    reap_expired_play_urls,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -406,6 +409,20 @@ def main():
 
     state = load_state()
 
+    # Reap douyin sources whose signed play_url has expired (>90 min old).
+    # Their CDN signatures cannot be renewed, so retrying only burns
+    # processing slots and suppresses new douyin discovery. Fail fast.
+    reaped = reap_expired_play_urls(state)
+    if reaped:
+        save_state(state)
+        print(f"Reaped {len(reaped)} expired play-url source(s): {reaped}")
+        send_slack_alert(
+            "Expired douyin sources reaped",
+            f"{len(reaped)} source(s) marked failed (play_url expired, not retryable):\n"
+            + "\n".join(reaped),
+            is_error=False,
+        )
+
     max_src_run = cfg.get("clipper", {}).get("max_sources_per_run", 1)
     ready = [s for s in state["sources"] if should_retry(s)]
     # Douyin play URLs expire ~1h after discovery — process the freshest ones
@@ -444,12 +461,18 @@ def main():
             print(f"✓ Marked processed: {src['url']} ({posted_count} clips posted)")
         else:
             failed_count += 1
-            schedule_retry(src, err_msg)
+            if src.get("play_url") and play_url_is_stale(src):
+                # URL expired while this source waited (e.g. queue gate delay).
+                # A retry would hit the same dead signature — fail immediately.
+                abandon_source(src, err_msg)
+                print(f"✗ Abandoned (play_url expired): {src['url']}")
+            else:
+                schedule_retry(src, err_msg)
+                print(
+                    f"✗ Scheduled retry #{src.get('retry_count')} "
+                    f"after {src.get('next_retry_after')}: {src['url']}"
+                )
             save_state(state)
-            print(
-                f"✗ Scheduled retry #{src.get('retry_count')} "
-                f"after {src.get('next_retry_after')}: {src['url']}"
-            )
 
     state["_meta"]["last_run"] = now_iso
     save_state(state)
