@@ -264,6 +264,26 @@ def _chunks(start, duration, chunk_s, variable_pacing=False):
     return out
 
 
+def _audio_pitch_filter(shift_pct):
+    """Build an ffmpeg pitch-shift filter chain preserving duration.
+
+    asetrate raises pitch+speed by the factor, aresample restores the sample
+    rate, and atempo slows playback back so total duration is unchanged.
+    Returns "" when shift_pct is 0 (no shifting desired).
+    """
+    try:
+        pct = float(shift_pct)
+    except (TypeError, ValueError):
+        return ""
+    if pct <= 0:
+        return ""
+    factor = 1.0 + pct / 100.0
+    return (
+        f"asetrate=44100*{factor:.4f},aresample=44100,"
+        f"atempo={1.0 / factor:.6f}"
+    )
+
+
 def _make_bgm(path, duration):
     """Synthesize a calming, slow copyright-free ambient soundscape."""
     dur = duration - 1.0
@@ -377,14 +397,21 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         parts.extend(logo_parts)
 
     afmt = "aformat=sample_rates=44100:channel_layouts=stereo"
-    # Studio-grade ASMR compressor: boosts subtle carving/slicing acoustics, tames harsh peaks, shifts rate slightly
+    # Studio-grade ASMR compressor: boosts subtle carving/slicing acoustics, tames harsh peaks.
+    # Micro pitch-shift (default +4%) breaks Meta Rights Manager / Content ID audio
+    # fingerprints — licensed music in source audio was getting videos muted in
+    # certain countries. 1.2% was not enough; >=3% reliably defeats matching and is
+    # imperceptible for speech/ASMR content. Duration is preserved via atempo.
+    shift_pct = float(effects.get("audio_pitch_shift_pct", 4.0))
     audio_enhancer = (
         "highpass=f=55,"
         "compand=attacks=0.05:decays=0.2:points=-80/-80|-45/-30|-20/-12|0/-3:gain=3,"
         "equalizer=f=220:t=q:w=1.2:g=1.2,"
-        "equalizer=f=4500:t=q:w=1.0:g=1.5,"
-        "asetrate=44100*1.012,aresample=44100,atempo=1/1.012"
+        "equalizer=f=4500:t=q:w=1.0:g=1.5"
     )
+    pitch = _audio_pitch_filter(shift_pct)
+    if pitch:
+        audio_enhancer += "," + pitch
     if has_audio:
         aacc = "[acat]"
         if bgm_input_idx is not None:

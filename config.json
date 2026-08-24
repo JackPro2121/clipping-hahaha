@@ -136,6 +136,7 @@
     "enabled": true,
     "bgm": true,
     "bgm_volume": 0.18,
+    "audio_pitch_shift_pct": 4.0,
     "subtle_filter": "eq=contrast=1.08:saturation=1.14:brightness=0.012,colorbalance=rs=0.04:gs=0.01:bs=-0.035:rm=0.02:gm=0.01:bm=-0.02,unsharp=5:5:0.8:3:3:0.4,vignette=angle=PI/7"
   },
   "brand": {
@@ -204,6 +205,9 @@
     "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade",
     "max_posts_per_channel": 3,
     "max_queue_depth": 10,
+    "service_queue_caps": {
+      "facebook": 3
+    },
     "mode": "addToQueue",
     "services": [
       "tiktok",

@@ -298,6 +298,9 @@ def process_source(src, cfg):
 
         # Check queue capacity before flooding
         max_queue = cfg.get("buffer", {}).get("max_queue_depth", 20)
+        # Per-service ceilings — fresh/restricted pages need lower volume.
+        # e.g. service_queue_caps: {"facebook": 3} caps FB queueing per run.
+        svc_caps = cfg.get("buffer", {}).get("service_queue_caps", {})
 
         post_mode = cfg.get("buffer", {}).get("mode", "shareNow")
 
@@ -341,7 +344,9 @@ def process_source(src, cfg):
 
             for channel in channels:
                 service = channel.get("service")
-                allowed, depth = can_queue_posts(channel["id"], max_queue_depth=max_queue)
+                allowed, depth = can_queue_posts(
+                    channel["id"], max_queue_depth=svc_caps.get(service, max_queue)
+                )
                 if not allowed:
                     msg = f"Queue full for {service} ({depth} pending) — skipping clip {clip.name}"
                     print(msg)
