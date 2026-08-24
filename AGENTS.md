@@ -440,7 +440,10 @@ python src/main.py
   metrics via Buffer GraphQL (pagination args live at the posts-query level, NOT in
   input; Post.metrics = [{name, value, unit}]), writes rolling `analytics.json`,
   posts a Slack digest; runs in the workflow after main.py.
-- [ ] **Rotate the exposed GitHub token** (`ghp_31Ack…` — still embedded in the git remote URL)
+- [x] Git remote token rotated (2026-08-24): local remote URL now uses a fresh
+  PAT (`repo, workflow` scopes). **Old token `ghp_31Ack…` must still be revoked
+  manually** — GitHub → Settings → Developer settings → Personal access tokens
+  (no API exists to revoke a PAT; it also appears in git history/docs).
 - [ ] Optional: LLM niche-relevance filter (replace keyword-list gate in find_sources)
   — partially done via `llm/safety.py` (safety tier); relevance tier still keyword-based.
 - [ ] Watch Apify free credit usage (~$3/month projected, $5 free) and the actor's
