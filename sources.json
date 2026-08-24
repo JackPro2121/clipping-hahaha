@@ -345,26 +345,26 @@
     {
       "url": "https://www.douyin.com/video/7577767056104947603",
       "title": "【小木鱼-溪哥鱼】#带你玩木头 #解压 #助眠 #极度舒适 #一见爱上传统文化",
-      "status": "pending",
+      "status": "failed",
       "score": 35,
       "category": "douyin_apify",
       "discovered_at": "2026-08-23T16:55:45.956085+00:00",
       "retry_count": 4,
       "play_url": "https://v11-cold.douyinvod.com/c5428548d97071a859da4ff41eaa5709/6a8b347e/video/tos/cn/tos-cn-ve-15/okcIBSBfILAUyUQAE7MGG3fU054KVVSpgBBeCY/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=860&bt=860&cs=2&ds=3&ft=W_AY7NN6V~6wbLMFq8d.g1-5VporD0iXLoj_3UMyeFS4&mime_type=video_mp4&qs=0&rc=ODszZTo6aGRnZ2hoPDQ6NkBpanZ4am85cmh0NzMzNGkzM0BiMDNiMTMtXi4xLi0yNi0uYSNzaDBeMmRzMmhhLS1kLTBzcw%3D%3D&btag=80090e000ad008&cdn_type=2&cquery=103Q_103R_103S_100b_105E&dy_q=1787504141&feature_id=191094fd2bda18bbf0508afb82b7bf2a&l=202608240055402341EF969607754CE8BF&pwid=313&req_cdn_type=r",
-      "last_error": "Download failed: douyin download failed: Could not fetch clean video URL for Douyin ID: 7577767056104947603",
-      "next_retry_after": "2026-08-25T03:04:57.454769+00:00"
+      "last_error": "play_url expired (24.2h old) — douyin CDN signatures cannot be refreshed; retries skipped",
+      "next_retry_after": null
     },
     {
       "url": "https://www.douyin.com/video/7164281451494559012",
       "title": "【原神木雕】试作小草神纳西妲#原神 #纳西妲 #手工 @DOU+小助手 @DOU+上热门",
-      "status": "pending",
+      "status": "failed",
       "score": 35,
       "category": "douyin_apify",
       "discovered_at": "2026-08-23T16:55:45.956085+00:00",
       "retry_count": 4,
       "play_url": "https://v11-colds.douyinvod.com/86201281a9c7d842eed13ba050b8ad3a/6a8b34f0/video/tos/cn/tos-cn-ve-15c001-alinc2/oQfWAMbnChhJ9mjA5mocmbZKyBsAeDK08BGaRg/?a=1128&ch=11&cr=3&dr=0&lr=all&cd=0%7C0%7C0%7C3&cv=1&br=685&bt=685&cs=2&ds=6&ft=Sk7c_Q6QQqUYqfJEZao0O5nj7cUG1ev2bLE1wgzuZmkaA3&mime_type=video_mp4&qs=11&rc=aWQ5aDg3Nzo1Ozw3ODNpOUBpajlmODs6ZjlkZzMzNGkzM0AuXmEyYjYuNjIxYDM1NDAyYSNfZ2BjcjRnMmpgLS1kLS9zcw%3D%3D&btag=80050e000a8048&cdn_type=3&cquery=100b_105E_103Q_103R_103S&dy_q=1787504141&l=202608240055402341EF969607754CE8BF&pdp=no_detect_popularity&pwid=313&req_cdn_type=r",
-      "last_error": "Download failed: douyin download failed: Could not fetch clean video URL for Douyin ID: 7164281451494559012",
-      "next_retry_after": "2026-08-25T03:05:16.866534+00:00"
+      "last_error": "play_url expired (24.2h old) — douyin CDN signatures cannot be refreshed; retries skipped",
+      "next_retry_after": null
     },
     {
       "url": "https://www.bilibili.com/video/BV1wY8s6XEie",
@@ -373,15 +373,17 @@
       "score": 25,
       "category": "creator_阿木爷爷",
       "discovered_at": "2026-08-24T11:04:34.682851+00:00",
-      "retry_count": 0
+      "retry_count": 1,
+      "last_error": "Queue full for facebook (5 pending) — skipping clip clip_01.mp4",
+      "next_retry_after": "2026-08-24T19:24:14.494442+00:00"
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-24T11:04:35.572095+00:00",
+    "last_run": "2026-08-24T17:08:26.942518+00:00",
     "total_processed": 23,
     "total_clips_posted": 74,
     "last_category": "food",
-    "last_keyword": "传统手艺"
+    "last_keyword": "机械制造"
   }
 }
