@@ -187,6 +187,37 @@ def process_source(src, cfg):
     captions_cfg = cfg.get("captions", {})
     transcript = _fetch_captions(src, captions_cfg)
 
+    # Moderation pre-flight (LLM tier): classify title + transcript against
+    # Meta policies BEFORE download/posting. Accident/injury videos that pass
+    # the craft keyword filter got the FB page restricted + age-flagged.
+    safety_cfg = cfg.get("safety", {})
+    if safety_cfg.get("enabled", True):
+        try:
+            from llm.safety import classify_content_safety
+
+            transcript_text = " ".join(
+                (seg.get("text") or seg.get("caption") or "").strip()
+                for seg in (transcript or [])
+            ).strip()
+            verdict = classify_content_safety(
+                src.get("title", ""),
+                transcript=transcript_text or None,
+                use_llm=safety_cfg.get("use_llm", True),
+            )
+            if not verdict["safe"]:
+                err = f"Blocked by safety gate: {verdict['reason']}"
+                print(err)
+                abandon_source(src, err)
+                send_slack_alert(
+                    "Unsafe source blocked",
+                    f"{src['url']}\n{verdict['reason'][:150]}",
+                    is_error=False,
+                )
+                return False, 0, err
+            print(f"Safety check OK ({verdict['source']})")
+        except Exception as exc:
+            print(f"Safety pre-flight skipped: {str(exc)[:80]}")
+
     with tempfile.TemporaryDirectory() as td:
         work = Path(td)
 
@@ -466,7 +497,11 @@ def main():
             print(f"✓ Marked processed: {src['url']} ({posted_count} clips posted)")
         else:
             failed_count += 1
-            if src.get("play_url") and play_url_is_stale(src):
+            if src.get("status") == "failed":
+                # Already abandoned inside process_source (safety gate) —
+                # schedule_retry would resurrect it to pending. Leave as-is.
+                pass
+            elif src.get("play_url") and play_url_is_stale(src):
                 # URL expired while this source waited (e.g. queue gate delay).
                 # A retry would hit the same dead signature — fail immediately.
                 abandon_source(src, err_msg)

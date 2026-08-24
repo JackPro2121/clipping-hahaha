@@ -414,15 +414,24 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         audio_enhancer += "," + pitch
     if has_audio:
         aacc = "[acat]"
+        # EBU R128 loudness normalization — TikTok/Instagram/Facebook all
+        # normalize to ~-14 LUFS; delivering pre-normalized audio prevents
+        # the platforms' re-normalization from crushing dynamics or leaving
+        # clips too quiet relative to native content.
+        loudnorm = ""
+        if effects.get("loudnorm", True):
+            loudnorm = ",loudnorm=I=-14:TP=-1.5:LRA=11"
         if bgm_input_idx is not None:
             bgm_vol = effects.get("bgm_volume", 0.18)
+            # amix(normalize=0) can sum above full-scale; loudnorm's TP=-1.5
+            # ceiling catches that, so no manual make-up gain is needed.
             parts.append(
                 f"{aacc}{afmt},{audio_enhancer},volume=1.0[orig];"
                 f"[{bgm_input_idx}:a]{afmt},volume={bgm_vol}[bg];"
-                f"[orig][bg]amix=inputs=2:duration=first:normalize=0[aout]"
+                f"[orig][bg]amix=inputs=2:duration=first:normalize=0{loudnorm}[aout]"
             )
         else:
-            parts.append(f"{aacc}{afmt},{audio_enhancer}[aout]")
+            parts.append(f"{aacc}{afmt},{audio_enhancer}{loudnorm}[aout]")
     else:
         if bgm_input_idx is not None:
             parts.append(f"[{bgm_input_idx}:a]{afmt},volume=1.0[aout]")

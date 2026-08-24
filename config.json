@@ -137,6 +137,7 @@
     "bgm": true,
     "bgm_volume": 0.18,
     "audio_pitch_shift_pct": 4.0,
+    "loudnorm": true,
     "subtle_filter": "eq=contrast=1.08:saturation=1.14:brightness=0.012,colorbalance=rs=0.04:gs=0.01:bs=-0.035:rm=0.02:gm=0.01:bm=-0.02,unsharp=5:5:0.8:3:3:0.4,vignette=angle=PI/7"
   },
   "brand": {
@@ -220,6 +221,10 @@
       "facebook": "{title}{part} 🛠️ Incredible craftsmanship! Follow for daily restoration videos #satisfying #woodworking #restoration #craftsmanship"
     },
     "run_gate_depth": 8
+  },
+  "safety": {
+    "enabled": true,
+    "use_llm": true
   },
   "storage": {
     "auto_cleanup": true,

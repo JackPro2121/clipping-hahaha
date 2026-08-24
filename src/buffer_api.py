@@ -76,11 +76,13 @@ def _request(query, variables=None, max_retries=3):
     raise RuntimeError(f"Buffer request failed after {max_retries} attempts: {last_exc}")
 
 
-def get_org_id():
-    """Return the org that actually has connected channels.
+def get_org_id(prefer_services=None):
+    """Return the org that actually hosts our posting channels.
 
-    The account can hold multiple organizations (order is not stable), so
-    picking organizations[0] nondeterministically broke channel access.
+    The account holds multiple organizations and BOTH have channels, so
+    "first org with channels" is still nondeterministic (analytics once
+    resolved to the wrong org). When prefer_services is given, pick the org
+    whose channels actually match those services.
     """
     data = _request(
         "query GetOrganizations { account { organizations { id name } } }"
@@ -90,19 +92,33 @@ def get_org_id():
         raise RuntimeError("No Buffer organization found under this API key.")
     if len(orgs) == 1:
         return orgs[0]["id"]
+
     channels_query = (
         "query GetChannels($orgId: OrganizationId!) { "
-        "channels(input: { organizationId: $orgId }) { id } }"
+        "channels(input: { organizationId: $orgId }) { id service } }"
     )
+    fallback = None
+    best = None
+    best_matches = -1
     for org in orgs:
         ch = _request(channels_query, variables={"orgId": org["id"]}).get("channels") or []
-        if ch:
-            return org["id"]
+        if not ch:
+            continue
+        if fallback is None:
+            fallback = org["id"]
+        if prefer_services:
+            matches = sum(1 for c in ch if c.get("service") in prefer_services)
+            if matches > best_matches:
+                best, best_matches = org["id"], matches
+    if best is not None:
+        return best
+    if fallback is not None:
+        return fallback
     return orgs[0]["id"]
 
 
 def get_channels(services=None):
-    org_id = get_org_id()
+    org_id = get_org_id(prefer_services=services)
     query = (
         "query GetChannels($orgId: OrganizationId!) { "
         "channels(input: { organizationId: $orgId }) { id name service } }"

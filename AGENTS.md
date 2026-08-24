@@ -98,11 +98,13 @@ src/
     client.py           multi-provider LLM chain (Groq -> Gemini -> OpenRouter), never raises
     captions.py         unique per-clip hook captions (template fallback)
     windows.py          smart clip window selection (transcript / audio-energy tiers)
+    safety.py           Meta-moderation gate: dangerous-content keywords + LLM classification
   pipeline/
     creator_discovery.py    25 verified Chinese craft master scrapers & dynamic pool rotation
     quality.py          source video quality scorer (0-100 pts)
     cleanup.py          Cloudinary storage GC (14-day auto-purge)
     queue_manager.py    Buffer queue depth limiter (edges-based count; totalCount is FORBIDDEN)
+    analytics.py        Buffer per-post metrics -> analytics.json + Slack digest (feedback loop)
     brand.py            channel watermark & branding filter generator
   notifications/
     slack.py            Slack incoming webhook summaries and alerts
@@ -421,8 +423,26 @@ python src/main.py
   `_pick_video_stream()` selects the first stream that actually has dimensions.
 - [x] Verified full douyin flow on runner (2026-08-23): discovery → 1080p download →
   LLM captions → 12 clips queued across TikTok/IG/Facebook in one run.
+- [x] Douyin retry fix (2026-08-24): expired play_urls are reaped (`utils/state.py:
+  reap_expired_play_urls`, >90 min = dead) instead of retried 5× — zombies used to
+  burn both processing slots and suppress Apify discovery via the backlog gate.
+- [x] Meta moderation fixes (2026-08-24): FB page was restricted + age-flagged after
+  accident/injury videos passed the craft keyword filter, and Rights Manager muted
+  videos over licensed music in source audio. Fixes: `llm/safety.py` gate
+  (keyword fast-path in find_sources + LLM tier pre-flight in main.py, config
+  `safety.*`), 4% audio pitch shift (`effects.audio_pitch_shift_pct`) defeating
+  Content ID matching, per-service queue caps (`buffer.service_queue_caps`,
+  facebook: 3), EBU loudnorm -14 LUFS (`effects.loudnorm`).
+- [x] Multi-org Buffer fix (2026-08-24): account holds two orgs that BOTH have
+  channels — `get_org_id(prefer_services=...)` now matches the org whose channels
+  carry the requested services (analytics once resolved to the Twitter org).
+- [x] Analytics feedback loop (2026-08-24): `pipeline/analytics.py` fetches per-post
+  metrics via Buffer GraphQL (pagination args live at the posts-query level, NOT in
+  input; Post.metrics = [{name, value, unit}]), writes rolling `analytics.json`,
+  posts a Slack digest; runs in the workflow after main.py.
 - [ ] **Rotate the exposed GitHub token** (`ghp_31Ack…` — still embedded in the git remote URL)
 - [ ] Optional: LLM niche-relevance filter (replace keyword-list gate in find_sources)
+  — partially done via `llm/safety.py` (safety tier); relevance tier still keyword-based.
 - [ ] Watch Apify free credit usage (~$3/month projected, $5 free) and the actor's
   15-lifetime-free-runs evaluation cap on zen-studio/douyin-search-scraper
 

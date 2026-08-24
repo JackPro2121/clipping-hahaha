@@ -220,6 +220,18 @@ def main():
             return False
         return any(kw.lower() in t for kw in _NICHE_KW)
 
+    # Meta-moderation safety gate — accident/injury/dangerous-act content got
+    # the Facebook page restricted and age-flagged. Rejected BEFORE scoring so
+    # nothing unsafe ever enters sources.json.
+    def _is_meta_safe(title: str) -> bool:
+        from llm.safety import classify_content_safety
+
+        verdict = classify_content_safety(title, use_llm=False)
+        if not verdict["safe"]:
+            print(f"  [safety-skip] {verdict['reason'][:80]} :: {title[:50]}")
+            return False
+        return True
+
     # 3. Quality score and filter candidate videos
 
     scored_candidates = []
@@ -231,6 +243,10 @@ def main():
         title = src.get("title", "")
         if not _is_niche_relevant(title):
             print(f"  [niche-skip] Off-topic title: {title[:70]}")
+            continue
+
+        # Moderation gate — reject accident/injury/dangerous-act content
+        if not _is_meta_safe(title):
             continue
 
         # For verified curated creators, relax min_views so freshly published clips get captured first!
@@ -298,6 +314,8 @@ def main():
                     continue
                 fb_title = src.get("title", "")
                 if not _is_niche_relevant(fb_title):
+                    continue
+                if not _is_meta_safe(fb_title):
                     continue
                 min_views_fb = discovery.get("min_views", 30000)
                 if src.get("views", 0) < min_views_fb:

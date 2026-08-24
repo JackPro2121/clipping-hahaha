@@ -11,10 +11,16 @@ _ORG_ID_CACHE = None
 
 
 def _get_org_id_cached():
-    """Return org_id, fetching from API only on first call per process."""
+    """Return org_id, fetching from API only on first call per process.
+
+    Prefer-services disambiguates multi-org accounts (a Twitter-only org
+    shares the account and 'first with channels' can resolve to it).
+    """
     global _ORG_ID_CACHE
     if _ORG_ID_CACHE is None:
-        _ORG_ID_CACHE = get_org_id()
+        _ORG_ID_CACHE = get_org_id(
+            prefer_services=("tiktok", "instagram", "facebook")
+        )
     return _ORG_ID_CACHE
 
 
