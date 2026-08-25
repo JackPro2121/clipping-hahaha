@@ -378,14 +378,27 @@
       "next_retry_after": null,
       "processed_at": "2026-08-25T11:15:33.368624+00:00",
       "clips_count": 3
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1fMhG65Eda",
+      "title": "（二传）“手艺活”做多了会影响战力？和双人play有什么不一样？关于男生传统手艺的那些事儿！",
+      "status": "processed",
+      "score": 41,
+      "category": "keyword_传统手艺",
+      "discovered_at": "2026-08-25T22:57:29.221264+00:00",
+      "retry_count": 0,
+      "processed_at": "2026-08-25T23:05:32.177726+00:00",
+      "clips_count": 3,
+      "next_retry_after": null,
+      "last_error": null
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-25T11:03:35.133395+00:00",
-    "total_processed": 24,
-    "total_clips_posted": 77,
+    "last_run": "2026-08-25T22:57:31.082882+00:00",
+    "total_processed": 25,
+    "total_clips_posted": 80,
     "last_category": "food",
-    "last_keyword": "解压手工"
+    "last_keyword": "传统手艺"
   }
 }
