@@ -346,5 +346,57 @@
     ],
     "total_views": 4545,
     "total_posts": 85
+  },
+  {
+    "generated_at": "2026-08-25T11:15:35.531388+00:00",
+    "window_days": 7,
+    "channels": {
+      "instagram": {
+        "posts": 41,
+        "views": 2839,
+        "reach": 2485,
+        "likes": 8,
+        "avg_views": 69.2,
+        "best_views": 179
+      },
+      "tiktok": {
+        "posts": 30,
+        "views": 849,
+        "reach": 73,
+        "likes": 24,
+        "avg_views": 28.3,
+        "best_views": 307
+      },
+      "facebook": {
+        "posts": 17,
+        "views": 1957,
+        "reach": 0,
+        "likes": 2,
+        "avg_views": 115.1,
+        "best_views": 534
+      }
+    },
+    "top_posts": [
+      {
+        "service": "facebook",
+        "views": 534,
+        "likes": 0,
+        "text": "Incredible Craft Mastery You Have to See (Part 1/2) 🛠️ Incredible craftsmanship! Follow for daily restoration videos #sa"
+      },
+      {
+        "service": "tiktok",
+        "views": 307,
+        "likes": 8,
+        "text": "菜谱：洋葱炒蛋，家庭红烧鱼，蒜炒西兰花，辣椒炒猪腰，绿豆汤，从买菜开始，你在家随时可以复刻 - clip 1/3 #shorts"
+      },
+      {
+        "service": "facebook",
+        "views": 273,
+        "likes": 0,
+        "text": "Incredible Craft Mastery You Have to See (Part 1/2) 🛠️ Incredible craftsmanship! Follow for daily restoration videos #sa"
+      }
+    ],
+    "total_views": 5645,
+    "total_posts": 88
   }
 ]
