@@ -204,7 +204,7 @@
   "buffer": {
     "caption_template": "{title}{part} ✨ Follow @zencutofficials for daily satisfying crafts! {hashtags}",
     "hashtags": "#satisfying #woodworking #restoration #craftsmanship #handmade",
-    "max_posts_per_channel": 3,
+    "max_posts_per_channel": 2,
     "max_queue_depth": 10,
     "service_queue_caps": {
       "facebook": 3
