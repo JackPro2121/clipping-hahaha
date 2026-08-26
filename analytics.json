@@ -606,5 +606,57 @@
     ],
     "total_views": 5645,
     "total_posts": 100
+  },
+  {
+    "generated_at": "2026-08-26T11:04:39.967338+00:00",
+    "window_days": 7,
+    "channels": {
+      "tiktok": {
+        "posts": 35,
+        "views": 1268,
+        "reach": 96,
+        "likes": 28,
+        "avg_views": 36.2,
+        "best_views": 307
+      },
+      "facebook": {
+        "posts": 21,
+        "views": 4946,
+        "reach": 0,
+        "likes": 15,
+        "avg_views": 235.5,
+        "best_views": 2872
+      },
+      "instagram": {
+        "posts": 46,
+        "views": 3366,
+        "reach": 2937,
+        "likes": 8,
+        "avg_views": 73.2,
+        "best_views": 248
+      }
+    },
+    "top_posts": [
+      {
+        "service": "facebook",
+        "views": 2872,
+        "likes": 12,
+        "text": "Watch a master turn raw wood into a flawless masterpiece in seconds! 🔨 #woodworking #craft #asmr (Part 1/3)"
+      },
+      {
+        "service": "facebook",
+        "views": 535,
+        "likes": 0,
+        "text": "Incredible Craft Mastery You Have to See (Part 1/2) 🛠️ Incredible craftsmanship! Follow for daily restoration videos #sa"
+      },
+      {
+        "service": "tiktok",
+        "views": 307,
+        "likes": 8,
+        "text": "菜谱：洋葱炒蛋，家庭红烧鱼，蒜炒西兰花，辣椒炒猪腰，绿豆汤，从买菜开始，你在家随时可以复刻 - clip 1/3 #shorts"
+      }
+    ],
+    "total_views": 9580,
+    "total_posts": 102
   }
 ]
