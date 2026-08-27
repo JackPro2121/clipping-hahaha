@@ -66,20 +66,19 @@ def _center_crop(cfg, src_w, src_h):
             x = (src_w - w) // 2
             y = (src_h - h) // 2
         else:
-            # Source is landscape/horizontal → 9:16 vertical crop with top-bias.
-            # Bilibili and creator watermarks sit at top-right corner.
-            # Shift crop window UPWARD so the top edge is inside the watermark zone,
-            # cutting it out without losing action content (which is center-frame).
-            h = round(src_h * 0.94)    # 6% total vertical margin (was 3%)
+            # Source is landscape/horizontal → 9:16 vertical crop.
+            # Bilibili & Douyin watermarks sit at top-right corner (y: 0-6% of src_h).
+            # Crop height with 6% margin and shift window DOWNWARD so the top watermark zone is excluded.
+            h = round(src_h * 0.94)
             if h % 2:
                 h -= 1
             w = round(h * 9 / 16)
             if w % 2:
                 w -= 1
             x = (src_w - w) // 2
-            # Shift upward by 8% of source height → top-right watermark falls above crop
-            top_shift = round(src_h * 0.08)
-            y = max(0, (src_h - h) // 2 - top_shift)
+            # Drop top watermark zone (y starts below top 6% margin)
+            top_margin = round(src_h * 0.06)
+            y = min(src_h - h, max(0, (src_h - h) // 2 + top_margin))
     else:
         w, h = src_w, src_h
         x, y = 0, 0
@@ -92,10 +91,16 @@ def _filter_path(p):
 
 def _chunk_vf(cfg, src_w, src_h, dur, motion):
     w, h, x, y = _center_crop(cfg, src_w, src_h)
-    if motion == "pan_rl" and src_w - w > 20:
-        vf = f"crop={w}:{h}:x='trunc((iw-{w})*(1-t/{dur:.3f}))*2':y={y}"
-    elif motion == "pan_lr" and src_w - w > 20:
-        vf = f"crop={w}:{h}:x='trunc((iw-{w})*t/{dur:.3f})*2':y={y}"
+    center_x = (src_w - w) // 2
+    # Keep pan within center +/- 20% margin to strictly exclude corner Bilibili/Douyin watermarks
+    max_pan_offset = round((src_w - w) * 0.20)
+    x_min = max(0, center_x - max_pan_offset)
+    x_max = min(src_w - w, center_x + max_pan_offset)
+
+    if motion == "pan_rl" and src_w - w > 40 and x_max > x_min:
+        vf = f"crop={w}:{h}:x='trunc({x_max}-({x_max}-{x_min})*t/{dur:.3f})':y={y}"
+    elif motion == "pan_lr" and src_w - w > 40 and x_max > x_min:
+        vf = f"crop={w}:{h}:x='trunc({x_min}+({x_max}-{x_min})*t/{dur:.3f})':y={y}"
     else:
         vf = f"crop={w}:{h}:{x}:{y}"
         if motion in ("zoom_in", "slow_zoom"):
@@ -105,8 +110,8 @@ def _chunk_vf(cfg, src_w, src_h, dur, motion):
             zw = min(zw, w)
             zh = min(zh, h)
             vf += (
-                f",crop={zw}:{zh}:x='trunc((iw-{zw})*t/{dur:.3f}/2)*2':"
-                f"y='trunc((ih-{zh})*t/{dur:.3f}/2)*2',scale={w}:{h}:flags=lanczos"
+                f",crop={zw}:{zh}:x='trunc(({w}-{zw})*t/{dur:.3f}/2)*2':"
+                f"y='trunc(({h}-{zh})*t/{dur:.3f}/2)*2',scale={w}:{h}:flags=lanczos"
             )
     return vf
 
