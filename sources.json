@@ -399,24 +399,49 @@
       "score": 75,
       "category": "creator_八零彪子",
       "discovered_at": "2026-08-27T10:53:03.734654+00:00",
-      "retry_count": 0
+      "retry_count": 1,
+      "last_error": "Download failed: bilibili download failed: stream download failed: ('Connection broken: IncompleteRead(998466 bytes read, 13868622 more expected)', IncompleteRead(998466 bytes read, 13868622 more expe",
+      "next_retry_after": "2026-08-27T15:38:45.606958+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV141uz67EYv",
       "title": "今天是年轻人专场，作为宫廷盘杠传承人，我带领大家用传统技艺强身健体，非遗正青春！",
-      "status": "pending",
+      "status": "processed",
       "score": 43,
       "category": "creator_传统技艺传承人",
       "discovered_at": "2026-08-27T10:53:03.734654+00:00",
+      "retry_count": 0,
+      "processed_at": "2026-08-27T13:44:32.307031+00:00",
+      "clips_count": 6,
+      "next_retry_after": null,
+      "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1ew4R6yE7s",
+      "title": "农村大妈显摆指南",
+      "status": "pending",
+      "score": 43,
+      "category": "creator_农民入门指南_Official",
+      "discovered_at": "2026-08-27T13:38:29.667447+00:00",
+      "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Au9CYNEVt",
+      "title": "承德彬哥二手餐饮设备",
+      "status": "pending",
+      "score": 35,
+      "category": "creator_彬哥分享机械",
+      "discovered_at": "2026-08-27T13:38:29.667447+00:00",
       "retry_count": 0
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-25T22:57:31.082882+00:00",
-    "total_processed": 25,
-    "total_clips_posted": 80,
+    "last_run": "2026-08-27T13:38:31.332853+00:00",
+    "total_processed": 26,
+    "total_clips_posted": 86,
     "last_category": "food",
-    "last_keyword": "木工雕刻"
+    "last_keyword": "木工",
+    "auto_creator_run_count": 1
   }
 }
