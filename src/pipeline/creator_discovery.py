@@ -6,6 +6,10 @@ Uses two approaches:
 
 Bilibili creator video fetching uses the public Bilibili space API (no auth needed).
 Douyin video fetching extracts clean no-watermark URLs.
+
+Auto-expand:
+  discover_bilibili_creator_accounts() searches Bilibili bili_user endpoint by craft keywords
+  to dynamically grow the curated creator pool — no Apify needed, free public API.
 """
 
 import os
@@ -200,6 +204,68 @@ def discover_bilibili_creators(cfg, max_creators=None, max_videos_per_creator=1)
         all_sources.extend(videos)
 
     return all_sources
+
+def discover_bilibili_creator_accounts(keywords, min_fans=3000, min_videos=3, max_per_keyword=6):
+    """Search Bilibili for niche craft creator accounts by keyword.
+
+    Hits the public Bilibili user-search endpoint (search_type=bili_user) for each
+    keyword and returns creator unames whose channels look legitimate (fan + video
+    count thresholds). These unames are directly usable in `bilibili_creators` config.
+
+    Args:
+        keywords:         List of Chinese craft keywords (e.g. ["木工", "非遗", "修复"]).
+        min_fans:         Minimum follower count (default 3 000).
+        min_videos:       Minimum published video count (default 3).
+        max_per_keyword:  Max unique creators to collect per keyword (default 6).
+
+    Returns:
+        list[str]: Unique creator unames sorted by descending follower count.
+    """
+    import tempfile
+    import urllib.parse
+    from pathlib import Path
+    from download import _bili_headers
+
+    found: dict[str, dict] = {}  # uname -> {fans, videos, keyword}
+
+    for keyword in keywords:
+        try:
+            with tempfile.TemporaryDirectory() as td:
+                headers, _ = _bili_headers(Path(td))
+                kw_enc = urllib.parse.quote(str(keyword))
+                # order=fans, order_sort=0 → highest followers first
+                url = (
+                    "https://api.bilibili.com/x/web-interface/search/type"
+                    f"?search_type=bili_user&keyword={kw_enc}&order=fans&order_sort=0&page=1"
+                )
+                resp = requests.get(url, headers=headers, timeout=20)
+                if resp.status_code != 200:
+                    continue
+                data = (resp.json() or {}).get("data") or {}
+                items = data.get("result") or []
+                count = 0
+                for item in items:
+                    if count >= max_per_keyword:
+                        break
+                    uname = (item.get("uname") or "").strip()
+                    fans = int(item.get("fans") or 0)
+                    videos = int(item.get("videos") or 0)
+                    if not uname or fans < min_fans or videos < min_videos:
+                        continue
+                    if uname not in found:
+                        found[uname] = {
+                            "fans": fans,
+                            "videos": videos,
+                            "keyword": keyword,
+                        }
+                        count += 1
+        except Exception as exc:
+            print(f"  [creator-search] Error for keyword '{keyword}': {str(exc)[:100]}")
+
+    # Sort by fans descending → highest-reach creators first
+    sorted_creators = sorted(found.keys(), key=lambda u: found[u]["fans"], reverse=True)
+    return sorted_creators
+
 
 
 

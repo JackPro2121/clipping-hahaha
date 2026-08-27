@@ -14,6 +14,7 @@ from douyin import discover as discover_douyin  # noqa: E402
 from douyin_apify import discover_douyin_apify  # noqa: E402
 from pipeline.creator_discovery import (  # noqa: E402
     discover_bilibili_creators,
+    discover_bilibili_creator_accounts,
     discover_douyin_creators,
 )
 from pipeline.quality import score_source, should_process  # noqa: E402
@@ -49,6 +50,91 @@ def _get_next_target(cfg, state):
         return "category", categories[0]
     next_idx = (categories.index(last_cat) + 1) % len(categories)
     return "category", categories[next_idx]
+
+
+# Niche craft keywords used specifically for creator-account discovery.
+# These are separate from (and broader than) the video-search keywords so
+# that the user-search API finds channels whose PROFILE NAME contains the
+# craft even when their individual video titles vary.
+_CREATOR_SEARCH_KW = [
+    "木工",        # woodworking
+    "手工制作",    # handmade craft
+    "老物件修复",  # antique restoration
+    "非遗",        # intangible cultural heritage
+    "锻造",        # forging / blacksmith
+    "传统手艺",    # traditional skill
+    "木雕",        # wood carving
+    "竹编",        # bamboo weaving
+    "修复",        # restoration
+]
+
+
+def _auto_expand_creators(cfg, state):
+    """Auto-discover new Bilibili niche creators every AUTO_EXPAND_EVERY_N runs.
+
+    1. Always merges previously saved `state._meta.auto_creators` into cfg so
+       every run benefits from the expanded pool.
+    2. Every AUTO_EXPAND_EVERY_N runs it searches Bilibili for new creator
+       accounts by craft keywords and saves the results back to state.
+
+    Never raises — failures print a warning and proceed with existing pool.
+    """
+    META_KEY = "auto_creators"
+    RUN_KEY = "auto_creator_run_count"
+    AUTO_EXPAND_EVERY_N = 3   # search for new creators every 3 pipeline runs
+    MAX_AUTO_CREATORS = 50    # cap the auto pool to avoid config bloat
+
+    meta = state.setdefault("_meta", {})
+    run_count = meta.get(RUN_KEY, 0) + 1
+    meta[RUN_KEY] = run_count
+
+    auto_pool: list = list(meta.get(META_KEY, []))
+    existing_curated: list = list(cfg.get("discovery", {}).get("bilibili_creators") or [])
+    all_known: set = set(auto_pool) | set(existing_curated)
+
+    # ——— always merge saved auto-creators into cfg for this run ———
+    if auto_pool:
+        merged = existing_curated + [c for c in auto_pool if c not in existing_curated]
+        cfg.setdefault("discovery", {})["bilibili_creators"] = merged
+        print(f"  [auto-pool] Loaded {len(auto_pool)} auto-discovered creators into pool "
+              f"(total: {len(merged)} creators)")
+
+    # ——— periodically search for new ones ———
+    if run_count % AUTO_EXPAND_EVERY_N != 0:
+        return  # not time yet
+
+    discovery = cfg.get("discovery", {})
+    search_keywords = discovery.get("keywords") or _CREATOR_SEARCH_KW
+    # Use a dedicated broader set merged with the profile keywords
+    search_terms = list(dict.fromkeys(_CREATOR_SEARCH_KW + list(search_keywords)))[:8]
+
+    print(f"\n  [auto-expand] Run #{run_count}: searching Bilibili for new niche creators "
+          f"across {len(search_terms)} keywords ...")
+    try:
+        found = discover_bilibili_creator_accounts(
+            search_terms,
+            min_fans=3000,
+            min_videos=3,
+            max_per_keyword=6,
+        )
+        new_creators = [c for c in found if c not in all_known]
+        if new_creators:
+            # Prepend high-reach creators to front of auto_pool
+            auto_pool = new_creators + [c for c in auto_pool if c not in new_creators]
+            auto_pool = auto_pool[:MAX_AUTO_CREATORS]
+            meta[META_KEY] = auto_pool
+            # Patch cfg so the current run immediately benefits
+            merged = existing_curated + [c for c in auto_pool if c not in existing_curated]
+            cfg["discovery"]["bilibili_creators"] = merged
+            print(f"  [auto-expand] +{len(new_creators)} new niche creators added: "
+                  + ", ".join(new_creators[:8])
+                  + (" ..." if len(new_creators) > 8 else ""))
+        else:
+            print(f"  [auto-expand] No new niche creators found this scan "
+                  f"(pool already has {len(all_known)} unique accounts).")
+    except Exception as exc:
+        print(f"  [auto-expand] Creator search error (proceeding with existing pool): "
+              f"{str(exc)[:120]}")
 
 
 def main():
@@ -91,7 +177,10 @@ def main():
         save_state(state)
         print(f"Reaped {len(reaped)} expired play-url source(s): {reaped}")
 
-    # 1. Run automatic archiving on sources older than 30 days
+    # 1. Auto-expand creator pool from Bilibili user search (every 3 runs)
+    _auto_expand_creators(cfg, state)
+
+    # 2. Run automatic archiving on sources older than 30 days
     archived = archive_old_sources(state, keep_days=30)
     if archived:
         print(f"State maintenance: Archived {archived} old processed sources")
