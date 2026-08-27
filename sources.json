@@ -391,6 +391,24 @@
       "clips_count": 3,
       "next_retry_after": null,
       "last_error": null
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1xY8468ExQ",
+      "title": "东北的孩子打小就爱这一口",
+      "status": "pending",
+      "score": 75,
+      "category": "creator_八零彪子",
+      "discovered_at": "2026-08-27T10:53:03.734654+00:00",
+      "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV141uz67EYv",
+      "title": "今天是年轻人专场，作为宫廷盘杠传承人，我带领大家用传统技艺强身健体，非遗正青春！",
+      "status": "pending",
+      "score": 43,
+      "category": "creator_传统技艺传承人",
+      "discovered_at": "2026-08-27T10:53:03.734654+00:00",
+      "retry_count": 0
     }
   ],
   "archived_urls": [],
