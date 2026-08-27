@@ -122,3 +122,64 @@ def classify_content_safety(title, transcript=None, use_llm=True):
         print(f"safety LLM check failed (fail-open): {str(exc)[:80]}")
 
     return {"safe": True, "reason": "keyword fast-path clean (llm unavailable)", "source": "keyword"}
+
+
+# ── Niche relevance tier ─────────────────────────────────────────────────
+# A palace-park calisthenics video titled "宫廷盘杠传承人…非遗正青春" passed the
+# craft keyword gate because 非遗/传承 appear in the title, and reached the
+# Buffer queue as "craft". Keyword lists cannot judge MEANING, so the LLM
+# gets a veto on every candidate that survives the deterministic gates.
+_DEFAULT_NICHE = (
+    "Satisfying crafts & restoration: woodworking, wood carving, antique "
+    "restoration/repair of old objects, forging & metalwork, stone/jade/clay "
+    "craft, bamboo weaving, heritage handicrafts (embroidery, lacquer, "
+    "paper-cut), precision machining, and hands-on making/ASMR build videos."
+)
+
+_RELEVANCE_PROMPT = """You are a niche-relevance classifier for a short-video channel that posts ONLY satisfying craft content.
+
+Channel niche: {niche}
+
+Content title: {title}
+
+Reply with ONLY a JSON object, no other text:
+{{"relevant": true/false, "reason": "short reason"}}
+
+NOT relevant (reject): fitness/workout/street exercise, food/cooking/eating,
+vlogs, daily life, gaming, anime, music, dance, travel, product reviews,
+equipment reselling — even when the title claims 非遗/传承/传统技艺/文化 heritage
+words. A culture CLAIM does not make exercise or food content a craft.
+Relevant (accept): skillfully making, building, carving, forging, repairing or
+restoring a physical object, or precision machine work."""
+
+
+def classify_relevance(title, niche=None, use_llm=True):
+    """Return a relevance verdict dict for a candidate source.
+
+    Returns:
+        {"relevant": bool, "reason": str, "source": "llm" | "disabled" | "failopen"}
+    Never raises; on LLM failure fails OPEN (a missed clip is better than a
+    broken pipeline) — the deterministic keyword gates still run first.
+    """
+    if not use_llm:
+        return {"relevant": True, "reason": "llm disabled", "source": "disabled"}
+
+    prompt = _RELEVANCE_PROMPT.format(
+        niche=(niche or _DEFAULT_NICHE)[:400],
+        title=(title or "")[:300],
+    )
+    try:
+        raw = llm_complete(prompt, max_tokens=100, temperature=0.1)
+        if raw:
+            m = re.search(r"\{.*\}", raw, re.DOTALL)
+            if m:
+                verdict = json.loads(m.group(0))
+                relevant = bool(verdict.get("relevant", True))
+                reason = str(verdict.get("reason", ""))[:120]
+                if not relevant:
+                    return {"relevant": False, "reason": reason, "source": "llm"}
+                return {"relevant": True, "reason": reason, "source": "llm"}
+    except Exception as exc:
+        print(f"relevance LLM check failed (fail-open): {str(exc)[:80]}")
+
+    return {"relevant": True, "reason": "llm unavailable (fail-open)", "source": "failopen"}

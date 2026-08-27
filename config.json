@@ -225,7 +225,9 @@
   },
   "safety": {
     "enabled": true,
-    "use_llm": true
+    "use_llm": true,
+    "relevance_llm": true,
+    "relevance_llm_max_calls": 8
   },
   "storage": {
     "auto_cleanup": true,

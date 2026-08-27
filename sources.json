@@ -395,12 +395,12 @@
     {
       "url": "https://www.bilibili.com/video/BV1xY8468ExQ",
       "title": "东北的孩子打小就爱这一口",
-      "status": "pending",
+      "status": "archived",
       "score": 75,
       "category": "creator_八零彪子",
       "discovered_at": "2026-08-27T10:53:03.734654+00:00",
       "retry_count": 1,
-      "last_error": "Download failed: bilibili download failed: stream download failed: ('Connection broken: IncompleteRead(998466 bytes read, 13868622 more expected)', IncompleteRead(998466 bytes read, 13868622 more expe",
+      "last_error": "off-niche: food vlog, not a craft",
       "next_retry_after": "2026-08-27T15:38:45.606958+00:00"
     },
     {
@@ -419,20 +419,22 @@
     {
       "url": "https://www.bilibili.com/video/BV1ew4R6yE7s",
       "title": "农村大妈显摆指南",
-      "status": "pending",
+      "status": "archived",
       "score": 43,
       "category": "creator_农民入门指南_Official",
       "discovered_at": "2026-08-27T13:38:29.667447+00:00",
-      "retry_count": 0
+      "retry_count": 0,
+      "last_error": "off-niche: not a craft video"
     },
     {
       "url": "https://www.bilibili.com/video/BV1Au9CYNEVt",
       "title": "承德彬哥二手餐饮设备",
-      "status": "pending",
+      "status": "archived",
       "score": 35,
       "category": "creator_彬哥分享机械",
       "discovered_at": "2026-08-27T13:38:29.667447+00:00",
-      "retry_count": 0
+      "retry_count": 0,
+      "last_error": "off-niche: secondhand restaurant equipment resale"
     }
   ],
   "archived_urls": [],

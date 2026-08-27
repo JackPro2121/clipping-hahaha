@@ -68,6 +68,53 @@ _CREATOR_SEARCH_KW = [
     "修复",        # restoration
 ]
 
+# ── Niche relevance keyword gate (module level so tests can import them) ──
+# A video must contain at least ONE _NICHE_KW term to pass, and must contain
+# NO _NEGATIVE_KW term. Negative keywords win over positive ones: a palace-park
+# workout video titled "宫廷盘杠传承人…非遗正青春" used 非遗/传承 to slip past a
+# positive-only gate and reached the Buffer queue as "craft".
+_NICHE_KW = [
+    # Woodworking / carpentry (Chinese)
+    "木工", "木头", "木板", "木雕", "榫卯", "实木", "原木", "木料", "木作", "木匠",
+    # Hand tools / blade / sword
+    "手工", "刀", "剑", "刃", "锻造", "手艺", "匠", "锉刀", "凿子", "斧头",
+    # Restoration / repair
+    "修复", "修缮", "复原", "翻新", "旧物", "老物件", "修理", "还原",
+    # Metalwork / machining
+    "机械", "机床", "车床", "铸造", "焊接", "金属", "铁", "钢铁",
+    # Stone / jade / clay craft
+    "玉", "石雕", "陶", "泥塑", "雕刻", "篆刻", "砚台",
+    # Bamboo / fan / weave
+    "扇子", "竹编", "编织", "草编", "竹艺",
+    # Lamp / lantern / cultural artifact craft
+    "灯", "灯笼", "文物", "古董", "老物", "古物",
+    # Intangible cultural heritage / traditional skills
+    "非遗", "传承", "非物质文化", "传统技艺", "老手艺", "百年工艺",
+    # Lacquer / embroidery / paper / leather craft
+    "漆器", "漆", "刺绣", "绣花", "皮影", "剪纸", "泥人", "风筝", "蓝染", "蜡染",
+    # General craft signals
+    "解压手工", "手工制作", "传统工艺", "古法工艺", "民间技艺",
+    # English (for translated titles already in English)
+    "wood", "carv", "craft", "restor", "knife", "sword", "lathe", "forge",
+    "handmade", "repair", "machin", "jade", "bamboo", "weav", "chisel",
+    "lamp", "lantern", "relic", "heritage", "lacquer", "embroider", "pottery",
+    "antique", "artisan", "traditional", "intangible",
+]
+
+_NEGATIVE_KW = [
+    # Food / cooking (prevents "美食制作" food prep sneaking in)
+    "美食", "做菜", "食谱", "吃播", "料理", "炒菜", "小吃", "甜品", "烹饪",
+    # Gaming / Anime / Music
+    "游戏", "实况", "动漫", "二次元", "音乐", "唱歌", "舞蹈", "跳舞",
+    # General non-craft trivia
+    "搞笑", "段子", "免疫系统", "科普", "冷知识", "未解之谜",
+    # Fitness / sports / park exercise. The 宫廷盘杠 (palace-park pull-up bar)
+    # workout videos claim "非遗/传统技艺" — fitness terms veto them.
+    "健身", "强身健体", "单杠", "盘杠", "引体向上", "锻炼", "瑜伽", "跑步",
+    "街头健身", "篮球", "足球", "跳绳", "仰卧起坐", "俯卧撑",
+    "workout", "fitness", "calisthenics", "pull-up", "gym",
+]
+
 
 def _auto_expand_creators(cfg, state):
     """Auto-discover new Bilibili niche creators every AUTO_EXPAND_EVERY_N runs.
@@ -166,6 +213,12 @@ def main():
             return
     except Exception as exc:
         print(f"Discovery run-gate check failed (proceeding anyway): {str(exc)[:100]}")
+
+    # Curated-creator allowlist — captured BEFORE _auto_expand_creators merges
+    # auto-discovered accounts into cfg. Auto accounts must NOT inherit the
+    # curated niche-filter bypass: a channel NAMED "传统技艺传承人" can still
+    # post park-workout videos.
+    curated_names = {str(c) for c in (discovery.get("bilibili_creators") or [])}
 
     state = load_state()
 
@@ -268,47 +321,10 @@ def main():
     min_score = discovery.get("min_quality_score", 20)
 
     # ---------------------------------------------------------------------------
-    # Niche relevance filter — craft/woodworking/restoration keyword gate
-    # A video must contain at least ONE keyword to pass. This prevents off-niche
-    # content from curated creators (curiosity channels, animation, science trivia)
-    # from entering the queue even if they pass view/quality thresholds.
+    # Niche relevance filter — craft/woodworking/restoration keyword gate.
+    # Keyword lists (_NICHE_KW / _NEGATIVE_KW) live at module level so tests
+    # can exercise them directly. Negative keywords ALWAYS win.
     # ---------------------------------------------------------------------------
-    _NICHE_KW = [
-        # Woodworking / carpentry (Chinese)
-        "木工", "木头", "木板", "木雕", "榫卯", "实木", "原木", "木料", "木作", "木匠",
-        # Hand tools / blade / sword
-        "手工", "刀", "剑", "刃", "锻造", "手艺", "匠", "锉刀", "凿子", "斧头",
-        # Restoration / repair
-        "修复", "修缮", "复原", "翻新", "旧物", "老物件", "修理", "还原",
-        # Metalwork / machining
-        "机械", "机床", "车床", "铸造", "焊接", "金属", "铁", "钢铁",
-        # Stone / jade / clay craft
-        "玉", "石雕", "陶", "泥塑", "雕刻", "篆刻", "砚台",
-        # Bamboo / fan / weave
-        "扇子", "竹编", "编织", "草编", "竹艺",
-        # Lamp / lantern / cultural artifact craft
-        "灯", "灯笼", "文物", "古董", "老物", "古物",
-        # Intangible cultural heritage / traditional skills
-        "非遗", "传承", "非物质文化", "传统技艺", "老手艺", "百年工艺",
-        # Lacquer / embroidery / paper / leather craft
-        "漆器", "漆", "刺绣", "绣花", "皮影", "剪纸", "泥人", "风筝", "蓝染", "蜡染",
-        # General craft signals
-        "解压手工", "手工制作", "传统工艺", "古法工艺", "民间技艺",
-        # English (for translated titles already in English)
-        "wood", "carv", "craft", "restor", "knife", "sword", "lathe", "forge",
-        "handmade", "repair", "machin", "jade", "bamboo", "weav", "chisel",
-        "lamp", "lantern", "relic", "heritage", "lacquer", "embroider", "pottery",
-        "antique", "artisan", "traditional", "intangible",
-    ]
-
-    _NEGATIVE_KW = [
-        # Food / cooking (prevents "美食制作" food prep sneaking in)
-        "美食", "做菜", "食谱", "吃播", "料理", "炒菜", "小吃", "甜品", "烹饪",
-        # Gaming / Anime / Music
-        "游戏", "实况", "动漫", "二次元", "音乐", "唱歌", "舞蹈", "跳舞",
-        # General non-craft trivia
-        "搞笑", "段子", "免疫系统", "科普", "冷知识", "未解之谜"
-    ]
 
     def _is_niche_relevant(title: str) -> bool:
         """Return True if title contains at least one niche craft keyword and no negative keywords."""
@@ -330,20 +346,29 @@ def main():
         return True
 
     # 3. Quality score and filter candidate videos
+    safety_cfg = cfg.get("safety", {})
+    relevance_llm_on = safety_cfg.get("enabled", True) and safety_cfg.get("relevance_llm", True)
+    relevance_budget = int(safety_cfg.get("relevance_llm_max_calls", 8)) if relevance_llm_on else 0
 
     scored_candidates = []
     for src in found:
         if src["url"] in known_urls:
             continue
 
-        # Niche gate — reject off-topic titles before any further processing.
-        # BYPASS for curated creator pool: creators were manually vetted; trust
-        # their entire catalogue regardless of individual title wording.
+        # Niche gate — negative keywords ALWAYS veto (fitness/workout/food…).
+        # Non-creator sources additionally need one positive craft keyword.
+        # Curated-creator videos skip the positive-keyword requirement (their
+        # catalogue is manually vetted) but still face the negative veto here
+        # AND the LLM relevance check below — a channel NAMED "传统技艺传承人"
+        # can still post palace-park workout videos.
         title = src.get("title", "")
-        is_curated_creator = src.get("category", "").startswith("creator_")
-        if is_curated_creator:
-            pass  # curated creator — skip niche filter
-        elif not _is_niche_relevant(title):
+        category = src.get("category", "")
+        creator_name = category[len("creator_"):] if category.startswith("creator_") else None
+        t_lower = title.lower()
+        if any(neg.lower() in t_lower for neg in _NEGATIVE_KW):
+            print(f"  [niche-skip] Negative keyword: {title[:70]}")
+            continue
+        if creator_name is None and not _is_niche_relevant(title):
             print(f"  [niche-skip] Off-topic title: {title[:70]}")
             continue
 
@@ -362,6 +387,26 @@ def main():
         if src.get("views", 0) < min_views:
             continue
 
+        # LLM relevance veto — keywords cannot judge MEANING ("宫廷盘杠传承人…
+        # 非遗正青春" is park calisthenics, not a craft). Budget-limited so a
+        # discovery run never explodes in LLM latency; fails open on LLM errors.
+        if relevance_llm_on and relevance_budget > 0:
+            relevance_budget -= 1
+            try:
+                from llm.safety import classify_relevance
+
+                rel = classify_relevance(title, use_llm=True)
+            except Exception:
+                rel = {"relevant": True, "reason": "import failed", "source": "failopen"}
+            if not rel["relevant"]:
+                print(f"  [relevance-skip] {rel['reason'][:60]} :: {title[:50]}")
+                continue
+        elif creator_name is not None:
+            # LLM budget exhausted (or disabled) — creator videos fall back to
+            # requiring a positive craft keyword like any other source.
+            if not _is_niche_relevant(title):
+                print(f"  [niche-skip] Off-topic creator video: {title[:70]}")
+                continue
 
         score = score_source(src)
         if score >= min_score:
