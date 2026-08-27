@@ -24,7 +24,7 @@ from download import download_video  # noqa: E402
 from media import upload_video  # noqa: E402
 from notifications.slack import send_slack_summary, send_slack_alert  # noqa: E402
 from pipeline.cleanup import cleanup_cloudinary_clips  # noqa: E402
-from pipeline.queue_manager import can_queue_posts  # noqa: E402
+from pipeline.queue_manager import can_queue_posts, get_channel_queue_depth  # noqa: E402
 from utils.config import load_config  # noqa: E402
 from utils.errors import DownloadError, QueueFullError  # noqa: E402
 from utils.state import (  # noqa: E402
