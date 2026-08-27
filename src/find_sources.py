@@ -194,14 +194,22 @@ def main():
         # Metalwork / machining
         "机械", "机床", "车床", "铸造", "焊接", "金属", "铁", "钢铁",
         # Stone / jade / clay craft
-        "玉", "石雕", "陶", "泥塑", "雕刻", "篆刻",
+        "玉", "石雕", "陶", "泥塑", "雕刻", "篆刻", "砚台",
         # Bamboo / fan / weave
         "扇子", "竹编", "编织", "草编", "竹艺",
+        # Lamp / lantern / cultural artifact craft
+        "灯", "灯笼", "文物", "古董", "老物", "古物",
+        # Intangible cultural heritage / traditional skills
+        "非遗", "传承", "非物质文化", "传统技艺", "老手艺", "百年工艺",
+        # Lacquer / embroidery / paper / leather craft
+        "漆器", "漆", "刺绣", "绣花", "皮影", "剪纸", "泥人", "风筝", "蓝染", "蜡染",
         # General craft signals
-        "解压手工", "手工制作", "传统工艺", "古法工艺", "民间技艺", "手工",
+        "解压手工", "手工制作", "传统工艺", "古法工艺", "民间技艺",
         # English (for translated titles already in English)
         "wood", "carv", "craft", "restor", "knife", "sword", "lathe", "forge",
         "handmade", "repair", "machin", "jade", "bamboo", "weav", "chisel",
+        "lamp", "lantern", "relic", "heritage", "lacquer", "embroider", "pottery",
+        "antique", "artisan", "traditional", "intangible",
     ]
 
     _NEGATIVE_KW = [
@@ -239,9 +247,14 @@ def main():
         if src["url"] in known_urls:
             continue
 
-        # Niche gate — reject off-topic titles before any further processing
+        # Niche gate — reject off-topic titles before any further processing.
+        # BYPASS for curated creator pool: creators were manually vetted; trust
+        # their entire catalogue regardless of individual title wording.
         title = src.get("title", "")
-        if not _is_niche_relevant(title):
+        is_curated_creator = src.get("category", "").startswith("creator_")
+        if is_curated_creator:
+            pass  # curated creator — skip niche filter
+        elif not _is_niche_relevant(title):
             print(f"  [niche-skip] Off-topic title: {title[:70]}")
             continue
 
