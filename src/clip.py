@@ -6,7 +6,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from utils.errors import ClipError  # noqa: E402
-from pipeline.brand import get_brand_filter, get_logo_path, get_logo_overlay  # noqa: E402
+from pipeline.brand import (  # noqa: E402
+    get_brand_filter,
+    get_logo_path,
+    get_logo_overlay,
+    get_hook_banner_filter,
+)
 
 MOTIONS = ["pan_rl", "pan_lr", "zoom_in", "slow_zoom"]
 
@@ -305,7 +310,7 @@ def _make_bgm(path, duration):
     subprocess.run(cmd, check=True, capture_output=True)
 
 
-def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
+def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio, hook_text=None):
     src_w, src_h = cfg["_src"]
     fps = cfg.get("fps", 30)
     chunk_s = cfg.get("transition_every_s", 4)
@@ -367,6 +372,12 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
         brand_vf = get_brand_filter(cfg)
         if brand_vf:
             scale_eff += "," + brand_vf
+    # Curiosity Hook banner overlay (0-3.8s) for Tier-1 engagement
+    curiosity_hook = hook_text or cfg.get("hook_text")
+    if curiosity_hook:
+        hook_vf = get_hook_banner_filter(cfg, curiosity_hook, duration_s=3.8)
+        if hook_vf:
+            scale_eff += "," + hook_vf
     if sub_name:
         scale_eff += f",subtitles=filename='{_filter_path(out_dir / sub_name)}'"
     parts.append(f"[vcat]{scale_eff}{scale_out}")
@@ -460,7 +471,7 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio):
     return cmd
 
 
-def build_clips(path, out_dir, cfg, transcript=None, captions_enabled=False, windows=None):
+def build_clips(path, out_dir, cfg, transcript=None, captions_enabled=False, windows=None, hook_text=None):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     src_w, src_h, duration, has_audio = probe(path)
@@ -481,6 +492,7 @@ def build_clips(path, out_dir, cfg, transcript=None, captions_enabled=False, win
             seg_dur,
             transcript if captions_enabled else None,
             has_audio,
+            hook_text=hook_text,
         )
         try:
             subprocess.run(cmd, check=True, capture_output=True, cwd=out_dir)
@@ -495,6 +507,7 @@ def build_clips(path, out_dir, cfg, transcript=None, captions_enabled=False, win
                 seg_dur,
                 None,
                 has_audio,
+                hook_text=None,
             )
             subprocess.run(nofrill, check=True, capture_output=True, cwd=out_dir)
         clips.append(out)

@@ -285,11 +285,17 @@ def process_source(src, cfg):
                 )
                 if smart_windows:
                     print(f"Smart windows: {smart_windows}")
-                else:
-                    print("Smart windows: using heuristic fallback")
             except Exception as exc:
                 smart_windows = None
                 print(f"Smart windows skipped: {str(exc)[:80]}")
+
+        # Translate title to English for video hook banner & Buffer captions, then sanitize
+        raw_title = src.get("title") or raw.stem
+        title = translate_to_english(raw_title)
+        if title != raw_title:
+            print(f"Title translated for captions: '{raw_title[:40]}' → '{title[:60]}'")
+        title = sanitize_caption_title(title)
+
         try:
             clips = build_clips(
                 raw,
@@ -298,6 +304,7 @@ def process_source(src, cfg):
                 transcript=transcript,
                 captions_enabled=captions_cfg.get("burn_in", True),
                 windows=smart_windows,
+                hook_text=title,
             )
         except Exception as exc:
             err = f"Clipping failed: {exc}"
@@ -317,12 +324,6 @@ def process_source(src, cfg):
             print(err)
             return False, 0, err
 
-        # Translate title to English for Buffer captions, then sanitize
-        raw_title = src.get("title") or raw.stem
-        title = translate_to_english(raw_title)
-        if title != raw_title:
-            print(f"Title translated for captions: '{raw_title[:40]}' → '{title[:60]}'")
-        title = sanitize_caption_title(title)
         max_posts = cfg["buffer"].get("max_posts_per_channel", 8)
         clips = clips[:max_posts]
         posted = 0

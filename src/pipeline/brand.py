@@ -110,3 +110,39 @@ def get_brand_filter(cfg):
         f"{pos_expr}"
     )
     return vf
+
+
+def get_hook_banner_filter(cfg, hook_text, duration_s=3.8):
+    """Generate an ffmpeg drawtext filter for a high-converting curiosity hook banner.
+
+    Displays at upper center for the first `duration_s` seconds (e.g. 0-3.8s)
+    to boost 3-second hold rate and retention in Tier-1 countries.
+
+    Args:
+        cfg: Configuration dictionary with optional 'brand' / 'effects' section.
+        hook_text: Text string to display as the curiosity hook.
+        duration_s: Duration in seconds to show the banner (default 3.8s).
+
+    Returns:
+        str | None: ffmpeg filter snippet, or None if hook text is empty.
+    """
+    if not hook_text or not str(hook_text).strip():
+        return None
+
+    # Sanitize text for ffmpeg drawtext
+    clean_text = str(hook_text).strip().replace(":", "\\:").replace("'", "").replace('"', "")
+    # Cap length to fit nicely on vertical screen (1080px) without overflow
+    if len(clean_text) > 48:
+        clean_text = clean_text[:45].rstrip() + "..."
+
+    font_size = 40
+    # Position: top-center below safe-zone (y=240), box with 75% opacity dark background
+    vf = (
+        f"drawtext=text='{clean_text}':"
+        f"fontsize={font_size}:fontcolor=0xFFFFFFFF:"
+        f"box=1:boxcolor=0x000000C0:boxborderw=16:"
+        f"x=(w-text_w)/2:y=230:"
+        f"enable='between(t,0,{duration_s:.1f})'"
+    )
+    return vf
+
