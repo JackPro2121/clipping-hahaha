@@ -814,5 +814,57 @@
     ],
     "total_views": 5057,
     "total_posts": 87
+  },
+  {
+    "generated_at": "2026-08-27T10:33:41.078152+00:00",
+    "window_days": 7,
+    "channels": {
+      "instagram": {
+        "posts": 47,
+        "views": 3780,
+        "reach": 3269,
+        "likes": 10,
+        "avg_views": 80.4,
+        "best_views": 408
+      },
+      "facebook": {
+        "posts": 3,
+        "views": 9,
+        "reach": 0,
+        "likes": 0,
+        "avg_views": 3.0,
+        "best_views": 4
+      },
+      "tiktok": {
+        "posts": 37,
+        "views": 1877,
+        "reach": 345,
+        "likes": 31,
+        "avg_views": 50.7,
+        "best_views": 372
+      }
+    },
+    "top_posts": [
+      {
+        "service": "instagram",
+        "views": 408,
+        "likes": 1,
+        "text": "Watch 33 flawless Chinese mortise‑and‑tenon joints come together—craftsmanship that defies time 🔨 #woodworking #craft #h"
+      },
+      {
+        "service": "tiktok",
+        "views": 372,
+        "likes": 2,
+        "text": "Mastery in every joint—watch 33 Chinese mortise‑and‑tenon secrets unfold! #woodworking #craft #heritage (Part 1/2)"
+      },
+      {
+        "service": "tiktok",
+        "views": 307,
+        "likes": 8,
+        "text": "菜谱：洋葱炒蛋，家庭红烧鱼，蒜炒西兰花，辣椒炒猪腰，绿豆汤，从买菜开始，你在家随时可以复刻 - clip 1/3 #shorts"
+      }
+    ],
+    "total_views": 5666,
+    "total_posts": 87
   }
 ]
