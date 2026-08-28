@@ -1334,5 +1334,57 @@
     ],
     "total_views": 5108,
     "total_posts": 64
+  },
+  {
+    "generated_at": "2026-08-28T13:12:28.071368+00:00",
+    "window_days": 7,
+    "channels": {
+      "tiktok": {
+        "posts": 26,
+        "views": 2334,
+        "reach": 1375,
+        "likes": 27,
+        "avg_views": 89.8,
+        "best_views": 934
+      },
+      "instagram": {
+        "posts": 26,
+        "views": 2039,
+        "reach": 1788,
+        "likes": 4,
+        "avg_views": 78.4,
+        "best_views": 408
+      },
+      "facebook": {
+        "posts": 5,
+        "views": 17,
+        "reach": 0,
+        "likes": 0,
+        "avg_views": 3.4,
+        "best_views": 8
+      }
+    },
+    "top_posts": [
+      {
+        "service": "tiktok",
+        "views": 934,
+        "likes": 5,
+        "text": "Mastery in every joint—watch 33 Chinese mortise‑and‑tenon secrets unfold! #woodworking #craft #heritage (Part 1/2)"
+      },
+      {
+        "service": "instagram",
+        "views": 408,
+        "likes": 1,
+        "text": "Watch 33 flawless Chinese mortise‑and‑tenon joints come together—craftsmanship that defies time 🔨 #woodworking #craft #h"
+      },
+      {
+        "service": "instagram",
+        "views": 284,
+        "likes": 1,
+        "text": "Watch a Chinese master turn raw wood into flawless art—skill so precise it’ll leave you speechless 🌟 #woodworking #craft"
+      }
+    ],
+    "total_views": 4390,
+    "total_posts": 57
   }
 ]
