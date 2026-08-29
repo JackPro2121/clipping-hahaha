@@ -452,13 +452,13 @@
     {
       "url": "https://www.bilibili.com/video/BV13sML6DEpk",
       "title": "小小的饺子叉藏着爷爷的人生态度 （cr：何凡（非遗宣传））",
-      "status": "pending",
+      "status": "failed",
       "score": 59,
       "category": "creator_何凡非遗宣传",
       "discovered_at": "2026-08-27T20:43:29.206177+00:00",
-      "retry_count": 4,
-      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
-      "next_retry_after": "2026-08-29T13:18:08.785246+00:00"
+      "retry_count": 5,
+      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_02.mp4",
+      "next_retry_after": "2026-08-31T03:34:05.705954+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV1Mjgk6ZEmM",
@@ -476,13 +476,13 @@
     {
       "url": "https://www.bilibili.com/video/BV1NS4y1G7Ck",
       "title": "【便宜好用的小贴纸】用小贴纸做手帐拼贴  随心所欲贴 方形手帐本",
-      "status": "pending",
+      "status": "failed",
       "score": 51,
       "category": "creator_CC手帐手工制作",
       "discovered_at": "2026-08-28T01:06:08.703547+00:00",
-      "retry_count": 4,
+      "retry_count": 5,
       "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
-      "next_retry_after": "2026-08-29T13:22:32.638857+00:00"
+      "next_retry_after": "2026-08-31T03:38:54.986075+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV13shA6kE3s",
@@ -579,16 +579,34 @@
       "category": "creator_手工耿",
       "discovered_at": "2026-08-29T02:23:11.959419+00:00",
       "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1PYhg6JETz",
+      "title": "南瓜切一个这样的刀法。",
+      "status": "pending",
+      "score": 51,
+      "category": "creator_非遗传统手艺哥",
+      "discovered_at": "2026-08-29T19:30:18.523589+00:00",
+      "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Se8d6HEWn",
+      "title": "【阿雕说】为什么不升官阶？超级兵有什么用？",
+      "status": "pending",
+      "score": 43,
+      "category": "creator_木可雕real",
+      "discovered_at": "2026-08-29T19:30:18.523589+00:00",
+      "retry_count": 0
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-29T02:23:14.578932+00:00",
+    "last_run": "2026-08-29T19:30:20.289440+00:00",
     "total_processed": 29,
     "total_clips_posted": 98,
     "last_category": "food",
-    "last_keyword": "金工雕刻",
-    "auto_creator_run_count": 9,
+    "last_keyword": "木工",
+    "auto_creator_run_count": 10,
     "auto_creators": [
       "木南工坊",
       "土木工程洪工",
