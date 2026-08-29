@@ -1438,5 +1438,57 @@
     ],
     "total_views": 5003,
     "total_posts": 61
+  },
+  {
+    "generated_at": "2026-08-29T00:38:20.395476+00:00",
+    "window_days": 7,
+    "channels": {
+      "tiktok": {
+        "posts": 29,
+        "views": 2334,
+        "reach": 1375,
+        "likes": 27,
+        "avg_views": 80.5,
+        "best_views": 934
+      },
+      "instagram": {
+        "posts": 29,
+        "views": 2039,
+        "reach": 1788,
+        "likes": 4,
+        "avg_views": 70.3,
+        "best_views": 408
+      },
+      "facebook": {
+        "posts": 5,
+        "views": 630,
+        "reach": 0,
+        "likes": 1,
+        "avg_views": 126.0,
+        "best_views": 454
+      }
+    },
+    "top_posts": [
+      {
+        "service": "tiktok",
+        "views": 934,
+        "likes": 5,
+        "text": "Mastery in every joint—watch 33 Chinese mortise‑and‑tenon secrets unfold! #woodworking #craft #heritage (Part 1/2)"
+      },
+      {
+        "service": "facebook",
+        "views": 454,
+        "likes": 1,
+        "text": "Watch centuries of Chinese skill turn raw wood into pure art ✨ #woodworking #craft #ASMR (Part 1/2)"
+      },
+      {
+        "service": "instagram",
+        "views": 408,
+        "likes": 1,
+        "text": "Watch 33 flawless Chinese mortise‑and‑tenon joints come together—craftsmanship that defies time 🔨 #woodworking #craft #h"
+      }
+    ],
+    "total_views": 5003,
+    "total_posts": 63
   }
 ]
