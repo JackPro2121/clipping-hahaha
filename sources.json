@@ -500,13 +500,15 @@
     {
       "url": "https://www.bilibili.com/video/BV1WegN6DEQV",
       "title": "胡乱锯",
-      "status": "pending",
+      "status": "processed",
       "score": 57,
       "category": "creator_邓坤木雕",
       "discovered_at": "2026-08-28T03:40:02.984231+00:00",
       "retry_count": 1,
-      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
-      "next_retry_after": "2026-08-29T04:37:14.109981+00:00"
+      "last_error": null,
+      "next_retry_after": null,
+      "processed_at": "2026-08-30T07:04:48.548132+00:00",
+      "clips_count": 6
     },
     {
       "url": "https://www.bilibili.com/video/BV1QM4o67EZE",
@@ -515,7 +517,9 @@
       "score": 51,
       "category": "creator_农民入门指南_Official",
       "discovered_at": "2026-08-28T03:40:02.984231+00:00",
-      "retry_count": 0
+      "retry_count": 1,
+      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
+      "next_retry_after": "2026-08-30T09:09:23.546169+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV1THMr6UEL6",
@@ -597,16 +601,34 @@
       "category": "creator_木可雕real",
       "discovered_at": "2026-08-29T19:30:18.523589+00:00",
       "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Adtw6SE5f",
+      "title": "广西百色美女颈椎生理曲度变直椎间盘突出，已引起头晕手麻胸闷气短",
+      "status": "pending",
+      "score": 35,
+      "category": "creator_国粹非遗正骨传人老张",
+      "discovered_at": "2026-08-30T06:59:32.764467+00:00",
+      "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1tx4Q6hEyp",
+      "title": "【阿雕说】为什么说技老师是职业干饭人？",
+      "status": "pending",
+      "score": 35,
+      "category": "creator_木可雕real",
+      "discovered_at": "2026-08-30T06:59:32.764467+00:00",
+      "retry_count": 0
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-29T19:30:20.289440+00:00",
-    "total_processed": 29,
-    "total_clips_posted": 98,
+    "last_run": "2026-08-30T06:59:34.471151+00:00",
+    "total_processed": 30,
+    "total_clips_posted": 104,
     "last_category": "food",
-    "last_keyword": "木工",
-    "auto_creator_run_count": 10,
+    "last_keyword": "手工制作",
+    "auto_creator_run_count": 11,
     "auto_creators": [
       "木南工坊",
       "土木工程洪工",
