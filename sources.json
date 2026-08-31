@@ -528,9 +528,9 @@
       "score": 49,
       "category": "creator_木南工坊",
       "discovered_at": "2026-08-28T06:16:10.412341+00:00",
-      "retry_count": 1,
-      "last_error": "No clips successfully posted",
-      "next_retry_after": "2026-08-31T00:11:11.665825+00:00"
+      "retry_count": 2,
+      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
+      "next_retry_after": "2026-08-31T04:54:14.215731+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV1Dk8t6GEEv",
@@ -539,7 +539,9 @@
       "score": 35,
       "category": "creator_我的修复师",
       "discovered_at": "2026-08-28T06:16:10.412341+00:00",
-      "retry_count": 0
+      "retry_count": 1,
+      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
+      "next_retry_after": "2026-08-31T02:57:58.056814+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV1n98d6zEFN",
@@ -643,12 +645,12 @@
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-30T21:58:55.138178+00:00",
+    "last_run": "2026-08-31T00:47:51.749878+00:00",
     "total_processed": 30,
     "total_clips_posted": 104,
     "last_category": "food",
-    "last_keyword": "老物件修复",
-    "auto_creator_run_count": 12,
+    "last_keyword": "传统手艺",
+    "auto_creator_run_count": 13,
     "auto_creators": [
       "木南工坊",
       "土木工程洪工",
