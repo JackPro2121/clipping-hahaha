@@ -541,9 +541,9 @@
       "score": 35,
       "category": "creator_我的修复师",
       "discovered_at": "2026-08-28T06:16:10.412341+00:00",
-      "retry_count": 1,
+      "retry_count": 2,
       "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
-      "next_retry_after": "2026-08-31T02:57:58.056814+00:00"
+      "next_retry_after": "2026-09-01T03:22:09.446585+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV1n98d6zEFN",
@@ -552,7 +552,9 @@
       "score": 35,
       "category": "creator_木可雕real",
       "discovered_at": "2026-08-28T13:06:20.140888+00:00",
-      "retry_count": 0
+      "retry_count": 1,
+      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
+      "next_retry_after": "2026-09-01T01:25:46.320728+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV1Tvbe6EE2X",
@@ -661,16 +663,25 @@
       "category": "creator_木可雕real",
       "discovered_at": "2026-08-31T17:42:35.212599+00:00",
       "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1qo896ZEtU",
+      "title": "魔法刀匠伊利亚团队，以外星陨铁锻造中国汉剑，300层大马+3枚纹路很顶！",
+      "status": "pending",
+      "score": 35,
+      "category": "creator_锻造大马",
+      "discovered_at": "2026-08-31T23:17:53.642722+00:00",
+      "retry_count": 0
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-31T17:42:36.652700+00:00",
+    "last_run": "2026-08-31T23:17:54.772969+00:00",
     "total_processed": 31,
     "total_clips_posted": 110,
     "last_category": "food",
-    "last_keyword": "非遗",
-    "auto_creator_run_count": 14,
+    "last_keyword": "锻造",
+    "auto_creator_run_count": 15,
     "auto_creators": [
       "木南工坊",
       "土木工程洪工",
