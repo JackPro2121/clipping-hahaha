@@ -2218,5 +2218,57 @@
     ],
     "total_views": 6777,
     "total_posts": 72
+  },
+  {
+    "generated_at": "2026-08-31T21:35:40.436375+00:00",
+    "window_days": 7,
+    "channels": {
+      "tiktok": {
+        "posts": 31,
+        "views": 2324,
+        "reach": 2111,
+        "likes": 21,
+        "avg_views": 75.0,
+        "best_views": 948
+      },
+      "instagram": {
+        "posts": 30,
+        "views": 1669,
+        "reach": 1387,
+        "likes": 4,
+        "avg_views": 55.6,
+        "best_views": 408
+      },
+      "facebook": {
+        "posts": 11,
+        "views": 2698,
+        "reach": 0,
+        "likes": 3,
+        "avg_views": 245.3,
+        "best_views": 765
+      }
+    },
+    "top_posts": [
+      {
+        "service": "tiktok",
+        "views": 948,
+        "likes": 5,
+        "text": "Mastery in every joint—watch 33 Chinese mortise‑and‑tenon secrets unfold! #woodworking #craft #heritage (Part 1/2)"
+      },
+      {
+        "service": "facebook",
+        "views": 765,
+        "likes": 1,
+        "text": "Grandpa’s tiny dumpling fork reveals a lifetime of mastery 🍜 #woodworking #craft #heritage (Part 1/2)"
+      },
+      {
+        "service": "facebook",
+        "views": 663,
+        "likes": 1,
+        "text": "Watch centuries of Chinese skill turn raw wood into pure art ✨ #woodworking #craft #ASMR (Part 1/2)"
+      }
+    ],
+    "total_views": 6691,
+    "total_posts": 72
   }
 ]
