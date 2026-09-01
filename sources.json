@@ -526,13 +526,15 @@
     {
       "url": "https://www.bilibili.com/video/BV1THMr6UEL6",
       "title": "2026捉宠二游大混战！谁才是真正捉宠之王？",
-      "status": "pending",
+      "status": "processed",
       "score": 49,
       "category": "creator_木南工坊",
       "discovered_at": "2026-08-28T06:16:10.412341+00:00",
       "retry_count": 3,
-      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
-      "next_retry_after": "2026-09-01T01:54:20.457601+00:00"
+      "last_error": null,
+      "next_retry_after": null,
+      "processed_at": "2026-09-01T15:16:41.994770+00:00",
+      "clips_count": 3
     },
     {
       "url": "https://www.bilibili.com/video/BV1Dk8t6GEEv",
@@ -541,9 +543,9 @@
       "score": 35,
       "category": "creator_我的修复师",
       "discovered_at": "2026-08-28T06:16:10.412341+00:00",
-      "retry_count": 2,
-      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
-      "next_retry_after": "2026-09-01T03:22:09.446585+00:00"
+      "retry_count": 3,
+      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_02.mp4",
+      "next_retry_after": "2026-09-01T23:20:31.397723+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV1n98d6zEFN",
@@ -672,16 +674,34 @@
       "category": "creator_锻造大马",
       "discovered_at": "2026-08-31T23:17:53.642722+00:00",
       "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Uzt36pESt",
+      "title": "一干一个不吱声",
+      "status": "pending",
+      "score": 51,
+      "category": "creator_土木工程洪工",
+      "discovered_at": "2026-09-01T15:08:18.958467+00:00",
+      "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1jitM6ZEdv",
+      "title": "【阿雕说】职业选手最需要的是运气还是技术？",
+      "status": "pending",
+      "score": 35,
+      "category": "creator_木可雕real",
+      "discovered_at": "2026-09-01T15:08:18.958467+00:00",
+      "retry_count": 0
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-08-31T23:17:54.772969+00:00",
-    "total_processed": 31,
-    "total_clips_posted": 110,
+    "last_run": "2026-09-01T15:08:20.177720+00:00",
+    "total_processed": 32,
+    "total_clips_posted": 113,
     "last_category": "food",
-    "last_keyword": "锻造",
-    "auto_creator_run_count": 15,
+    "last_keyword": "解压手工",
+    "auto_creator_run_count": 16,
     "auto_creators": [
       "木南工坊",
       "土木工程洪工",
