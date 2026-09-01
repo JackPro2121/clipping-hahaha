@@ -19,18 +19,17 @@ def _providers():
             "name": "groq",
             "key": os.environ.get("GROQ_API_KEY"),
             "url": "https://api.groq.com/openai/v1/chat/completions",
-            "model": "openai/gpt-oss-120b",
+            "model": "llama-3.3-70b-versatile",
             "style": "openai",
-            "reasoning_effort": "low",
         },
         {
             "name": "gemini",
             "key": os.environ.get("GEMINI_API_KEY"),
             "url": (
                 "https://generativelanguage.googleapis.com/v1beta/models/"
-                "gemini-flash-latest:generateContent"
+                "gemini-1.5-flash:generateContent"
             ),
-            "model": "gemini-flash-latest",
+            "model": "gemini-1.5-flash",
             "style": "gemini",
         },
         {

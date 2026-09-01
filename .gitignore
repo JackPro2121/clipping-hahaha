@@ -3,3 +3,12 @@ __pycache__/
 *.pyc
 youtube_cookies*.txt
 .pytest_cache/
+scratch_*
+*.mp4
+*.mp3
+*.wav
+*.png
+!zencut*.png
+*.jfif
+check_*.py
+trigger_run.py

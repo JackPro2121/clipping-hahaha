@@ -294,21 +294,38 @@ def _audio_pitch_filter(shift_pct):
     )
 
 
-def _make_bgm(path, duration):
-    """Synthesize a calming, slow copyright-free ambient soundscape."""
+# Harmonic ambient chord progressions (calming, low-frequency, ASMR-friendly)
+BGM_CHORDS = [
+    [130.81, 164.81, 196.00],        # C Major triad (Bright & Satisfying)
+    [110.00, 130.81, 164.81, 196.00], # A Minor 7th (Calm & Focused)
+    [87.31, 130.81, 174.61, 220.00],  # F Major 7th (Dreamy & Ambient)
+    [82.41, 123.47, 164.81, 196.00],  # E Minor 7th (Deep & Meditative)
+]
+
+
+def _make_bgm(path, duration, chord_idx=0):
+    """Synthesize a calming, slow copyright-free ambient soundscape from harmonic frequencies."""
     dur = duration - 1.0
     if dur < 1.0:
         dur = 1.0
-    cmd = [
-        "ffmpeg", "-y",
-        "-f", "lavfi", "-i", "sine=frequency=130.81:sample_rate=44100",
-        "-f", "lavfi", "-i", "sine=frequency=164.81:sample_rate=44100",
-        "-f", "lavfi", "-i", "sine=frequency=196.00:sample_rate=44100",
-        "-filter_complex",
-        "[0:a][1:a][2:a]amix=inputs=3:normalize=0,volume=0.35,"
+
+    chord = BGM_CHORDS[chord_idx % len(BGM_CHORDS)]
+    inputs = []
+    for freq in chord:
+        inputs.extend(["-f", "lavfi", "-i", f"sine=frequency={freq:.2f}:sample_rate=44100"])
+
+    input_labels = "".join(f"[{i}:a]" for i in range(len(chord)))
+    filter_graph = (
+        f"{input_labels}amix=inputs={len(chord)}:normalize=0,volume=0.35,"
         f"tremolo=f=0.5:d=0.35,lowpass=f=950,"
         f"aformat=channel_layouts=stereo,"
-        f"afade=t=in:d=2.0,afade=t=out:st={dur - 1.0:.2f}:d=1.5",
+        f"afade=t=in:d=2.0,afade=t=out:st={dur - 1.0:.2f}:d=1.5"
+    )
+
+    cmd = [
+        "ffmpeg", "-y",
+        *inputs,
+        "-filter_complex", filter_graph,
         "-t", f"{duration:.3f}",
         str(path),
     ]
@@ -391,7 +408,7 @@ def _clip_cmd(cfg, path, out_dir, idx, start, duration, transcript, has_audio, h
     bgm_path = None
     if use_bgm:
         bgm_path = out_dir / f"clip_{idx:02d}_bgm.wav"
-        _make_bgm(bgm_path, duration)
+        _make_bgm(bgm_path, duration, chord_idx=idx - 1)
 
     inputs = ["-i", str(path)]
     current_input_idx = 1

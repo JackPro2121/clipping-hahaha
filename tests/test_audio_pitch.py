@@ -36,3 +36,12 @@ def test_pitch_filter_old_default_was_insufficient():
     assert f != ""
     # documented weakness — kept only as regression context
     assert "1.0120" in f
+
+
+def test_bgm_chords_palette():
+    from clip import BGM_CHORDS
+    assert len(BGM_CHORDS) >= 4
+    for chord in BGM_CHORDS:
+        assert len(chord) >= 3
+        assert all(50.0 <= freq <= 400.0 for freq in chord)
+
