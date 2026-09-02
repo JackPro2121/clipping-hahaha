@@ -539,13 +539,15 @@
     {
       "url": "https://www.bilibili.com/video/BV1Dk8t6GEEv",
       "title": "我正在从事一种很新的职业：童年漫画修复师",
-      "status": "pending",
+      "status": "processed",
       "score": 35,
       "category": "creator_我的修复师",
       "discovered_at": "2026-08-28T06:16:10.412341+00:00",
       "retry_count": 4,
-      "last_error": "Clipping failed: Command '['ffmpeg', '-y', '-i', '/tmp/tmp7m26573w/attempt-0-bilibili/BV1Dk8t6GEEv.mp4', '-i', '/home/runner/work/clipping-hahaha/clipping-hahaha/zencut-icon-transparent.png', '-filter",
-      "next_retry_after": "2026-09-02T16:27:08.243762+00:00"
+      "last_error": null,
+      "next_retry_after": null,
+      "processed_at": "2026-09-02T19:34:04.465620+00:00",
+      "clips_count": 6
     },
     {
       "url": "https://www.bilibili.com/video/BV1n98d6zEFN",
@@ -565,9 +567,9 @@
       "score": 33,
       "category": "creator_立冬手艺人木工",
       "discovered_at": "2026-08-28T13:06:20.140888+00:00",
-      "retry_count": 2,
-      "last_error": "Clipping failed: Command '['ffmpeg', '-y', '-i', '/tmp/tmp0_n0rv6b/attempt-0-bilibili/BV1Tvbe6EE2X.mp4', '-i', '/home/runner/work/clipping-hahaha/clipping-hahaha/zencut-icon-transparent.png', '-filter",
-      "next_retry_after": "2026-09-02T18:40:27.095610+00:00"
+      "retry_count": 3,
+      "last_error": "Queue full for facebook (3 pending) — skipping clip clip_01.mp4",
+      "next_retry_after": "2026-09-03T03:39:07.395836+00:00"
     },
     {
       "url": "https://www.bilibili.com/video/BV1F2tN6sEee",
@@ -739,16 +741,34 @@
       "category": "creator_农民入门指南_Official",
       "discovered_at": "2026-09-02T14:40:16.467381+00:00",
       "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1aptj6zEPs",
+      "title": "【阿雕说】锐评大宝所有皮肤！",
+      "status": "pending",
+      "score": 43,
+      "category": "creator_木可雕real",
+      "discovered_at": "2026-09-02T19:29:09.794513+00:00",
+      "retry_count": 0
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1yytE6AEU9",
+      "title": "框架柱钢筋小变大，变径套筒16变25",
+      "status": "pending",
+      "score": 25,
+      "category": "creator_土木白工",
+      "discovered_at": "2026-09-02T19:29:09.794513+00:00",
+      "retry_count": 0
     }
   ],
   "archived_urls": [],
   "_meta": {
-    "last_run": "2026-09-02T14:40:17.600086+00:00",
-    "total_processed": 32,
-    "total_clips_posted": 113,
+    "last_run": "2026-09-02T19:29:11.164219+00:00",
+    "total_processed": 33,
+    "total_clips_posted": 119,
     "last_category": "food",
-    "last_keyword": "木工",
-    "auto_creator_run_count": 19,
+    "last_keyword": "手工制作",
+    "auto_creator_run_count": 20,
     "auto_creators": [
       "木南工坊",
       "土木工程洪工",
