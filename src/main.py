@@ -294,7 +294,16 @@ def process_source(src, cfg):
         title = translate_to_english(raw_title)
         if title != raw_title:
             print(f"Title translated for captions: '{raw_title[:40]}' → '{title[:60]}'")
-        title = sanitize_caption_title(title)
+        sanitized_title = sanitize_caption_title(title)
+        # BUG FIX: If translated title is off-niche, abort instead of relabeling and posting
+        if sanitized_title == "Incredible Craft Mastery You Have to See" and not any(
+            pat.search(title) for pat in _CAPTION_CRAFT_PATTERNS
+        ):
+            err = f"Aborting: off-niche title detected ('{raw_title[:50]}')"
+            print(err)
+            abandon_source(src, err)
+            return False, 0, err
+        title = sanitized_title
 
         try:
             clips = build_clips(
@@ -380,10 +389,13 @@ def process_source(src, cfg):
                     channel["id"], max_queue_depth=svc_caps.get(service, max_queue)
                 )
                 if not allowed:
-                    msg = f"Queue full for {service} ({depth} pending) — skipping clip {clip.name}"
+                    msg = (
+                        f"Queue cap reached for {service} ({depth} pending) — "
+                        f"skipping this channel for clip {clip.name}"
+                    )
                     print(msg)
-                    send_slack_alert(f"Queue Full on {service}", msg, is_error=False)
-                    return False, posted, msg
+                    send_slack_alert(f"Queue Cap Hit on {service}", msg, is_error=False)
+                    continue
 
                 caption = llm_caption or build_caption(
                     cfg, title, i, len(clips), service=service
@@ -399,15 +411,13 @@ def process_source(src, cfg):
                         f"({channel['name']}) id={post_id}"
                     )
                 except QueueFullError as exc:
-                    print(f"Queue limit (10 posts) reached for {service}: {exc}")
-                    if posted > 0:
-                        return True, posted, f"Queue filled to limit ({posted} clips queued)"
-                    return False, 0, str(exc)
+                    print(f"Queue limit reached for {service}: {exc}")
+                    continue
                 except Exception as exc:
                     print(f"Post failed {clip.name} -> {service}: {exc}")
 
         if posted == 0:
-            return False, 0, "No clips successfully posted"
+            return False, 0, "No clips successfully posted (all channels full or failed)"
 
         return True, posted, ""
 

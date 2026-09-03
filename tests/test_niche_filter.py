@@ -79,3 +79,19 @@ def test_relevance_disabled_is_fail_open():
     v = s.classify_relevance("随便什么标题", use_llm=False)
     assert v["relevant"] is True
     assert v["source"] == "disabled"
+
+
+def test_blocked_creator_terms():
+    from find_sources import _BLOCKED_CREATOR_TERMS
+
+    blocked_samples = [
+        "木可雕real",
+        "土木工程洪工",
+        "土木白工",
+        "国粹非遗正骨传人老张",
+        "非遗中医刺血高晓尚",
+        "青木动漫工坊",
+        "沙雕木其",
+    ]
+    for creator in blocked_samples:
+        assert any(b.lower() in creator.lower() for b in _BLOCKED_CREATOR_TERMS), f"Expected {creator} to be blocked"

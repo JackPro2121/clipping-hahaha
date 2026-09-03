@@ -550,17 +550,6 @@
       "clips_count": 6
     },
     {
-      "url": "https://www.bilibili.com/video/BV1n98d6zEFN",
-      "title": "【阿雕说】在职业比赛上“睡觉”？我上我也行！",
-      "status": "pending",
-      "score": 35,
-      "category": "creator_木可雕real",
-      "discovered_at": "2026-08-28T13:06:20.140888+00:00",
-      "retry_count": 4,
-      "last_error": "Clipping failed: Command '['ffmpeg', '-y', '-i', '/tmp/tmpeiu248da/attempt-0-bilibili/BV1n98d6zEFN.mp4', '-i', '/home/runner/work/clipping-hahaha/clipping-hahaha/zencut-icon-transparent.png', '-filter",
-      "next_retry_after": "2026-09-03T06:40:22.222401+00:00"
-    },
-    {
       "url": "https://www.bilibili.com/video/BV1Tvbe6EE2X",
       "title": "窗口也可以现场制作呀",
       "status": "pending",
@@ -570,26 +559,6 @@
       "retry_count": 4,
       "last_error": "Clipping failed: Command '['ffmpeg', '-y', '-i', '/tmp/tmpmm266chd/attempt-0-bilibili/BV1Tvbe6EE2X.mp4', '-i', '/home/runner/work/clipping-hahaha/clipping-hahaha/zencut-icon-transparent.png', '-filter",
       "next_retry_after": "2026-09-03T22:04:44.790406+00:00"
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1F2tN6sEee",
-      "title": "大舅哥取消美颜拍众生相，糯糯心态爆炸，小哈尼王潘饭儿颜值抗打，骚骚皮肤月球表面，暖妹：师傅又拍我。毛哥：差点把你认成雅婷。 一分钟后雅婷直接送上一发火箭",
-      "status": "pending",
-      "score": 33,
-      "category": "creator_王小师傅1",
-      "discovered_at": "2026-08-28T21:14:38.135730+00:00",
-      "retry_count": 1,
-      "last_error": "Clipping failed: Command '['ffmpeg', '-y', '-i', '/tmp/tmpmwo16qvn/attempt-0-bilibili/BV1F2tN6sEee.mp4', '-i', '/home/runner/work/clipping-hahaha/clipping-hahaha/zencut-icon-transparent.png', '-filter",
-      "next_retry_after": "2026-09-03T08:05:26.649643+00:00"
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1tQu36zEJ2",
-      "title": "当你接工程时听到这些话……",
-      "status": "pending",
-      "score": 32,
-      "category": "creator_土木工程洪工",
-      "discovered_at": "2026-08-28T21:14:38.135730+00:00",
-      "retry_count": 0
     },
     {
       "url": "https://www.bilibili.com/video/BV15fhc66EGG",
@@ -610,47 +579,11 @@
       "retry_count": 0
     },
     {
-      "url": "https://www.bilibili.com/video/BV1Se8d6HEWn",
-      "title": "【阿雕说】为什么不升官阶？超级兵有什么用？",
-      "status": "pending",
-      "score": 43,
-      "category": "creator_木可雕real",
-      "discovered_at": "2026-08-29T19:30:18.523589+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1Adtw6SE5f",
-      "title": "广西百色美女颈椎生理曲度变直椎间盘突出，已引起头晕手麻胸闷气短",
-      "status": "pending",
-      "score": 35,
-      "category": "creator_国粹非遗正骨传人老张",
-      "discovered_at": "2026-08-30T06:59:32.764467+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1tx4Q6hEyp",
-      "title": "【阿雕说】为什么说技老师是职业干饭人？",
-      "status": "pending",
-      "score": 35,
-      "category": "creator_木可雕real",
-      "discovered_at": "2026-08-30T06:59:32.764467+00:00",
-      "retry_count": 0
-    },
-    {
       "url": "https://www.bilibili.com/video/BV1zK4k6pEfX",
       "title": "牛龙聚财",
       "status": "pending",
       "score": 35,
       "category": "creator_手艺人的剑",
-      "discovered_at": "2026-08-30T21:58:53.983568+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1nb4C64Ebh",
-      "title": "脚手架外架与内架相连",
-      "status": "pending",
-      "score": 25,
-      "category": "creator_土木白工",
       "discovered_at": "2026-08-30T21:58:53.983568+00:00",
       "retry_count": 0
     },
@@ -664,57 +597,12 @@
       "retry_count": 0
     },
     {
-      "url": "https://www.bilibili.com/video/BV1tUt46aE9r",
-      "title": "【阿雕说】回答一下粉丝朋友问我的问题！",
-      "status": "pending",
-      "score": 35,
-      "category": "creator_木可雕real",
-      "discovered_at": "2026-08-31T17:42:35.212599+00:00",
-      "retry_count": 0
-    },
-    {
       "url": "https://www.bilibili.com/video/BV1qo896ZEtU",
       "title": "魔法刀匠伊利亚团队，以外星陨铁锻造中国汉剑，300层大马+3枚纹路很顶！",
       "status": "pending",
       "score": 35,
       "category": "creator_锻造大马",
       "discovered_at": "2026-08-31T23:17:53.642722+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1Uzt36pESt",
-      "title": "一干一个不吱声",
-      "status": "pending",
-      "score": 51,
-      "category": "creator_土木工程洪工",
-      "discovered_at": "2026-09-01T15:08:18.958467+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1jitM6ZEdv",
-      "title": "【阿雕说】职业选手最需要的是运气还是技术？",
-      "status": "pending",
-      "score": 35,
-      "category": "creator_木可雕real",
-      "discovered_at": "2026-09-01T15:08:18.958467+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1KgtL6fER5",
-      "title": "国民大舅哥：暖妹，3年合同给你改成必播。暖妹：可以，师傅你有必播吗？毛哥：你别管",
-      "status": "pending",
-      "score": 43,
-      "category": "creator_王小师傅1",
-      "discovered_at": "2026-09-02T00:27:02.057169+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV14Nt362ENt",
-      "title": "天黑就是冲刺的信号",
-      "status": "pending",
-      "score": 33,
-      "category": "creator_土木白工",
-      "discovered_at": "2026-09-02T00:27:02.057169+00:00",
       "retry_count": 0
     },
     {
@@ -734,42 +622,6 @@
       "category": "creator_非遗传统手艺哥",
       "discovered_at": "2026-09-02T14:40:16.467381+00:00",
       "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1gVtJ6VEmL",
-      "title": "拒绝借钱教程",
-      "status": "pending",
-      "score": 41,
-      "category": "creator_农民入门指南_Official",
-      "discovered_at": "2026-09-02T14:40:16.467381+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1aptj6zEPs",
-      "title": "【阿雕说】锐评大宝所有皮肤！",
-      "status": "pending",
-      "score": 43,
-      "category": "creator_木可雕real",
-      "discovered_at": "2026-09-02T19:29:09.794513+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1yytE6AEU9",
-      "title": "框架柱钢筋小变大，变径套筒16变25",
-      "status": "pending",
-      "score": 25,
-      "category": "creator_土木白工",
-      "discovered_at": "2026-09-02T19:29:09.794513+00:00",
-      "retry_count": 0
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV13NtS6cEyq",
-      "title": "湖南帅哥含胸驼背脊柱侧弯长短腿，胸部肋骨一边凸起来预约正骨矫正！",
-      "status": "pending",
-      "score": 33,
-      "category": "creator_国粹非遗正骨传人老张",
-      "discovered_at": "2026-09-03T06:04:13.738555+00:00",
-      "retry_count": 0
     }
   ],
   "archived_urls": [],
@@ -782,26 +634,18 @@
     "auto_creator_run_count": 21,
     "auto_creators": [
       "木南工坊",
-      "土木工程洪工",
       "手艺人非遗",
-      "土木白工",
       "小镇老金的木趣工坊",
-      "非遗中医刺血高晓尚",
       "何凡非遗宣传",
-      "国粹非遗正骨传人老张",
       "非遗传承人叶昊",
       "立冬手艺人木工",
-      "中医药非遗网",
       "复古锻造shurap",
-      "青木动漫工坊",
-      "沙雕木其",
       "DIY手工制作",
       "百艺堂木雕艺术",
       "锻造实录",
       "刘家人竹编",
       "非遗传统手艺哥",
       "邓坤木雕",
-      "木可雕real",
       "越南木雕小哥Duy",
       "锻造师FM",
       "CC手帐手工制作",

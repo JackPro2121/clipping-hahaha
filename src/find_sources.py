@@ -60,12 +60,17 @@ _CREATOR_SEARCH_KW = [
     "木工",        # woodworking
     "手工制作",    # handmade craft
     "老物件修复",  # antique restoration
-    "非遗",        # intangible cultural heritage
     "锻造",        # forging / blacksmith
     "传统手艺",    # traditional skill
     "木雕",        # wood carving
     "竹编",        # bamboo weaving
     "修复",        # restoration
+]
+
+# Creators whose content or handles represent known off-niche categories (gaming, civil engineering, clinic, etc.)
+_BLOCKED_CREATOR_TERMS = [
+    "木可雕real", "土木工程", "土木白工", "正骨", "刺血", "中医",
+    "沙雕", "动漫", "健身", "搞笑", "解说", "游戏", "吃播"
 ]
 
 # ── Niche relevance keyword gate (module level so tests can import them) ──
@@ -135,7 +140,12 @@ def _auto_expand_creators(cfg, state):
     run_count = meta.get(RUN_KEY, 0) + 1
     meta[RUN_KEY] = run_count
 
-    auto_pool: list = list(meta.get(META_KEY, []))
+    # Filter out any blacklisted creator accounts from state auto_pool
+    auto_pool = [
+        c for c in auto_pool
+        if not any(blocked.lower() in str(c).lower() for blocked in _BLOCKED_CREATOR_TERMS)
+    ]
+    meta[META_KEY] = auto_pool
     existing_curated: list = list(cfg.get("discovery", {}).get("bilibili_creators") or [])
     all_known: set = set(auto_pool) | set(existing_curated)
 
@@ -164,7 +174,11 @@ def _auto_expand_creators(cfg, state):
             min_videos=3,
             max_per_keyword=6,
         )
-        new_creators = [c for c in found if c not in all_known]
+        new_creators = [
+            c for c in found
+            if c not in all_known
+            and not any(blocked.lower() in str(c).lower() for blocked in _BLOCKED_CREATOR_TERMS)
+        ]
         if new_creators:
             # Prepend high-reach creators to front of auto_pool
             auto_pool = new_creators + [c for c in auto_pool if c not in new_creators]
@@ -364,6 +378,10 @@ def main():
         title = src.get("title", "")
         category = src.get("category", "")
         creator_name = category[len("creator_"):] if category.startswith("creator_") else None
+        if creator_name and any(b.lower() in creator_name.lower() for b in _BLOCKED_CREATOR_TERMS):
+            print(f"  [creator-skip] Blacklisted creator account: {creator_name}")
+            continue
+
         t_lower = title.lower()
         if any(neg.lower() in t_lower for neg in _NEGATIVE_KW):
             print(f"  [niche-skip] Negative keyword: {title[:70]}")
@@ -401,6 +419,11 @@ def main():
             if not rel["relevant"]:
                 print(f"  [relevance-skip] {rel['reason'][:60]} :: {title[:50]}")
                 continue
+            # If LLM failed open, creator video must still satisfy positive craft check
+            if creator_name is not None and rel.get("source") in ("failopen", "disabled"):
+                if not _is_niche_relevant(title):
+                    print(f"  [niche-skip] Off-topic creator video (LLM failopen): {title[:70]}")
+                    continue
         elif creator_name is not None:
             # LLM budget exhausted (or disabled) — creator videos fall back to
             # requiring a positive craft keyword like any other source.
