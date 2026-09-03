@@ -2790,5 +2790,57 @@
     ],
     "total_views": 3303,
     "total_posts": 67
+  },
+  {
+    "generated_at": "2026-09-03T06:05:30.487130+00:00",
+    "window_days": 7,
+    "channels": {
+      "facebook": {
+        "posts": 14,
+        "views": 2730,
+        "reach": 0,
+        "likes": 3,
+        "avg_views": 195.0,
+        "best_views": 767
+      },
+      "instagram": {
+        "posts": 33,
+        "views": 581,
+        "reach": 481,
+        "likes": 2,
+        "avg_views": 17.6,
+        "best_views": 342
+      },
+      "tiktok": {
+        "posts": 26,
+        "views": 0,
+        "reach": 629,
+        "likes": 9,
+        "avg_views": 0.0,
+        "best_views": 0
+      }
+    },
+    "top_posts": [
+      {
+        "service": "facebook",
+        "views": 767,
+        "likes": 1,
+        "text": "Grandpa’s tiny dumpling fork reveals a lifetime of mastery 🍜 #woodworking #craft #heritage (Part 1/2)"
+      },
+      {
+        "service": "facebook",
+        "views": 670,
+        "likes": 1,
+        "text": "Watch centuries of Chinese skill turn raw wood into pure art ✨ #woodworking #craft #ASMR (Part 1/2)"
+      },
+      {
+        "service": "instagram",
+        "views": 342,
+        "likes": 2,
+        "text": "Grandpa’s tiny dumpling fork reveals a lifetime of wisdom in every bite 🍜 #craft #woodworking #heritage (Part 1/2)"
+      }
+    ],
+    "total_views": 3311,
+    "total_posts": 73
   }
 ]
